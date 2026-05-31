@@ -291,6 +291,47 @@
     }
     .comment-empty{text-align:center;color:var(--muted);padding:16px;font-size:12px;}
 
+    .summary-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .summary-card{
+      background: rgba(255,255,255,0.96);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 6px 14px rgba(4, 120, 87, 0.06);
+    }
+    .summary-name{
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--primary2);
+      margin-bottom: 6px;
+    }
+    .summary-meta{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .summary-meta .item{
+      background: rgba(209, 250, 229, 0.35);
+      border-radius: 12px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+    .summary-meta .value{
+      display:block;
+      font-size: 16px;
+      font-weight: 1000;
+      color: var(--text);
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
     .toast {
       position: fixed;
       top: 50%;
@@ -408,6 +449,11 @@
         <div class="stack" style="margin-top:24px; border-top:1px dashed var(--line); padding-top:16px;">
           <button class="btn danger med" id="resetAllBtn">🗑️ 蓄積データを全削除</button>
         </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:12px; text-align:center;">👥 個人別集計</h3>
+        <div id="adminSummaryContent" class="summary-grid"></div>
       </div>
     </div>
 
@@ -803,7 +849,6 @@
       var reports = getAllReports();
       var today = todayStr();
       var todayReportPeople = [];
-
       for(var i=0; i<reports.length; i++) {
         var rDate = String(reports[i].createdAt || "").slice(0,10);
         if(rDate === today) {
@@ -811,6 +856,68 @@
         }
       }
       $("statPeople").innerHTML = unique(todayReportPeople).length;
+      renderAdminSummary();
+    }
+
+    function renderAdminSummary(){
+      var reports = getAllReports();
+      var currentMonth = todayStr().slice(0,7);
+      var mastersList = masters();
+      var byEmp = {};
+
+      for(var i=0; i<reports.length; i++){
+        var r = reports[i];
+        if(!r.employeeNo) continue;
+        if(!byEmp[r.employeeNo]) {
+          byEmp[r.employeeNo] = {
+            employeeNo: r.employeeNo,
+            personName: r.personName || "",
+            site: r.site || "",
+            area: r.area || "",
+            totalCount: 0,
+            latestAt: "",
+            monthCount: 0
+          };
+        }
+        byEmp[r.employeeNo].totalCount++;
+        if(!byEmp[r.employeeNo].latestAt || byEmp[r.employeeNo].latestAt < r.createdAt) {
+          byEmp[r.employeeNo].latestAt = r.createdAt || "";
+        }
+        if(String(r.createdAt || "").slice(0,7) === currentMonth) {
+          byEmp[r.employeeNo].monthCount++;
+        }
+      }
+
+      var list = [];
+      for(var key in byEmp){
+        list.push(byEmp[key]);
+      }
+
+      list.sort(function(a,b){
+        if(b.monthCount !== a.monthCount) return b.monthCount - a.monthCount;
+        if(b.totalCount !== a.totalCount) return b.totalCount - a.totalCount;
+        return String(a.personName).localeCompare(String(b.personName), "ja");
+      });
+
+      if(list.length === 0){
+        $("adminSummaryContent").innerHTML = '<div class="comment-empty">まだ個人別集計データはありません。</div>';
+        return;
+      }
+
+      var html = "";
+      for(var j=0; j<list.length; j++){
+        var item = list[j];
+        html += '<div class="summary-card">'
+          + '<div class="summary-name">' + escHtml(item.personName) + ' <span style="font-size:11px; color:var(--muted);">(' + escHtml(item.employeeNo) + ')</span></div>'
+          + '<div class="summary-meta">'
+          + '<div class="item">件数<span class="value">' + escHtml(item.totalCount) + '</span></div>'
+          + '<div class="item">最終報告日時<span class="value">' + escHtml(item.latestAt || "-") + '</span></div>'
+          + '<div class="item">今月の報告数<span class="value">' + escHtml(item.monthCount) + '</span></div>'
+          + '</div>'
+          + '</div>';
+      }
+
+      $("adminSummaryContent").innerHTML = html;
     }
 
     function renderAdminList(){
@@ -864,7 +971,6 @@
       var header = ["拠点","エリア","氏名","社員番号","区分","作業の種類","メモ","登録日時"];
       var csv = "";
       var headerArr = [];
-
       for(var h=0; h<header.length; h++) headerArr.push(escCsv(header[h]));
       csv += headerArr.join(",") + "\n";
 
