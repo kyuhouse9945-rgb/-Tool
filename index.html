@@ -355,6 +355,62 @@
       transform: translate(-50%, -50%) scale(1);
     }
 
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:2000;
+      padding:16px;
+    }
+    .modal-backdrop.show{display:flex}
+    .modal{
+      width:100%;
+      max-width:420px;
+      background:#fff;
+      border-radius:24px;
+      box-shadow:0 24px 48px rgba(0,0,0,0.25);
+      border:1px solid var(--line);
+      overflow:hidden;
+    }
+    .modal-header{
+      padding:16px 18px 10px;
+      border-bottom:1px solid var(--line);
+      text-align:center;
+      background:linear-gradient(180deg, rgba(236,253,245,1), rgba(255,255,255,1));
+    }
+    .modal-header h3{
+      margin:0;
+      font-size:18px;
+      color:var(--primary2);
+    }
+    .modal-body{
+      padding:16px 18px 18px;
+    }
+    .modal-footer{
+      padding:0 18px 18px;
+      display:flex;
+      gap:10px;
+    }
+    .modal-footer button{
+      flex:1;
+    }
+    .pw-error{
+      color:#b91c1c;
+      font-size:12px;
+      font-weight:800;
+      margin-top:8px;
+      min-height:16px;
+    }
+    .pw-note{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:10px;
+      line-height:1.5;
+    }
+
     @keyframes bounce {
       0% { transform: scale(1); }
       30% { transform: scale(1.3); }
@@ -365,6 +421,23 @@
 </head>
 <body>
   <div id="toast" class="toast"></div>
+
+  <div class="modal-backdrop" id="adminPwModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>🔐 管理者パスワード</h3>
+      </div>
+      <div class="modal-body">
+        <div class="pw-note">管理者画面を開くにはパスワードが必要です。</div>
+        <input type="password" id="adminPwInput" placeholder="パスワードを入力" autocomplete="current-password" />
+        <div class="pw-error" id="adminPwError"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn ghost med" id="adminPwCancel">キャンセル</button>
+        <button class="btn primary med" id="adminPwSubmit">ログイン</button>
+      </div>
+    </div>
+  </div>
 
   <div class="app">
     <div id="modeSelect" style="display: block;">
@@ -379,7 +452,7 @@
           <div style="font-size:13px; font-weight:normal; opacity:0.9;">本日の実績登録はこちらから</div>
         </button>
 
-        <button class="btn ghost" style="height:100px; border: 2px solid var(--primary2); background: rgba(255,255,255,0.95); box-shadow: 0 8px 16px rgba(4, 120, 87, 0.12);" onclick="showView('admin')">
+        <button class="btn ghost" style="height:100px; border: 2px solid var(--primary2); background: rgba(255,255,255,0.95); box-shadow: 0 8px 16px rgba(4, 120, 87, 0.12);" onclick="openAdminLogin()">
           <div style="font-size:22px; margin-bottom:6px; color:var(--primary2);">📊 管理者用 確認画面</div>
           <div style="font-size:13px; font-weight:normal; color:var(--primary2); opacity:0.8;">実績の確認やCSV出力はこちらから</div>
         </button>
@@ -453,6 +526,26 @@
 
       <div class="card">
         <h3 style="margin-bottom:12px; text-align:center;">👥 個人別集計</h3>
+
+        <div class="field">
+          <label class="label">🏢 拠点</label>
+          <select id="summarySiteSelect"></select>
+        </div>
+        <div class="field">
+          <label class="label">🗺️ エリア</label>
+          <select id="summaryAreaSelect"></select>
+        </div>
+        <div class="field">
+          <label class="label">👤 氏名</label>
+          <select id="summaryPersonSelect"></select>
+        </div>
+
+        <div class="row2" style="margin-bottom: 12px;">
+          <button class="btn secondary med" id="summaryRefreshBtn">🔎 この条件で集計</button>
+          <button class="btn ghost med" id="summaryClearBtn">↩ 条件を解除</button>
+        </div>
+
+        <div id="summaryHint" style="font-size:12px; color:var(--muted); font-weight:700; margin-bottom:10px; text-align:center;"></div>
         <div id="adminSummaryContent" class="summary-grid"></div>
       </div>
     </div>
@@ -470,6 +563,9 @@
 
   <script>
     var STORAGE_KEY = "ac_repair_reports_green_v4";
+    var ADMIN_PASSWORD = "1234";
+    var ADMIN_LOCK_KEY = "ac_admin_unlock_until_v1";
+    var ADMIN_UNLOCK_MINUTES = 10;
 
     var masterData = [
       { site: "北海道", area: "札幌", name: "岩渕 琢久", employeeNo: "004712", category: "PCC" },
@@ -635,41 +731,35 @@
 
     var $ = function(id) { return document.getElementById(id); };
 
-    var nowStr = function() {
+    function nowMs(){ return Date.now(); }
+
+    function nowStr() {
       var d = new Date();
       var p = function(n) { return String(n).length < 2 ? "0" + n : n; };
       return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
-    };
+    }
 
-    var todayStr = function() {
+    function todayStr() {
       var d = new Date();
       var p = function(n) { return String(n).length < 2 ? "0" + n : n; };
       return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate());
-    };
+    }
 
-    var unique = function(arr) {
+    function unique(arr) {
       var res = [];
-      for(var i=0; i<arr.length; i++) {
-        if(res.indexOf(arr[i]) === -1) res.push(arr[i]);
-      }
+      for(var i=0; i<arr.length; i++) if(res.indexOf(arr[i]) === -1) res.push(arr[i]);
       return res;
-    };
+    }
 
-    var escHtml = function(s) {
+    function escHtml(s) {
       if (s === null || s === undefined) return "";
-      return String(s)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;");
-    };
+      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
 
-    var escCsv = function(v) {
+    function escCsv(v) {
       if (v === null || v === undefined) return '""';
       return '"' + String(v).replace(/"/g, '""') + '"';
-    };
-
-    var memoryStorage = "[]";
+    }
 
     function loadReports(){
       try {
@@ -684,19 +774,12 @@
     function saveReports(reports){
       var data = JSON.stringify(reports);
       memoryStorage = data;
-      try {
-        window.localStorage.setItem(STORAGE_KEY, data);
-      } catch(e) {
-      }
+      try { window.localStorage.setItem(STORAGE_KEY, data); } catch(e) {}
     }
 
     function masters(){
       var result = [];
-      for(var i=0; i<masterData.length; i++) {
-        if(masterData[i].category === "PCC") {
-          result.push(masterData[i]);
-        }
-      }
+      for(var i=0; i<masterData.length; i++) if(masterData[i].category === "PCC") result.push(masterData[i]);
       return result;
     }
 
@@ -704,24 +787,16 @@
       var toast = $("toast");
       toast.innerHTML = htmlMsg;
       toast.className = "toast show";
-      setTimeout(function() {
-        toast.className = "toast";
-      }, 2500);
+      setTimeout(function() { toast.className = "toast"; }, 2500);
     }
 
     function initSite(){
       var siteList = [];
       var m = masters();
-      for(var i=0; i<m.length; i++) {
-        siteList.push(m[i].site);
-      }
-      var sites = unique(siteList).sort(function(a,b) {
-        return a.localeCompare(b, "ja");
-      });
+      for(var i=0; i<m.length; i++) siteList.push(m[i].site);
+      var sites = unique(siteList).sort(function(a,b) { return a.localeCompare(b, "ja"); });
       var html = '<option value="">-- 拠点を選ぶ --</option>';
-      for(var j=0; j<sites.length; j++) {
-        html += '<option value="' + escHtml(sites[j]) + '">' + escHtml(sites[j]) + '</option>';
-      }
+      for(var j=0; j<sites.length; j++) html += '<option value="' + escHtml(sites[j]) + '">' + escHtml(sites[j]) + '</option>';
       $("siteSelect").innerHTML = html;
     }
 
@@ -729,16 +804,10 @@
       var site = $("siteSelect").value;
       var areaList = [];
       var m = masters();
-      for(var i=0; i<m.length; i++) {
-        if (!site || m[i].site === site) areaList.push(m[i].area);
-      }
-      var areas = unique(areaList).sort(function(a,b) {
-        return a.localeCompare(b, "ja");
-      });
+      for(var i=0; i<m.length; i++) if (!site || m[i].site === site) areaList.push(m[i].area);
+      var areas = unique(areaList).sort(function(a,b) { return a.localeCompare(b, "ja"); });
       var html = '<option value="">-- エリアを選ぶ --</option>';
-      for(var j=0; j<areas.length; j++) {
-        html += '<option value="' + escHtml(areas[j]) + '">' + escHtml(areas[j]) + '</option>';
-      }
+      for(var j=0; j<areas.length; j++) html += '<option value="' + escHtml(areas[j]) + '">' + escHtml(areas[j]) + '</option>';
       $("areaSelect").innerHTML = html;
     }
 
@@ -748,52 +817,30 @@
       var m = masters();
       var people = [];
       for(var i=0; i<m.length; i++) {
-        if ((!site || m[i].site === site) && (!area || m[i].area === area)) {
-          people.push(m[i]);
-        }
+        if ((!site || m[i].site === site) && (!area || m[i].area === area)) people.push(m[i]);
       }
-      people.sort(function(a,b) {
-        return a.name.localeCompare(b.name, "ja");
-      });
+      people.sort(function(a,b) { return a.name.localeCompare(b.name, "ja"); });
       var html = '<option value="">-- 氏名を選ぶ --</option>';
-      for(var j=0; j<people.length; j++) {
-        html += '<option value="' + escHtml(people[j].employeeNo) + '">' + escHtml(people[j].name) + '（' + escHtml(people[j].employeeNo) + '）</option>';
-      }
+      for(var j=0; j<people.length; j++) html += '<option value="' + escHtml(people[j].employeeNo) + '">' + escHtml(people[j].name) + '（' + escHtml(people[j].employeeNo) + '）</option>';
       $("personSelect").innerHTML = html;
       updateGamification(false);
     }
 
     function updateGamification(isNewlySubmitted) {
       if(isNewlySubmitted === undefined) isNewlySubmitted = false;
-
       var empNo = $("personSelect").value;
       var areaDiv = $("gamificationArea");
       var countText = $("gCountText");
-
-      if (!empNo) {
-        areaDiv.style.display = "none";
-        return;
-      }
+      if (!empNo) { areaDiv.style.display = "none"; return; }
 
       var m = masters();
       var person = null;
-      for(var i=0; i<m.length; i++) {
-        if (m[i].employeeNo === empNo) {
-          person = m[i];
-          break;
-        }
-      }
-
-      if (!person) {
-        areaDiv.style.display = "none";
-        return;
-      }
+      for(var i=0; i<m.length; i++) if (m[i].employeeNo === empNo) { person = m[i]; break; }
+      if (!person) { areaDiv.style.display = "none"; return; }
 
       var allReports = loadReports();
       var myCount = 0;
-      for(var j=0; j<allReports.length; j++) {
-        if (allReports[j].employeeNo === empNo) myCount++;
-      }
+      for(var j=0; j<allReports.length; j++) if (allReports[j].employeeNo === empNo) myCount++;
 
       var myTrophies = Math.floor(myCount / 3);
       var nextTarget = 3 - (myCount % 3);
@@ -808,11 +855,7 @@
       } else {
         countText.className = "g-count";
         countText.innerHTML = "トータル <strong>" + myCount + "</strong> 件達成！";
-        if (nextTarget === 3) {
-          $("gMsg").innerHTML = "✨キリ番達成！次も頑張りましょう！✨";
-        } else {
-          $("gMsg").innerHTML = "あと " + nextTarget + " 件で次のトロフィー！";
-        }
+        $("gMsg").innerHTML = (nextTarget === 3) ? "✨キリ番達成！次も頑張りましょう！✨" : "あと " + nextTarget + " 件で次のトロフィー！";
       }
 
       var trophyHtml = "";
@@ -820,29 +863,57 @@
         var isNew = (isNewlySubmitted && (myCount % 3 === 0) && k === myTrophies - 1);
         trophyHtml += '<span style="' + (isNew ? 'animation: bounce 0.6s 3;' : '') + '">🏆</span>';
       }
-
-      if(myTrophies === 0) {
-        trophyHtml = "<span style='font-size:14px; color:#b45309; opacity:0.8;'>まだトロフィーはありません。最初の3件を目指そう！</span>";
-      }
-
+      if(myTrophies === 0) trophyHtml = "<span style='font-size:14px; color:#b45309; opacity:0.8;'>まだトロフィーはありません。最初の3件を目指そう！</span>";
       $("gTrophies").innerHTML = trophyHtml;
-
-      if(isNewlySubmitted && myCount > 0 && myCount % 3 === 0) {
-        setTimeout(function() {
-          alert("🎉 おめでとうございます！\nトータル " + myCount + " 件達成で新しいトロフィーをゲットしました！🏆");
-        }, 600);
-      }
     }
 
     function getAllReports(){
-      return loadReports().sort(function(a,b) {
-        return (a.createdAt < b.createdAt ? 1 : -1);
-      });
+      return loadReports().sort(function(a,b) { return (a.createdAt < b.createdAt ? 1 : -1); });
     }
 
     function makeAvatar(name){
       var s = String(name || "").replace(/^\s+|\s+$/g, '');
       return s ? s.slice(0,1) : "？";
+    }
+
+    function initSummaryFilters(){
+      var m = masters();
+      var siteList = unique(m.map(function(x){ return x.site; })).sort(function(a,b){ return a.localeCompare(b, "ja"); });
+      var siteHtml = '<option value="">全拠点</option>';
+      for(var i=0; i<siteList.length; i++) siteHtml += '<option value="' + escHtml(siteList[i]) + '">' + escHtml(siteList[i]) + '</option>';
+      $("summarySiteSelect").innerHTML = siteHtml;
+      $("summaryAreaSelect").innerHTML = '<option value="">全エリア</option>';
+      $("summaryPersonSelect").innerHTML = '<option value="">全員</option>';
+    }
+
+    function rebuildSummaryDependentOptions(){
+      var site = $("summarySiteSelect").value;
+      var area = $("summaryAreaSelect").value;
+      var m = masters();
+
+      var areaList = [];
+      var personList = [];
+
+      for(var i=0; i<m.length; i++){
+        if(site && m[i].site !== site) continue;
+        areaList.push(m[i].area);
+      }
+
+      areaList = unique(areaList).sort(function(a,b){ return a.localeCompare(b, "ja"); });
+      var areaHtml = '<option value="">全エリア</option>';
+      for(var j=0; j<areaList.length; j++) areaHtml += '<option value="' + escHtml(areaList[j]) + '">' + escHtml(areaList[j]) + '</option>';
+      $("summaryAreaSelect").innerHTML = areaHtml;
+
+      for(var k=0; k<m.length; k++){
+        if(site && m[k].site !== site) continue;
+        if(area && m[k].area !== area) continue;
+        personList.push(m[k]);
+      }
+
+      personList.sort(function(a,b){ return a.name.localeCompare(b.name, "ja"); });
+      var personHtml = '<option value="">全員</option>';
+      for(var p=0; p<personList.length; p++) personHtml += '<option value="' + escHtml(personList[p].employeeNo) + '">' + escHtml(personList[p].name) + '（' + escHtml(personList[p].employeeNo) + '）</option>';
+      $("summaryPersonSelect").innerHTML = personHtml;
     }
 
     function renderAdmin(){
@@ -851,9 +922,7 @@
       var todayReportPeople = [];
       for(var i=0; i<reports.length; i++) {
         var rDate = String(reports[i].createdAt || "").slice(0,10);
-        if(rDate === today) {
-          todayReportPeople.push(reports[i].employeeNo);
-        }
+        if(rDate === today) todayReportPeople.push(reports[i].employeeNo);
       }
       $("statPeople").innerHTML = unique(todayReportPeople).length;
       renderAdminSummary();
@@ -862,36 +931,43 @@
     function renderAdminSummary(){
       var reports = getAllReports();
       var currentMonth = todayStr().slice(0,7);
-      var mastersList = masters();
+      var site = $("summarySiteSelect").value;
+      var area = $("summaryAreaSelect").value;
+      var person = $("summaryPersonSelect").value;
+
       var byEmp = {};
 
       for(var i=0; i<reports.length; i++){
         var r = reports[i];
         if(!r.employeeNo) continue;
+
+        var master = null;
+        for(var j=0; j<masterData.length; j++){
+          if(masterData[j].employeeNo === r.employeeNo) { master = masterData[j]; break; }
+        }
+        if(!master) continue;
+
+        if(site && master.site !== site) continue;
+        if(area && master.area !== area) continue;
+        if(person && r.employeeNo !== person) continue;
+
         if(!byEmp[r.employeeNo]) {
           byEmp[r.employeeNo] = {
             employeeNo: r.employeeNo,
-            personName: r.personName || "",
-            site: r.site || "",
-            area: r.area || "",
+            personName: r.personName || master.name || "",
             totalCount: 0,
             latestAt: "",
             monthCount: 0
           };
         }
+
         byEmp[r.employeeNo].totalCount++;
-        if(!byEmp[r.employeeNo].latestAt || byEmp[r.employeeNo].latestAt < r.createdAt) {
-          byEmp[r.employeeNo].latestAt = r.createdAt || "";
-        }
-        if(String(r.createdAt || "").slice(0,7) === currentMonth) {
-          byEmp[r.employeeNo].monthCount++;
-        }
+        if(!byEmp[r.employeeNo].latestAt || byEmp[r.employeeNo].latestAt < r.createdAt) byEmp[r.employeeNo].latestAt = r.createdAt || "";
+        if(String(r.createdAt || "").slice(0,7) === currentMonth) byEmp[r.employeeNo].monthCount++;
       }
 
       var list = [];
-      for(var key in byEmp){
-        list.push(byEmp[key]);
-      }
+      for(var key in byEmp) list.push(byEmp[key]);
 
       list.sort(function(a,b){
         if(b.monthCount !== a.monthCount) return b.monthCount - a.monthCount;
@@ -899,14 +975,19 @@
         return String(a.personName).localeCompare(String(b.personName), "ja");
       });
 
+      var siteText = site || "全拠点";
+      var areaText = area || "全エリア";
+      var personText = person ? ($("summaryPersonSelect").selectedOptions[0] ? $("summaryPersonSelect").selectedOptions[0].text : "全員") : "全員";
+      $("summaryHint").innerHTML = "集計条件: " + escHtml(siteText) + " / " + escHtml(areaText) + " / " + escHtml(personText);
+
       if(list.length === 0){
-        $("adminSummaryContent").innerHTML = '<div class="comment-empty">まだ個人別集計データはありません。</div>';
+        $("adminSummaryContent").innerHTML = '<div class="comment-empty">この条件に該当するデータはありません。</div>';
         return;
       }
 
       var html = "";
-      for(var j=0; j<list.length; j++){
-        var item = list[j];
+      for(var k=0; k<list.length; k++){
+        var item = list[k];
         html += '<div class="summary-card">'
           + '<div class="summary-name">' + escHtml(item.personName) + ' <span style="font-size:11px; color:var(--muted);">(' + escHtml(item.employeeNo) + ')</span></div>'
           + '<div class="summary-meta">'
@@ -939,9 +1020,7 @@
       for(var i=0; i<todayReports.length; i++){
         var r = todayReports[i];
         var commentHtml = "";
-        if(r.comment) {
-          commentHtml = '<div class="comment-body">' + escHtml(r.comment) + '</div>';
-        }
+        if(r.comment) commentHtml = '<div class="comment-body">' + escHtml(r.comment) + '</div>';
 
         html += '<div class="comment-box">'
           + '<div class="comment-head">'
@@ -1006,6 +1085,7 @@
         initPerson();
       } else if (viewId === "admin") {
         $("adminView").style.display = "block";
+        initSummaryFilters();
         renderAdmin();
       } else if (viewId === "admin-list") {
         $("adminListView").style.display = "block";
@@ -1016,6 +1096,69 @@
 
       window.scrollTo(0, 0);
     }
+
+    function nowMs(){
+      return Date.now();
+    }
+
+    function getAdminUnlockUntil(){
+      try{
+        return parseInt(localStorage.getItem(ADMIN_LOCK_KEY) || "0", 10) || 0;
+      }catch(e){
+        return 0;
+      }
+    }
+
+    function setAdminUnlock(){
+      try{
+        var until = nowMs() + (ADMIN_UNLOCK_MINUTES * 60 * 1000);
+        localStorage.setItem(ADMIN_LOCK_KEY, String(until));
+      }catch(e){}
+    }
+
+    function isAdminUnlocked(){
+      return getAdminUnlockUntil() > nowMs();
+    }
+
+    function openAdminLogin(){
+      if (isAdminUnlocked()) {
+        showView("admin");
+        return;
+      }
+      $("adminPwError").innerHTML = "";
+      $("adminPwInput").value = "";
+      $("adminPwModal").classList.add("show");
+      setTimeout(function(){ $("adminPwInput").focus(); }, 50);
+    }
+
+    function closeAdminLogin(){
+      $("adminPwModal").classList.remove("show");
+      $("adminPwError").innerHTML = "";
+      $("adminPwInput").value = "";
+    }
+
+    function tryAdminLogin(){
+      var pw = $("adminPwInput").value;
+      if (pw === ADMIN_PASSWORD) {
+        setAdminUnlock();
+        closeAdminLogin();
+        showView("admin");
+      } else {
+        $("adminPwError").innerHTML = "パスワードが違います。";
+        $("adminPwInput").value = "";
+        $("adminPwInput").focus();
+      }
+    }
+
+    $("adminPwCancel").addEventListener("click", closeAdminLogin);
+    $("adminPwSubmit").addEventListener("click", tryAdminLogin);
+    $("adminPwInput").addEventListener("keydown", function(e){
+      if (e.key === "Enter") tryAdminLogin();
+      if (e.key === "Escape") closeAdminLogin();
+    });
+    $("adminPwModal").addEventListener("click", function(e){
+      if (e.target === $("adminPwModal")) closeAdminLogin();
+    });
 
     $("siteSelect").addEventListener("change", function() {
       initArea();
@@ -1031,34 +1174,19 @@
     });
 
     $("submitBtn").addEventListener("click", function() {
-      if (!$("siteSelect").value) {
-        alert("拠点を選択してください。");
-        return;
-      }
-      if (!$("areaSelect").value) {
-        alert("エリアを選択してください。");
-        return;
-      }
-      if (!$("personSelect").value) {
-        alert("氏名を選択してください。");
-        return;
-      }
+      if (!$("siteSelect").value) { alert("拠点を選択してください。"); return; }
+      if (!$("areaSelect").value) { alert("エリアを選択してください。"); return; }
+      if (!$("personSelect").value) { alert("氏名を選択してください。"); return; }
 
       var empNo = $("personSelect").value;
       var m = masters();
       var person = null;
 
       for(var i=0; i<m.length; i++) {
-        if(m[i].employeeNo === empNo) {
-          person = m[i];
-          break;
-        }
+        if(m[i].employeeNo === empNo) { person = m[i]; break; }
       }
 
-      if (!person) {
-        alert("選択された従業員データが見つかりません。");
-        return;
-      }
+      if (!person) { alert("選択された従業員データが見つかりません。"); return; }
 
       var reports = loadReports();
       reports.unshift({
@@ -1073,7 +1201,6 @@
       });
 
       saveReports(reports);
-
       showToast("✅ 報告が完了しました！<br><span style='font-size:14px; font-weight:normal; display:block; margin-top:6px;'>お疲れ様でした🍵</span>");
       updateGamification(true);
       $("comment").value = "";
@@ -1093,12 +1220,38 @@
       showToast("🔄 最新状態に更新しました");
     });
 
+    $("summaryRefreshBtn").addEventListener("click", function() {
+      renderAdminSummary();
+      showToast("🔎 条件で集計しました");
+    });
+
+    $("summaryClearBtn").addEventListener("click", function() {
+      $("summarySiteSelect").value = "";
+      $("summaryAreaSelect").value = "";
+      $("summaryPersonSelect").value = "";
+      renderAdminSummary();
+    });
+
+    $("summarySiteSelect").addEventListener("change", function() {
+      $("summaryAreaSelect").value = "";
+      $("summaryPersonSelect").value = "";
+      rebuildSummaryDependentOptions();
+      renderAdminSummary();
+    });
+
+    $("summaryAreaSelect").addEventListener("change", function() {
+      $("summaryPersonSelect").value = "";
+      rebuildSummaryDependentOptions();
+      renderAdminSummary();
+    });
+
+    $("summaryPersonSelect").addEventListener("change", function() {
+      renderAdminSummary();
+    });
+
     $("resetAllBtn").addEventListener("click", function() {
       if (!confirm("本当に全ての蓄積データを削除しますか？\n（この操作は取り消せません）")) return;
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-      } catch(e) {
-      }
+      try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
       memoryStorage = "[]";
       renderAdmin();
       alert("全データを削除しました。");
