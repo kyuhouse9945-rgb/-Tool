@@ -1,1263 +1,705 @@
 <index.html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>エアコン修理実績報告</title>
   <style>
     :root{
-      --bg1: rgba(236, 253, 245, 0.98);
-      --bg2: rgba(209, 250, 229, 0.70);
-      --card: rgba(255, 255, 255, 0.92);
-      --line: rgba(167, 243, 208, 0.95);
+      --bg1: rgba(236,253,245,0.98);
+      --bg2: rgba(209,250,229,0.70);
+      --card: rgba(255,255,255,0.92);
+      --line: rgba(167,243,208,0.95);
       --text: #064e3b;
-      --muted: rgba(6, 78, 59, 0.65);
-      --primary: rgba(16, 185, 129, 0.96);
-      --primary2: rgba(4, 120, 87, 0.98);
-      --danger: rgba(220, 38, 38, 0.90);
-      --shadow: 0 12px 26px rgba(4, 120, 87, 0.08);
+      --muted: rgba(6,78,59,0.65);
+      --primary: rgba(16,185,129,0.96);
+      --primary2: rgba(4,120,87,0.98);
+      --shadow: 0 12px 26px rgba(4,120,87,0.08);
       --radius: 20px;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family:system-ui,-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
       color:var(--text);
-      background: radial-gradient(circle at top left, var(--bg2), transparent 36%), linear-gradient(180deg, var(--bg1), rgba(255,255,255,0.98));
-      -webkit-tap-highlight-color: transparent;
-      padding-bottom: 24px;
+      background:radial-gradient(circle at top left,var(--bg2),transparent 36%),linear-gradient(180deg,var(--bg1),rgba(255,255,255,0.98));
+      -webkit-tap-highlight-color:transparent;
+      padding-bottom:24px;
     }
-
-    .app{
-      max-width:760px;
-      margin:0 auto;
-      padding:16px 12px;
-    }
-
-    .page-title {
-      text-align: center;
-      margin: 24px 0 32px;
-    }
-    .page-title h1 {
-      margin: 0 0 8px;
-      font-size: 22px;
-      color: var(--primary2);
-      line-height: 1.2;
-    }
-    .page-title p {
-      margin: 0;
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .header-bar{
-      display:block;
-      margin-bottom:16px;
-      padding-bottom:12px;
-      border-bottom:2px solid var(--line);
-      position: relative;
-      text-align: center;
-    }
-    .header-bar span{
-      position: absolute;
-      left: 0;
-      top: 0;
-      font-size:14px;
-      color:var(--primary2);
-      font-weight:900;
-      cursor:pointer;
-      padding:2px 10px 10px 0;
-    }
-    .header-bar h2{
-      margin:0;
-      font-size:18px;
-      display: inline-block;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:16px;
-      margin-bottom:12px;
-    }
-
-    .label{
-      display:block;
-      font-size:13px;
-      color:var(--text);
-      margin:0 0 6px;
-      font-weight:800;
-    }
+    .app{max-width:760px;margin:0 auto;padding:16px 12px;}
+    .page-title{text-align:center;margin:24px 0 32px;}
+    .page-title h1{margin:0 0 8px;font-size:22px;color:var(--primary2);line-height:1.2;}
+    .page-title p{margin:0;font-size:13px;color:var(--muted);font-weight:700;}
+    .header-bar{display:block;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--line);position:relative;text-align:center;}
+    .header-bar span{position:absolute;left:0;top:0;font-size:14px;color:var(--primary2);font-weight:900;cursor:pointer;padding:2px 10px 10px 0;}
+    .header-bar h2{margin:0;font-size:18px;display:inline-block;}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px;}
+    .label{display:block;font-size:13px;color:var(--text);margin:0 0 6px;font-weight:800;}
     .field{margin-bottom:12px}
-
-    input, select, textarea, button{
-      -webkit-appearance: none;
-      appearance: none;
-      width:100%;
-      border-radius:16px;
-      border:1px solid var(--line);
-      font-size:16px;
-      background:rgba(255,255,255,.95);
-      color: var(--text);
-    }
-    input, select, textarea{
-      min-height:56px;
-      padding:13px 14px;
-    }
-    select {
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23047857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      background-size: 16px;
-      padding-right: 40px;
-    }
-    textarea{
-      min-height:96px;
-      resize:vertical;
-      line-height:1.45;
-    }
-    input:focus, select:focus, textarea:focus{
-      outline:2px solid rgba(16, 185, 129, 0.2);
-      border-color:var(--primary);
-    }
-
-    .btn{
-      min-height:72px;
-      padding:10px 12px;
-      border:0;
-      font-weight:900;
-      cursor:pointer;
-      display:block;
-      text-align:center;
-      border-radius:16px;
-      box-shadow:0 8px 16px rgba(4, 120, 87, 0.1);
-      transition: all 0.2s;
-    }
-    .btn:active{ transform:scale(0.98); opacity:0.8; }
-    .btn.primary{
-      background: linear-gradient(180deg, rgba(16, 185, 129, 0.98), rgba(5, 150, 105, 0.98));
-      color:#fff;
-    }
-    .btn.secondary{
-      background:rgba(209, 250, 229, 0.96);
-      color:var(--primary2);
-    }
-    .btn.ghost{
-      background:rgba(255,255,255,.95);
-      color:var(--text);
-      border:1px solid var(--line);
-    }
-    .btn.danger{
-      background:rgba(254,242,242,.92);
-      color:#991b1b;
-    }
-    .btn.big{font-size:24px; padding-top:20px; padding-bottom:20px;}
+    input,select,textarea,button{-webkit-appearance:none;appearance:none;width:100%;border-radius:16px;border:1px solid var(--line);font-size:16px;background:rgba(255,255,255,.95);color:var(--text);}
+    input,select,textarea{min-height:56px;padding:13px 14px;}
+    select{background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23047857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px;}
+    textarea{min-height:96px;resize:vertical;line-height:1.45;}
+    input:focus,select:focus,textarea:focus{outline:2px solid rgba(16,185,129,0.2);border-color:var(--primary);}
+    .btn{min-height:72px;padding:10px 12px;border:0;font-weight:900;cursor:pointer;display:block;text-align:center;border-radius:16px;box-shadow:0 8px 16px rgba(4,120,87,0.1);transition:all 0.2s;}
+    .btn:active{transform:scale(0.98);opacity:0.8;}
+    .btn.primary{background:linear-gradient(180deg,rgba(16,185,129,0.98),rgba(5,150,105,0.98));color:#fff;}
+    .btn.ghost{background:rgba(255,255,255,.95);color:var(--text);border:1px solid var(--line);}
+    .btn.danger{background:rgba(254,242,242,.92);color:#991b1b;}
+    .btn.big{font-size:24px;padding-top:20px;padding-bottom:20px;}
     .btn.med{font-size:14px;}
-
     .stack{display:block;}
-    .stack > div, .stack > button {margin-bottom:16px;}
-    .stack > *:last-child {margin-bottom:0;}
-
+    .stack>div,.stack>button{margin-bottom:16px;}
+    .stack>*:last-child{margin-bottom:0;}
     .row2{display:flex;}
-    .row2 > button {flex:1; margin-right:8px;}
-    .row2 > button:last-child {margin-right:0;}
+    .row2>button{flex:1;margin-right:8px;}
+    .row2>button:last-child{margin-right:0;}
 
-    .g-card {
-      background: #fef3c7;
-      border: 2px solid #fde68a;
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 16px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(217, 119, 6, 0.15);
-    }
-    .g-title {
-      font-size: 14px;
-      font-weight: 900;
-      color: #92400e;
-      margin-bottom: 4px;
-    }
-    .g-count {
-      font-size: 26px;
-      font-weight: 1000;
-      color: #d97706;
-      line-height: 1.3;
-      margin-bottom: 8px;
-    }
-    .g-count.zero {
-      font-size: 20px;
-      color: #b45309;
-    }
-    .g-trophies {
-      display: block;
-      font-size: 24px;
-      min-height: 32px;
-    }
-    .g-trophies span {
-      display: inline-block;
-      margin: 0 2px;
-    }
-    .g-msg {
-      font-size: 12px;
-      color: #b45309;
-      font-weight: 700;
-      margin-top: 8px;
-    }
+    /* ゲーミフィケーション */
+    .g-card{background:#fef3c7;border:2px solid #fde68a;border-radius:var(--radius);padding:16px;margin-bottom:16px;text-align:center;box-shadow:0 8px 20px rgba(217,119,6,0.15);}
+    .g-title{font-size:14px;font-weight:900;color:#92400e;margin-bottom:4px;}
+    .g-count{font-size:26px;font-weight:1000;color:#d97706;line-height:1.3;margin-bottom:8px;}
+    .g-count.zero{font-size:20px;color:#b45309;}
+    .g-trophies{display:block;font-size:24px;min-height:32px;}
+    .g-trophies span{display:inline-block;margin:0 2px;}
+    .g-msg{font-size:12px;color:#b45309;font-weight:700;margin-top:8px;}
 
-    .stats{
-      display:block;
-      margin-bottom:8px;
-    }
-    .stat{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,0.98);
-      border-radius:16px;
-      padding:16px 12px;
-      min-height:80px;
-      text-align:center;
-      transition: all 0.2s;
-    }
-    .stat.clickable {
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .stat.clickable:active {
-      transform: scale(0.98);
-      background: rgba(209, 250, 229, 0.9);
-    }
-    .stat .num{
-      font-size:36px;
-      font-weight:1000;
-      line-height:1.05;
-      margin-bottom:4px;
-      color:var(--primary2);
-    }
-    .stat .txt{
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.2;
-      font-weight:700;
-    }
+    /* キャパバナー */
+    .cap-banner{background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(4,120,87,0.08));border:2px solid var(--line);border-radius:16px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+    .cap-banner .cap-icon{font-size:28px;}
+    .cap-banner .cap-info{flex:1;}
+    .cap-banner .cap-label{font-size:12px;color:var(--muted);font-weight:700;}
+    .cap-banner .cap-val{font-size:20px;font-weight:1000;color:var(--primary2);}
+    .cap-banner .cap-status{font-size:13px;font-weight:900;}
+    .cap-banner .cap-status.done{color:#059669;}
+    .cap-banner .cap-status.yet{color:#d97706;}
+    .cap-banner .cap-status.off{color:var(--muted);}
 
-    .list{
-      display:block;
-      min-height:0;
-      overflow:auto;
-      padding-right:4px;
-    }
-    .comment-box{
-      position:relative;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.92);
-      border-radius:16px;
-      padding:12px;
-      margin-bottom:8px;
-    }
-    .comment-head{
-      display:flex;
-      align-items:flex-start;
-      margin-bottom:0px;
-    }
-    .avatar{
-      width:28px;
-      height:28px;
-      border-radius:50%;
-      flex:0 0 28px;
-      background:var(--primary);
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:900;
-      font-size:13px;
-      margin-right:10px;
-    }
+    /* 信号機 */
+    .signal{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:900;padding:4px 10px;border-radius:20px;}
+    .signal.red{background:rgba(254,226,226,0.9);color:#991b1b;}
+    .signal.yellow{background:rgba(254,243,199,0.9);color:#92400e;}
+    .signal.green{background:rgba(209,250,229,0.9);color:#065f46;}
+    .signal.gray{background:rgba(243,244,246,0.9);color:#6b7280;}
+    .signal-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+    .signal.red .signal-dot{background:#ef4444;}
+    .signal.yellow .signal-dot{background:#f59e0b;}
+    .signal.green .signal-dot{background:#10b981;}
+    .signal.gray .signal-dot{background:#9ca3af;}
+
+    /* プログレスバー */
+    .prog-wrap{background:rgba(0,0,0,0.06);border-radius:99px;height:10px;overflow:hidden;margin:6px 0 4px;}
+    .prog-bar{height:100%;border-radius:99px;transition:width 0.4s ease;}
+    .prog-bar.red{background:linear-gradient(90deg,#f87171,#ef4444);}
+    .prog-bar.yellow{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
+    .prog-bar.green{background:linear-gradient(90deg,#34d399,#10b981);}
+    .prog-bar.gray{background:#d1d5db;}
+
+    /* 達成/未達成ボックス */
+    .achieve-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+    .achieve-box{border-radius:var(--radius);padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;}
+    .achieve-box:active{transform:scale(0.97);}
+    .achieve-box.green-box{background:linear-gradient(135deg,rgba(209,250,229,0.95),rgba(167,243,208,0.8));border:2px solid #6ee7b7;}
+    .achieve-box.red-box{background:linear-gradient(135deg,rgba(254,226,226,0.95),rgba(252,165,165,0.6));border:2px solid #fca5a5;}
+    .achieve-box .ab-icon{font-size:32px;margin-bottom:4px;}
+    .achieve-box .ab-num{font-size:48px;font-weight:1000;line-height:1;}
+    .achieve-box.green-box .ab-num{color:#065f46;}
+    .achieve-box.red-box .ab-num{color:#991b1b;}
+    .achieve-box .ab-label{font-size:13px;font-weight:900;margin-top:6px;}
+    .achieve-box.green-box .ab-label{color:#047857;}
+    .achieve-box.red-box .ab-label{color:#b91c1c;}
+    .achieve-box .ab-sub{font-size:11px;font-weight:700;margin-top:4px;opacity:0.8;}
+    .achieve-box.green-box .ab-sub{color:#065f46;}
+    .achieve-box.red-box .ab-sub{color:#991b1b;}
+
+    /* モーダル */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+    .modal-sheet{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:760px;max-height:80vh;overflow-y:auto;padding:20px 16px 32px;}
+    .modal-handle{width:40px;height:4px;background:#d1d5db;border-radius:99px;margin:0 auto 16px;}
+    .modal-title{font-size:16px;font-weight:900;color:var(--primary2);margin-bottom:12px;text-align:center;}
+
+    /* 人物リスト */
+    .person-row{display:flex;align-items:center;padding:10px 12px;border-radius:14px;margin-bottom:6px;background:rgba(255,255,255,0.9);border:1px solid var(--line);}
+    .person-row .avatar{width:32px;height:32px;border-radius:50%;flex:0 0 32px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;margin-right:10px;}
+    .person-row.done-row .avatar{background:#10b981;}
+    .person-row.undone-row .avatar{background:#ef4444;}
+    .person-row .pr-name{font-weight:900;font-size:14px;}
+    .person-row .pr-sub{font-size:11px;color:var(--muted);}
+    .person-row .pr-right{margin-left:auto;text-align:right;font-size:12px;font-weight:900;}
+    .person-row.done-row .pr-right{color:#059669;}
+    .person-row.undone-row .pr-right{color:#dc2626;}
+
+    /* タブ */
+    .tab-bar{display:flex;gap:6px;margin-bottom:12px;}
+    .tab-btn{flex:1;min-height:44px;font-size:13px;font-weight:900;border:2px solid var(--line);border-radius:14px;background:rgba(255,255,255,0.9);color:var(--muted);cursor:pointer;transition:all 0.2s;}
+    .tab-btn.active{background:linear-gradient(180deg,rgba(16,185,129,0.98),rgba(5,150,105,0.98));color:#fff;border-color:transparent;}
+
+    /* エリア進捗 */
+    .area-prog-card{background:rgba(255,255,255,0.96);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:8px;}
+    .area-prog-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+    .area-prog-name{font-size:14px;font-weight:900;color:var(--text);}
+    .area-prog-nums{font-size:12px;color:var(--muted);font-weight:700;}
+
+    /* 個人サマリー */
+    .summary-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;}
+    .summary-card{background:rgba(255,255,255,0.96);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:0 6px 14px rgba(4,120,87,0.06);}
+    .summary-name{font-size:14px;font-weight:900;color:var(--primary2);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;}
+    .summary-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:12px;color:var(--muted);margin-bottom:8px;}
+    .summary-meta .item{background:rgba(209,250,229,0.35);border-radius:12px;padding:8px 6px;text-align:center;}
+    .summary-meta .value{display:block;font-size:16px;font-weight:1000;color:var(--text);margin-top:4px;word-break:break-all;}
+
+    /* 本日一覧 */
+    .comment-box{position:relative;border:1px solid var(--line);background:rgba(255,255,255,.92);border-radius:16px;padding:12px;margin-bottom:8px;}
+    .comment-head{display:flex;align-items:flex-start;}
+    .avatar{width:28px;height:28px;border-radius:50%;flex:0 0 28px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;margin-right:10px;}
     .comment-name{font-weight:900;line-height:1.2;font-size:14px;}
     .comment-place{font-size:11px;color:var(--muted);line-height:1.2;margin-top:2px;}
-    .comment-body{
-      padding:8px 10px;
-      margin-top:8px;
-      font-size:12px;
-      color:#2b3b4a;
-      line-height:1.45;
-      background:rgba(0,0,0,0.03);
-      border-radius:8px;
-    }
+    .comment-body{padding:8px 10px;margin-top:8px;font-size:12px;color:#2b3b4a;line-height:1.45;background:rgba(0,0,0,0.03);border-radius:8px;}
     .comment-empty{text-align:center;color:var(--muted);padding:16px;font-size:12px;}
 
-    .summary-grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .summary-card{
-      background: rgba(255,255,255,0.96);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px;
-      box-shadow: 0 6px 14px rgba(4, 120, 87, 0.06);
-    }
-    .summary-name{
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--primary2);
-      margin-bottom: 6px;
-    }
-    .summary-meta{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .summary-meta .item{
-      background: rgba(209, 250, 229, 0.35);
-      border-radius: 12px;
-      padding: 8px 6px;
-      text-align: center;
-    }
-    .summary-meta .value{
-      display:block;
-      font-size: 16px;
-      font-weight: 1000;
-      color: var(--text);
-      margin-top: 4px;
-      word-break: break-all;
-    }
+    /* 統計グリッド */
+    .stats2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+    .stat2{background:rgba(255,255,255,0.98);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center;}
+    .stat2 .num2{font-size:28px;font-weight:1000;color:var(--primary2);line-height:1.1;}
+    .stat2 .txt2{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px;}
 
-    .toast {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
-      background: rgba(4, 120, 87, 0.95);
-      color: #fff;
-      padding: 24px 32px;
-      border-radius: 20px;
-      font-size: 20px;
-      font-weight: 900;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s;
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .modal-backdrop{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.35);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:2000;
-      padding:16px;
-    }
-    .modal-backdrop.show{display:flex}
-    .modal{
-      width:100%;
-      max-width:420px;
-      background:#fff;
-      border-radius:24px;
-      box-shadow:0 24px 48px rgba(0,0,0,0.25);
-      border:1px solid var(--line);
-      overflow:hidden;
-    }
-    .modal-header{
-      padding:16px 18px 10px;
-      border-bottom:1px solid var(--line);
-      text-align:center;
-      background:linear-gradient(180deg, rgba(236,253,245,1), rgba(255,255,255,1));
-    }
-    .modal-header h3{
-      margin:0;
-      font-size:18px;
-      color:var(--primary2);
-    }
-    .modal-body{
-      padding:16px 18px 18px;
-    }
-    .modal-footer{
-      padding:0 18px 18px;
-      display:flex;
-      gap:10px;
-    }
-    .modal-footer button{
-      flex:1;
-    }
-    .pw-error{
-      color:#b91c1c;
-      font-size:12px;
-      font-weight:800;
-      margin-top:8px;
-      min-height:16px;
-    }
-    .pw-note{
-      font-size:12px;
-      color:var(--muted);
-      margin-bottom:10px;
-      line-height:1.5;
-    }
-
-    @keyframes bounce {
-      0% { transform: scale(1); }
-      30% { transform: scale(1.3); }
-      60% { transform: scale(0.9); }
-      100% { transform: scale(1); }
-    }
+    /* トースト */
+    .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:rgba(4,120,87,0.95);color:#fff;padding:24px 32px;border-radius:20px;font-size:20px;font-weight:900;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.25);z-index:1000;opacity:0;pointer-events:none;transition:all 0.3s;}
+    .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+    @keyframes bounce{0%{transform:scale(1)}30%{transform:scale(1.3)}60%{transform:scale(0.9)}100%{transform:scale(1)}}
   </style>
 </head>
 <body>
-  <div id="toast" class="toast"></div>
+<div id="toast" class="toast"></div>
 
-  <div class="modal-backdrop" id="adminPwModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>🔐 管理者パスワード</h3>
-      </div>
-      <div class="modal-body">
-        <div class="pw-note">管理者画面を開くにはパスワードが必要です。</div>
-        <input type="password" id="adminPwInput" placeholder="パスワードを入力" autocomplete="current-password" />
-        <div class="pw-error" id="adminPwError"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn ghost med" id="adminPwCancel">キャンセル</button>
-        <button class="btn primary med" id="adminPwSubmit">ログイン</button>
-      </div>
+<!-- モーダル -->
+<div id="modalOverlay" class="modal-overlay" style="display:none;" onclick="closeModalOutside(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- ===== メニュー ===== -->
+  <div id="modeSelect" style="display:block;">
+    <div class="page-title">
+      <h1>🔧 エアコン修理実績報告</h1>
+      <p>利用するメニューを選択してください</p>
+    </div>
+    <div class="stack">
+      <button class="btn primary" style="height:100px;" onclick="showView('worker')">
+        <div style="font-size:22px;margin-bottom:6px;">👨‍🔧 作業者用 報告画面</div>
+        <div style="font-size:13px;font-weight:normal;opacity:0.9;">本日の実績登録はこちらから</div>
+      </button>
+      <button class="btn ghost" style="height:100px;border:2px solid var(--primary2);background:rgba(255,255,255,0.95);box-shadow:0 8px 16px rgba(4,120,87,0.12);" onclick="showView('admin')">
+        <div style="font-size:22px;margin-bottom:6px;color:var(--primary2);">📊 管理者用 確認画面</div>
+        <div style="font-size:13px;font-weight:normal;color:var(--primary2);opacity:0.8;">実績の確認やCSV出力はこちらから</div>
+      </button>
     </div>
   </div>
 
-  <div class="app">
-    <div id="modeSelect" style="display: block;">
-      <div class="page-title">
-        <h1>🔧 エアコン修理実績報告</h1>
-        <p>利用するメニューを選択してください</p>
+  <!-- ===== 作業者画面 ===== -->
+  <div id="workerView" style="display:none;">
+    <div class="header-bar">
+      <span onclick="showView('menu')">◀ 🏠メニュー</span>
+      <h2>📝 作業実績の登録</h2>
+    </div>
+    <div id="gamificationArea" class="g-card" style="display:none;">
+      <div class="g-title" id="gName">👤 --- さんの実績</div>
+      <div class="g-count zero" id="gCountText">まだ実績はありません</div>
+      <div class="g-trophies" id="gTrophies"></div>
+      <div class="g-msg" id="gMsg">まずは1件目を目指しましょう！</div>
+    </div>
+    <div id="capBanner" style="display:none;" class="cap-banner">
+      <div class="cap-icon">📅</div>
+      <div class="cap-info">
+        <div class="cap-label" id="capLabel">本日のキャパ</div>
+        <div class="cap-val" id="capVal">-</div>
       </div>
-
+      <div class="cap-status" id="capStatus"></div>
+    </div>
+    <div class="card">
+      <div class="field">
+        <label class="label">🏢 拠点</label>
+        <select id="siteSelect"></select>
+      </div>
+      <div class="field">
+        <label class="label">🗺️ エリア</label>
+        <select id="areaSelect"></select>
+      </div>
+      <div class="field">
+        <label class="label">👤 氏名</label>
+        <select id="personSelect"></select>
+      </div>
+      <div class="field">
+        <label class="label">💬 メモ（任意）</label>
+        <textarea id="comment" placeholder="特記事項があれば入力してください"></textarea>
+      </div>
       <div class="stack">
-        <button class="btn primary" style="height:100px;" onclick="showView('worker')">
-          <div style="font-size:22px; margin-bottom:6px;">👨‍🔧 作業者用 報告画面</div>
-          <div style="font-size:13px; font-weight:normal; opacity:0.9;">本日の実績登録はこちらから</div>
-        </button>
-
-        <button class="btn ghost" style="height:100px; border: 2px solid var(--primary2); background: rgba(255,255,255,0.95); box-shadow: 0 8px 16px rgba(4, 120, 87, 0.12);" onclick="openAdminLogin()">
-          <div style="font-size:22px; margin-bottom:6px; color:var(--primary2);">📊 管理者用 確認画面</div>
-          <div style="font-size:13px; font-weight:normal; color:var(--primary2); opacity:0.8;">実績の確認やCSV出力はこちらから</div>
-        </button>
-      </div>
-    </div>
-
-    <div id="workerView" style="display: none;">
-      <div class="header-bar">
-        <span onclick="showView('menu')">◀ 🏠メニュー</span>
-        <h2>📝 作業実績の登録</h2>
-      </div>
-
-      <div id="gamificationArea" class="g-card" style="display:none;">
-        <div class="g-title" id="gName">👤 --- さんの実績</div>
-        <div class="g-count zero" id="gCountText">まだ実績はありません</div>
-        <div class="g-trophies" id="gTrophies"></div>
-        <div class="g-msg" id="gMsg">まずは1件目を目指しましょう！</div>
-      </div>
-
-      <div class="card">
-        <div class="field">
-          <label class="label">🏢 拠点</label>
-          <select id="siteSelect"></select>
-        </div>
-        <div class="field">
-          <label class="label">🗺️ エリア</label>
-          <select id="areaSelect"></select>
-        </div>
-        <div class="field">
-          <label class="label">👤 氏名</label>
-          <select id="personSelect"></select>
-        </div>
-        <div class="field">
-          <label class="label">💬 メモ（任意）</label>
-          <textarea id="comment" placeholder="特記事項があれば入力してください"></textarea>
-        </div>
-        <div class="stack">
-          <button class="btn primary big" id="submitBtn">✅ 報告</button>
-          <div class="row2">
-            <button class="btn ghost med" id="clearBtn">🔄 入力をリセット</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="adminView" style="display: none;">
-      <div class="header-bar">
-        <span onclick="showView('menu')">◀ 🏠メニュー</span>
-        <h2>👑 管理者ダッシュボード</h2>
-      </div>
-
-      <div class="card">
-        <h3 style="margin-bottom:12px; text-align:center;">📅 今日の確認状況</h3>
-
-        <div class="stats">
-          <div class="stat clickable" onclick="showView('admin-list')">
-            <div class="num" id="statPeople">0</div>
-            <div class="txt">👨‍🔧 今日の報告者数<br><span style="font-size:11px; font-weight:normal; color:var(--primary);">（タップして一覧を見る）</span></div>
-          </div>
-        </div>
-
-        <div class="row2" style="margin-top:16px; margin-bottom:12px;">
-          <button class="btn secondary med" id="csvBtn">📥 実績CSV出力</button>
-          <button class="btn ghost med" id="refreshBtn">🔄 最新に更新</button>
-        </div>
-
-        <div class="stack" style="margin-top:24px; border-top:1px dashed var(--line); padding-top:16px;">
-          <button class="btn danger med" id="resetAllBtn">🗑️ 蓄積データを全削除</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin-bottom:12px; text-align:center;">👥 個人別集計</h3>
-
-        <div class="field">
-          <label class="label">🏢 拠点</label>
-          <select id="summarySiteSelect"></select>
-        </div>
-        <div class="field">
-          <label class="label">🗺️ エリア</label>
-          <select id="summaryAreaSelect"></select>
-        </div>
-        <div class="field">
-          <label class="label">👤 氏名</label>
-          <select id="summaryPersonSelect"></select>
-        </div>
-
-        <div class="row2" style="margin-bottom: 12px;">
-          <button class="btn secondary med" id="summaryRefreshBtn">🔎 この条件で集計</button>
-          <button class="btn ghost med" id="summaryClearBtn">↩ 条件を解除</button>
-        </div>
-
-        <div id="summaryHint" style="font-size:12px; color:var(--muted); font-weight:700; margin-bottom:10px; text-align:center;"></div>
-        <div id="adminSummaryContent" class="summary-grid"></div>
-      </div>
-    </div>
-
-    <div id="adminListView" style="display: none;">
-      <div class="header-bar">
-        <span onclick="showView('admin')">◀ 戻る</span>
-        <h2>📋 今日の報告一覧</h2>
-      </div>
-      <div class="card">
-        <div id="adminListContent" class="list" style="max-height: calc(100vh - 160px);"></div>
+        <button class="btn primary big" id="submitBtn">✅ 報告</button>
+        <button class="btn ghost med" id="clearBtn">🔄 入力をリセット</button>
       </div>
     </div>
   </div>
 
-  <script>
-    var STORAGE_KEY = "ac_repair_reports_green_v4";
-    var ADMIN_PASSWORD = "1234";
-    var ADMIN_LOCK_KEY = "ac_admin_unlock_until_v1";
-    var ADMIN_UNLOCK_MINUTES = 10;
-
-    var masterData = [
-      { site: "北海道", area: "札幌", name: "岩渕 琢久", employeeNo: "004712", category: "PCC" },
-      { site: "北海道", area: "札幌", name: "坂井 孝弘", employeeNo: "005715", category: "PCC" },
-      { site: "北海道", area: "札幌", name: "松島 篤", employeeNo: "012225", category: "PCC" },
-      { site: "北海道", area: "札幌", name: "塩﨑 篤史", employeeNo: "013766", category: "PCC" },
-      { site: "北海道", area: "札幌", name: "石川 誠", employeeNo: "016005", category: "PCC" },
-      { site: "北海道", area: "札幌", name: "佐藤 海", employeeNo: "016097", category: "PCC" },
-      { site: "東北", area: "青森", name: "鴨 伸也", employeeNo: "013645", category: "PCC" },
-      { site: "東北", area: "青森", name: "山口 知麻", employeeNo: "015944", category: "PCC" },
-      { site: "東北", area: "八戸", name: "熊野 英明", employeeNo: "009043", category: "PCC" },
-      { site: "東北", area: "秋田", name: "桂 幸広", employeeNo: "007586", category: "PCC" },
-      { site: "東北", area: "秋田", name: "北村 信彦", employeeNo: "015630", category: "PCC" },
-      { site: "東北", area: "盛岡", name: "小島 博人", employeeNo: "011545", category: "PCC" },
-      { site: "東北", area: "盛岡", name: "菊池 政洋", employeeNo: "013406", category: "PCC" },
-      { site: "東北", area: "山形", name: "鹿野 大輔", employeeNo: "008620", category: "PCC" },
-      { site: "東北", area: "仙台", name: "西田 和臣", employeeNo: "不明", category: "PCC" },
-      { site: "東北", area: "仙台", name: "金 佳彦", employeeNo: "014181", category: "PCC" },
-      { site: "東北", area: "仙台", name: "赤坂 大輔", employeeNo: "015384", category: "PCC" },
-      { site: "東北", area: "仙台", name: "杉 凌太", employeeNo: "015385", category: "PCC" },
-      { site: "東北", area: "郡山", name: "芳賀 竜", employeeNo: "011118", category: "PCC" },
-      { site: "東北", area: "郡山", name: "佐藤 宏樹", employeeNo: "013741", category: "PCC" },
-      { site: "東北", area: "いわき", name: "藤沢 孝益", employeeNo: "013177", category: "PCC" },
-      { site: "信越", area: "松本", name: "峯村 正徳", employeeNo: "008626", category: "PCC" },
-      { site: "信越", area: "松本", name: "伊藤 貴博", employeeNo: "016034", category: "PCC" },
-      { site: "信越", area: "新潟", name: "関口 悟", employeeNo: "005743", category: "PCC" },
-      { site: "信越", area: "新潟", name: "清水 悟", employeeNo: "011158", category: "PCC" },
-      { site: "信越", area: "長岡", name: "南雲 和彦", employeeNo: "011562", category: "PCC" },
-      { site: "信越", area: "長野", name: "中村 敏幸", employeeNo: "005736", category: "PCC" },
-      { site: "北関東", area: "さいたま", name: "矢部 哲朗", employeeNo: "007972", category: "PCC" },
-      { site: "北関東", area: "さいたま", name: "三角 英之", employeeNo: "008238", category: "PCC" },
-      { site: "北関東", area: "さいたま", name: "岩崎 貴氏", employeeNo: "011142", category: "PCC" },
-      { site: "北関東", area: "埼玉西", name: "金子 豊", employeeNo: "006727", category: "PCC" },
-      { site: "北関東", area: "越谷", name: "池田 尚史", employeeNo: "009035", category: "PCC" },
-      { site: "北関東", area: "越谷", name: "武内 昌士", employeeNo: "009949", category: "PCC" },
-      { site: "北関東", area: "熊谷", name: "齊藤 修", employeeNo: "012018", category: "PCC" },
-      { site: "北関東", area: "前橋", name: "髙木 聡", employeeNo: "011933", category: "PCC" },
-      { site: "北関東", area: "前橋", name: "井出 一也", employeeNo: "012074", category: "PCC" },
-      { site: "北関東", area: "宇都宮", name: "磯野 大", employeeNo: "005723", category: "PCC" },
-      { site: "北関東", area: "宇都宮", name: "向山 貴晴", employeeNo: "013944", category: "PCC" },
-      { site: "北関東", area: "宇都宮", name: "澤村 知明", employeeNo: "016043", category: "PCC" },
-      { site: "東京", area: "東京", name: "安田 輝", employeeNo: "007684", category: "PCC" },
-      { site: "東京", area: "東京", name: "溝 基純", employeeNo: "008580", category: "PCC" },
-      { site: "東京", area: "東京", name: "藤村 裕二", employeeNo: "010172", category: "PCC" },
-      { site: "東京", area: "東京", name: "吉留 徹", employeeNo: "010185", category: "PCC" },
-      { site: "東京", area: "東京", name: "権守 憲一", employeeNo: "010411", category: "PCC" },
-      { site: "東京", area: "東京", name: "中島 泰弘", employeeNo: "011267", category: "PCC" },
-      { site: "東京", area: "東京", name: "八尾 健介", employeeNo: "013816", category: "PCC" },
-      { site: "東京", area: "東京", name: "山口 晃弘", employeeNo: "010179", category: "PCC" },
-      { site: "東京", area: "東京", name: "井上 絢子", employeeNo: "013434", category: "PCC" },
-      { site: "東京", area: "練馬", name: "山崎 正人", employeeNo: "008243", category: "PCC" },
-      { site: "東京", area: "多摩", name: "髙木 達也", employeeNo: "012664", category: "PCC" },
-      { site: "南関東", area: "横浜", name: "鈴木 正智", employeeNo: "004772", category: "PCC" },
-      { site: "南関東", area: "横浜", name: "田中 卓也", employeeNo: "006191", category: "PCC" },
-      { site: "南関東", area: "横浜", name: "竹内 芳明", employeeNo: "006344", category: "PCC" },
-      { site: "南関東", area: "横浜", name: "小野 修治", employeeNo: "008577", category: "PCC" },
-      { site: "南関東", area: "横浜", name: "鎌塚 裕一", employeeNo: "012228", category: "PCC" },
-      { site: "南関東", area: "横浜", name: "岡部 勝典", employeeNo: "013054", category: "PCC" },
-      { site: "南関東", area: "横浜", name: "安齋 大祐", employeeNo: "016111", category: "PCC" },
-      { site: "南関東", area: "平塚", name: "中島 健二", employeeNo: "008265", category: "PCC" },
-      { site: "南関東", area: "平塚", name: "藤原 将史", employeeNo: "012017", category: "PCC" },
-      { site: "東関東", area: "千葉", name: "本郷 善信", employeeNo: "004709", category: "PCC" },
-      { site: "東関東", area: "千葉", name: "佐藤 淳之", employeeNo: "008266", category: "PCC" },
-      { site: "東関東", area: "千葉", name: "川口 亮", employeeNo: "010736", category: "PCC" },
-      { site: "東関東", area: "千葉", name: "根本 義浩", employeeNo: "012208", category: "PCC" },
-      { site: "東関東", area: "千葉", name: "越川 英紀", employeeNo: "013559", category: "PCC" },
-      { site: "東関東", area: "松戸", name: "形山 文雄", employeeNo: "008673", category: "PCC" },
-      { site: "東関東", area: "松戸", name: "柴田 寿平", employeeNo: "010562", category: "PCC" },
-      { site: "東関東", area: "土浦", name: "吉田 好一", employeeNo: "008735", category: "PCC" },
-      { site: "東関東", area: "水戸", name: "柴田 祐一", employeeNo: "006351", category: "PCC" },
-      { site: "東関東", area: "水戸", name: "杉山 直昭", employeeNo: "010631", category: "PCC" },
-      { site: "静岡", area: "山梨", name: "川口 夏輝", employeeNo: "015954", category: "PCC" },
-      { site: "静岡", area: "山梨", name: "佐野 良介", employeeNo: "016024", category: "PCC" },
-      { site: "静岡", area: "沼津", name: "水口 光宣", employeeNo: "014267", category: "PCC" },
-      { site: "静岡", area: "静岡", name: "渡辺 高央", employeeNo: "007776", category: "PCC" },
-      { site: "静岡", area: "静岡", name: "長野 浩隆", employeeNo: "010635", category: "PCC" },
-      { site: "静岡", area: "静岡", name: "望月 慶", employeeNo: "012593", category: "PCC" },
-      { site: "静岡", area: "浜松", name: "高橋 純之", employeeNo: "005127", category: "PCC" },
-      { site: "北陸", area: "金沢", name: "安藤 民彦", employeeNo: "007839", category: "PCC" },
-      { site: "北陸", area: "金沢", name: "増山 竜一", employeeNo: "011067", category: "PCC" },
-      { site: "北陸", area: "金沢", name: "永田 智暉", employeeNo: "014799", category: "PCC" },
-      { site: "北陸", area: "富山", name: "髙澤 啓明", employeeNo: "009260", category: "PCC" },
-      { site: "北陸", area: "富山", name: "浜屋 了勉", employeeNo: "013414", category: "PCC" },
-      { site: "北陸", area: "福井", name: "武安 善弘", employeeNo: "008180", category: "PCC" },
-      { site: "北陸", area: "福井", name: "木部 博行", employeeNo: "013658", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "水野 智", employeeNo: "006779", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "本間 勉", employeeNo: "007886", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "白木 一郎", employeeNo: "007916", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "籠橋 孝光", employeeNo: "008391", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "土屋 正宏", employeeNo: "008396", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "前田 貴志", employeeNo: "008849", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "長谷部 遊平", employeeNo: "013957", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "齋藤 公二", employeeNo: "010741", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "太田 雅之", employeeNo: "011590", category: "PCC" },
-      { site: "東海", area: "名古屋", name: "川崎 直人", employeeNo: "011657", category: "PCC" },
-      { site: "東海", area: "岐阜", name: "領木 清", employeeNo: "009176", category: "PCC" },
-      { site: "東海", area: "三重", name: "鹿島 富明", employeeNo: "002422", category: "PCC" },
-      { site: "東海", area: "三重", name: "前田 研吾", employeeNo: "012019", category: "PCC" },
-      { site: "東海", area: "三重", name: "酒井 丈夫", employeeNo: "012157", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "大森 康弘", employeeNo: "005075", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "片島 実", employeeNo: "007700", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "浅井 啓充", employeeNo: "010168", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "相生 好輝", employeeNo: "010402", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "高橋 重光", employeeNo: "010427", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "笹原 隆太", employeeNo: "010545", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "伊藤 康博", employeeNo: "011191", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "中本 厚志", employeeNo: "011272", category: "PCC" },
-      { site: "大阪", area: "大阪", name: "龍田 成仁", employeeNo: "013956", category: "PCC" },
-      { site: "大阪", area: "奈良", name: "中村 誠", employeeNo: "011095", category: "PCC" },
-      { site: "大阪", area: "奈良", name: "石田 典明", employeeNo: "013389", category: "PCC" },
-      { site: "大阪", area: "和歌山", name: "清水 護", employeeNo: "011740", category: "PCC" },
-      { site: "大阪", area: "和歌山", name: "髙橋 良輔", employeeNo: "013119", category: "PCC" },
-      { site: "京滋", area: "京都", name: "中村 行宏", employeeNo: "007794", category: "PCC" },
-      { site: "京滋", area: "京都", name: "佐々木 優", employeeNo: "009133", category: "PCC" },
-      { site: "京滋", area: "京都", name: "和田 敏昭", employeeNo: "010170", category: "PCC" },
-      { site: "京滋", area: "滋賀", name: "畑宮 輝久", employeeNo: "010580", category: "PCC" },
-      { site: "京滋", area: "滋賀", name: "佐々木 晃", employeeNo: "012644", category: "PCC" },
-      { site: "兵庫", area: "神戸", name: "松尾 浩三", employeeNo: "009943", category: "PCC" },
-      { site: "兵庫", area: "神戸", name: "佐野 幸一", employeeNo: "009944", category: "PCC" },
-      { site: "兵庫", area: "神戸", name: "松浦 利之", employeeNo: "010345", category: "PCC" },
-      { site: "兵庫", area: "神戸", name: "宮下 和宜", employeeNo: "013529", category: "PCC" },
-      { site: "兵庫", area: "姫路", name: "中川 幸司", employeeNo: "011015", category: "PCC" },
-      { site: "中国", area: "広島", name: "則永 正弘", employeeNo: "011076", category: "PCC" },
-      { site: "中国", area: "広島", name: "山本 政行", employeeNo: "011543", category: "PCC" },
-      { site: "中国", area: "広島", name: "佐々木 賢也", employeeNo: "011809", category: "PCC" },
-      { site: "中国", area: "広島", name: "河村 真次", employeeNo: "011841", category: "PCC" },
-      { site: "中国", area: "岡山", name: "島村 浩一", employeeNo: "007781", category: "PCC" },
-      { site: "中国", area: "岡山", name: "有吉 宣明", employeeNo: "008247", category: "PCC" },
-      { site: "中国", area: "福山", name: "原田 尚也", employeeNo: "011525", category: "PCC" },
-      { site: "中国", area: "山陰", name: "片寄 健二", employeeNo: "007416", category: "PCC" },
-      { site: "中国", area: "山陰", name: "権代 一", employeeNo: "010535", category: "PCC" },
-      { site: "中国", area: "山口", name: "上田 卓実", employeeNo: "011254", category: "PCC" },
-      { site: "中国", area: "山口", name: "金子 征司", employeeNo: "013186", category: "PCC" },
-      { site: "四国", area: "高松", name: "久保 公宏", employeeNo: "012773", category: "PCC" },
-      { site: "四国", area: "高松", name: "西脇 太郎", employeeNo: "013730", category: "PCC" },
-      { site: "四国", area: "高知", name: "中澤 俊二", employeeNo: "010262", category: "PCC" },
-      { site: "四国", area: "松山", name: "梅木 和彦", employeeNo: "007783", category: "PCC" },
-      { site: "四国", area: "松山", name: "出来 克久", employeeNo: "009637", category: "PCC" },
-      { site: "四国", area: "徳島", name: "角矢 雅昭", employeeNo: "008254", category: "PCC" },
-      { site: "九州", area: "北九州", name: "毛利 健二", employeeNo: "008953", category: "PCC" },
-      { site: "九州", area: "北九州", name: "西 雄三", employeeNo: "014375", category: "PCC" },
-      { site: "九州", area: "北九州", name: "内田 尚汰", employeeNo: "015035", category: "PCC" },
-      { site: "九州", area: "福岡", name: "水野 伸彦", employeeNo: "005482", category: "PCC" },
-      { site: "九州", area: "福岡", name: "坂口 浩一", employeeNo: "010779", category: "PCC" },
-      { site: "九州", area: "福岡", name: "大倉 公平", employeeNo: "011987", category: "PCC" },
-      { site: "九州", area: "福岡", name: "行徳 健二", employeeNo: "013172", category: "PCC" },
-      { site: "九州", area: "福岡", name: "山岡 敬幸", employeeNo: "013178", category: "PCC" },
-      { site: "九州", area: "福岡", name: "永峰 一騎", employeeNo: "015327", category: "PCC" },
-      { site: "九州", area: "佐賀", name: "野田 伸也", employeeNo: "010344", category: "PCC" },
-      { site: "九州", area: "熊本", name: "上野 好文", employeeNo: "008912", category: "PCC" },
-      { site: "九州", area: "熊本", name: "川原 淳", employeeNo: "015946", category: "PCC" },
-      { site: "九州", area: "大分", name: "宮本 秀一郎", employeeNo: "009041", category: "PCC" },
-      { site: "九州", area: "大分", name: "小薗 弘和", employeeNo: "015488", category: "PCC" },
-      { site: "九州", area: "大分", name: "荒金 孝輔", employeeNo: "016117", category: "PCC" },
-      { site: "九州", area: "長崎", name: "志水 亮太", employeeNo: "012819", category: "PCC" },
-      { site: "九州", area: "長崎", name: "宮﨑 大和", employeeNo: "014184", category: "PCC" },
-      { site: "九州", area: "宮崎", name: "町塚 志朗", employeeNo: "007748", category: "PCC" },
-      { site: "九州", area: "鹿児島", name: "米澤 一寿", employeeNo: "009072", category: "PCC" },
-      { site: "九州", area: "鹿児島", name: "黒木 邦圭", employeeNo: "014040", category: "PCC" },
-      { site: "九州", area: "沖縄", name: "花谷 和樹", employeeNo: "014944", category: "PCC" },
-      { site: "九州", area: "沖縄", name: "德永 真行", employeeNo: "016052", category: "PCC" }
-    ];
-
-    var $ = function(id) { return document.getElementById(id); };
-
-    function nowMs(){ return Date.now(); }
-
-    function nowStr() {
-      var d = new Date();
-      var p = function(n) { return String(n).length < 2 ? "0" + n : n; };
-      return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
-    }
-
-    function todayStr() {
-      var d = new Date();
-      var p = function(n) { return String(n).length < 2 ? "0" + n : n; };
-      return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate());
-    }
-
-    function unique(arr) {
-      var res = [];
-      for(var i=0; i<arr.length; i++) if(res.indexOf(arr[i]) === -1) res.push(arr[i]);
-      return res;
-    }
-
-    function escHtml(s) {
-      if (s === null || s === undefined) return "";
-      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-    }
-
-    function escCsv(v) {
-      if (v === null || v === undefined) return '""';
-      return '"' + String(v).replace(/"/g, '""') + '"';
-    }
-
-    function loadReports(){
-      try {
-        var data = window.localStorage.getItem(STORAGE_KEY);
-        if (data) return JSON.parse(data);
-        return JSON.parse(memoryStorage);
-      } catch(e) {
-        return JSON.parse(memoryStorage);
-      }
-    }
-
-    function saveReports(reports){
-      var data = JSON.stringify(reports);
-      memoryStorage = data;
-      try { window.localStorage.setItem(STORAGE_KEY, data); } catch(e) {}
-    }
-
-    function masters(){
-      var result = [];
-      for(var i=0; i<masterData.length; i++) if(masterData[i].category === "PCC") result.push(masterData[i]);
-      return result;
-    }
-
-    function showToast(htmlMsg) {
-      var toast = $("toast");
-      toast.innerHTML = htmlMsg;
-      toast.className = "toast show";
-      setTimeout(function() { toast.className = "toast"; }, 2500);
-    }
-
-    function initSite(){
-      var siteList = [];
-      var m = masters();
-      for(var i=0; i<m.length; i++) siteList.push(m[i].site);
-      var sites = unique(siteList).sort(function(a,b) { return a.localeCompare(b, "ja"); });
-      var html = '<option value="">-- 拠点を選ぶ --</option>';
-      for(var j=0; j<sites.length; j++) html += '<option value="' + escHtml(sites[j]) + '">' + escHtml(sites[j]) + '</option>';
-      $("siteSelect").innerHTML = html;
-    }
-
-    function initArea(){
-      var site = $("siteSelect").value;
-      var areaList = [];
-      var m = masters();
-      for(var i=0; i<m.length; i++) if (!site || m[i].site === site) areaList.push(m[i].area);
-      var areas = unique(areaList).sort(function(a,b) { return a.localeCompare(b, "ja"); });
-      var html = '<option value="">-- エリアを選ぶ --</option>';
-      for(var j=0; j<areas.length; j++) html += '<option value="' + escHtml(areas[j]) + '">' + escHtml(areas[j]) + '</option>';
-      $("areaSelect").innerHTML = html;
-    }
-
-    function initPerson(){
-      var site = $("siteSelect").value;
-      var area = $("areaSelect").value;
-      var m = masters();
-      var people = [];
-      for(var i=0; i<m.length; i++) {
-        if ((!site || m[i].site === site) && (!area || m[i].area === area)) people.push(m[i]);
-      }
-      people.sort(function(a,b) { return a.name.localeCompare(b.name, "ja"); });
-      var html = '<option value="">-- 氏名を選ぶ --</option>';
-      for(var j=0; j<people.length; j++) html += '<option value="' + escHtml(people[j].employeeNo) + '">' + escHtml(people[j].name) + '（' + escHtml(people[j].employeeNo) + '）</option>';
-      $("personSelect").innerHTML = html;
-      updateGamification(false);
-    }
-
-    function updateGamification(isNewlySubmitted) {
-      if(isNewlySubmitted === undefined) isNewlySubmitted = false;
-      var empNo = $("personSelect").value;
-      var areaDiv = $("gamificationArea");
-      var countText = $("gCountText");
-      if (!empNo) { areaDiv.style.display = "none"; return; }
-
-      var m = masters();
-      var person = null;
-      for(var i=0; i<m.length; i++) if (m[i].employeeNo === empNo) { person = m[i]; break; }
-      if (!person) { areaDiv.style.display = "none"; return; }
-
-      var allReports = loadReports();
-      var myCount = 0;
-      for(var j=0; j<allReports.length; j++) if (allReports[j].employeeNo === empNo) myCount++;
-
-      var myTrophies = Math.floor(myCount / 3);
-      var nextTarget = 3 - (myCount % 3);
-
-      areaDiv.style.display = "block";
-      $("gName").innerHTML = "👤 " + escHtml(person.name) + " さんの実績";
-
-      if (myCount === 0) {
-        countText.className = "g-count zero";
-        countText.innerHTML = "まだ実績はありません";
-        $("gMsg").innerHTML = "まずは1件目を目指しましょう！";
-      } else {
-        countText.className = "g-count";
-        countText.innerHTML = "トータル <strong>" + myCount + "</strong> 件達成！";
-        $("gMsg").innerHTML = (nextTarget === 3) ? "✨キリ番達成！次も頑張りましょう！✨" : "あと " + nextTarget + " 件で次のトロフィー！";
-      }
-
-      var trophyHtml = "";
-      for(var k=0; k<myTrophies; k++){
-        var isNew = (isNewlySubmitted && (myCount % 3 === 0) && k === myTrophies - 1);
-        trophyHtml += '<span style="' + (isNew ? 'animation: bounce 0.6s 3;' : '') + '">🏆</span>';
-      }
-      if(myTrophies === 0) trophyHtml = "<span style='font-size:14px; color:#b45309; opacity:0.8;'>まだトロフィーはありません。最初の3件を目指そう！</span>";
-      $("gTrophies").innerHTML = trophyHtml;
-    }
-
-    function getAllReports(){
-      return loadReports().sort(function(a,b) { return (a.createdAt < b.createdAt ? 1 : -1); });
-    }
-
-    function makeAvatar(name){
-      var s = String(name || "").replace(/^\s+|\s+$/g, '');
-      return s ? s.slice(0,1) : "？";
-    }
-
-    function initSummaryFilters(){
-      var m = masters();
-      var siteList = unique(m.map(function(x){ return x.site; })).sort(function(a,b){ return a.localeCompare(b, "ja"); });
-      var siteHtml = '<option value="">全拠点</option>';
-      for(var i=0; i<siteList.length; i++) siteHtml += '<option value="' + escHtml(siteList[i]) + '">' + escHtml(siteList[i]) + '</option>';
-      $("summarySiteSelect").innerHTML = siteHtml;
-      $("summaryAreaSelect").innerHTML = '<option value="">全エリア</option>';
-      $("summaryPersonSelect").innerHTML = '<option value="">全員</option>';
-    }
-
-    function rebuildSummaryDependentOptions(){
-      var site = $("summarySiteSelect").value;
-      var area = $("summaryAreaSelect").value;
-      var m = masters();
-
-      var areaList = [];
-      var personList = [];
-
-      for(var i=0; i<m.length; i++){
-        if(site && m[i].site !== site) continue;
-        areaList.push(m[i].area);
-      }
-
-      areaList = unique(areaList).sort(function(a,b){ return a.localeCompare(b, "ja"); });
-      var areaHtml = '<option value="">全エリア</option>';
-      for(var j=0; j<areaList.length; j++) areaHtml += '<option value="' + escHtml(areaList[j]) + '">' + escHtml(areaList[j]) + '</option>';
-      $("summaryAreaSelect").innerHTML = areaHtml;
-
-      for(var k=0; k<m.length; k++){
-        if(site && m[k].site !== site) continue;
-        if(area && m[k].area !== area) continue;
-        personList.push(m[k]);
-      }
-
-      personList.sort(function(a,b){ return a.name.localeCompare(b.name, "ja"); });
-      var personHtml = '<option value="">全員</option>';
-      for(var p=0; p<personList.length; p++) personHtml += '<option value="' + escHtml(personList[p].employeeNo) + '">' + escHtml(personList[p].name) + '（' + escHtml(personList[p].employeeNo) + '）</option>';
-      $("summaryPersonSelect").innerHTML = personHtml;
-    }
-
-    function renderAdmin(){
-      var reports = getAllReports();
-      var today = todayStr();
-      var todayReportPeople = [];
-      for(var i=0; i<reports.length; i++) {
-        var rDate = String(reports[i].createdAt || "").slice(0,10);
-        if(rDate === today) todayReportPeople.push(reports[i].employeeNo);
-      }
-      $("statPeople").innerHTML = unique(todayReportPeople).length;
-      renderAdminSummary();
-    }
-
-    function renderAdminSummary(){
-      var reports = getAllReports();
-      var currentMonth = todayStr().slice(0,7);
-      var site = $("summarySiteSelect").value;
-      var area = $("summaryAreaSelect").value;
-      var person = $("summaryPersonSelect").value;
-
-      var byEmp = {};
-
-      for(var i=0; i<reports.length; i++){
-        var r = reports[i];
-        if(!r.employeeNo) continue;
-
-        var master = null;
-        for(var j=0; j<masterData.length; j++){
-          if(masterData[j].employeeNo === r.employeeNo) { master = masterData[j]; break; }
-        }
-        if(!master) continue;
-
-        if(site && master.site !== site) continue;
-        if(area && master.area !== area) continue;
-        if(person && r.employeeNo !== person) continue;
-
-        if(!byEmp[r.employeeNo]) {
-          byEmp[r.employeeNo] = {
-            employeeNo: r.employeeNo,
-            personName: r.personName || master.name || "",
-            totalCount: 0,
-            latestAt: "",
-            monthCount: 0
-          };
-        }
-
-        byEmp[r.employeeNo].totalCount++;
-        if(!byEmp[r.employeeNo].latestAt || byEmp[r.employeeNo].latestAt < r.createdAt) byEmp[r.employeeNo].latestAt = r.createdAt || "";
-        if(String(r.createdAt || "").slice(0,7) === currentMonth) byEmp[r.employeeNo].monthCount++;
-      }
-
-      var list = [];
-      for(var key in byEmp) list.push(byEmp[key]);
-
-      list.sort(function(a,b){
-        if(b.monthCount !== a.monthCount) return b.monthCount - a.monthCount;
-        if(b.totalCount !== a.totalCount) return b.totalCount - a.totalCount;
-        return String(a.personName).localeCompare(String(b.personName), "ja");
-      });
-
-      var siteText = site || "全拠点";
-      var areaText = area || "全エリア";
-      var personText = person ? ($("summaryPersonSelect").selectedOptions[0] ? $("summaryPersonSelect").selectedOptions[0].text : "全員") : "全員";
-      $("summaryHint").innerHTML = "集計条件: " + escHtml(siteText) + " / " + escHtml(areaText) + " / " + escHtml(personText);
-
-      if(list.length === 0){
-        $("adminSummaryContent").innerHTML = '<div class="comment-empty">この条件に該当するデータはありません。</div>';
-        return;
-      }
-
-      var html = "";
-      for(var k=0; k<list.length; k++){
-        var item = list[k];
-        html += '<div class="summary-card">'
-          + '<div class="summary-name">' + escHtml(item.personName) + ' <span style="font-size:11px; color:var(--muted);">(' + escHtml(item.employeeNo) + ')</span></div>'
-          + '<div class="summary-meta">'
-          + '<div class="item">件数<span class="value">' + escHtml(item.totalCount) + '</span></div>'
-          + '<div class="item">最終報告日時<span class="value">' + escHtml(item.latestAt || "-") + '</span></div>'
-          + '<div class="item">今月の報告数<span class="value">' + escHtml(item.monthCount) + '</span></div>'
-          + '</div>'
-          + '</div>';
-      }
-
-      $("adminSummaryContent").innerHTML = html;
-    }
-
-    function renderAdminList(){
-      var reports = getAllReports();
-      var today = todayStr();
-      var todayReports = [];
-
-      for(var j=0; j<reports.length; j++) {
-        var rDate = String(reports[j].createdAt || "").slice(0,10);
-        if(rDate === today) todayReports.push(reports[j]);
-      }
-
-      if (todayReports.length === 0) {
-        $("adminListContent").innerHTML = '<div class="comment-empty">本日の報告はまだありません。</div>';
-        return;
-      }
-
-      var html = "";
-      for(var i=0; i<todayReports.length; i++){
-        var r = todayReports[i];
-        var commentHtml = "";
-        if(r.comment) commentHtml = '<div class="comment-body">' + escHtml(r.comment) + '</div>';
-
-        html += '<div class="comment-box">'
-          + '<div class="comment-head">'
-          + '<div class="avatar">' + escHtml(makeAvatar(r.personName)) + '</div>'
-          + '<div style="flex:1;">'
-          + '<div class="comment-name">' + escHtml(r.personName) + '</div>'
-          + '<div class="comment-place">' + escHtml(r.site) + ' / ' + escHtml(r.area) + '</div>'
-          + '</div>'
-          + '<div style="text-align:right; font-size:12px; color:var(--primary2); font-weight:900;">' + escHtml(r.reportType)
-          + '<div style="color:var(--muted); font-weight:normal; margin-top:2px; font-size:11px;">' + escHtml(r.createdAt).slice(11, 16) + '</div>'
-          + '</div>'
-          + '</div>'
-          + commentHtml
-          + '</div>';
-      }
-
-      $("adminListContent").innerHTML = html;
-    }
-
-    function downloadCsv(){
-      var reports = getAllReports();
-      if(reports.length === 0) {
-        alert("出力するデータがありません。");
-        return;
-      }
-
-      var header = ["拠点","エリア","氏名","社員番号","区分","作業の種類","メモ","登録日時"];
-      var csv = "";
-      var headerArr = [];
-      for(var h=0; h<header.length; h++) headerArr.push(escCsv(header[h]));
-      csv += headerArr.join(",") + "\n";
-
-      for(var i=0; i<reports.length; i++){
-        var r = reports[i];
-        var row = [r.site, r.area, r.personName, r.employeeNo, r.category, r.reportType, r.comment, r.createdAt];
-        var rowArr = [];
-        for(var rIdx=0; rIdx<row.length; rIdx++) rowArr.push(escCsv(row[rIdx]));
-        csv += rowArr.join(",") + "\n";
-      }
-
-      var blob = new Blob(["\uFEFF" + csv], {type:"text/csv;charset=utf-8;"});
-      var url = window.URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      a.href = url;
-      a.download = "実績報告_" + todayStr() + ".csv";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }
-
-    function showView(viewId) {
-      $("modeSelect").style.display = "none";
-      $("workerView").style.display = "none";
-      $("adminView").style.display = "none";
-      $("adminListView").style.display = "none";
-
-      if (viewId === "worker") {
-        $("workerView").style.display = "block";
-        initSite();
-        initArea();
-        initPerson();
-      } else if (viewId === "admin") {
-        $("adminView").style.display = "block";
-        initSummaryFilters();
-        renderAdmin();
-      } else if (viewId === "admin-list") {
-        $("adminListView").style.display = "block";
-        renderAdminList();
-      } else {
-        $("modeSelect").style.display = "block";
-      }
-
-      window.scrollTo(0, 0);
-    }
-
-    function nowMs(){
-      return Date.now();
-    }
-
-    function getAdminUnlockUntil(){
-      try{
-        return parseInt(localStorage.getItem(ADMIN_LOCK_KEY) || "0", 10) || 0;
-      }catch(e){
-        return 0;
-      }
-    }
-
-    function setAdminUnlock(){
-      try{
-        var until = nowMs() + (ADMIN_UNLOCK_MINUTES * 60 * 1000);
-        localStorage.setItem(ADMIN_LOCK_KEY, String(until));
-      }catch(e){}
-    }
-
-    function isAdminUnlocked(){
-      return getAdminUnlockUntil() > nowMs();
-    }
-
-    function openAdminLogin(){
-      if (isAdminUnlocked()) {
-        showView("admin");
-        return;
-      }
-      $("adminPwError").innerHTML = "";
-      $("adminPwInput").value = "";
-      $("adminPwModal").classList.add("show");
-      setTimeout(function(){ $("adminPwInput").focus(); }, 50);
-    }
-
-    function closeAdminLogin(){
-      $("adminPwModal").classList.remove("show");
-      $("adminPwError").innerHTML = "";
-      $("adminPwInput").value = "";
-    }
-
-    function tryAdminLogin(){
-      var pw = $("adminPwInput").value;
-      if (pw === ADMIN_PASSWORD) {
-        setAdminUnlock();
-        closeAdminLogin();
-        showView("admin");
-      } else {
-        $("adminPwError").innerHTML = "パスワードが違います。";
-        $("adminPwInput").value = "";
-        $("adminPwInput").focus();
-      }
-    }
-
-    $("adminPwCancel").addEventListener("click", closeAdminLogin);
-    $("adminPwSubmit").addEventListener("click", tryAdminLogin);
-    $("adminPwInput").addEventListener("keydown", function(e){
-      if (e.key === "Enter") tryAdminLogin();
-      if (e.key === "Escape") closeAdminLogin();
+  <!-- ===== 管理者画面 ===== -->
+  <div id="adminView" style="display:none;">
+    <div class="header-bar">
+      <span onclick="showView('menu')">◀ 🏠メニュー</span>
+      <h2>👑 管理者ダッシュボード</h2>
+    </div>
+
+    <!-- 達成/未達成ボックス -->
+    <div class="achieve-grid">
+      <div class="achieve-box green-box" onclick="openModal('done')">
+        <div class="ab-icon">✅</div>
+        <div class="ab-num" id="abDoneNum">0</div>
+        <div class="ab-label">キャパ達成</div>
+        <div class="ab-sub">タップして詳細を見る</div>
+      </div>
+      <div class="achieve-box red-box" onclick="openModal('undone')">
+        <div class="ab-icon">🔴</div>
+        <div class="ab-num" id="abUndoneNum">0</div>
+        <div class="ab-label">キャパ未達成</div>
+        <div class="ab-sub">タップして詳細を見る</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 12px;text-align:center;">📅 今日の全体進捗</h3>
+      <div class="stats2">
+        <div class="stat2"><div class="num2" id="statTodayCap">0</div><div class="txt2">📋 本日キャパ合計</div></div>
+        <div class="stat2"><div class="num2" id="statTodayDone">0</div><div class="txt2">✅ 本日報告済</div></div>
+        <div class="stat2"><div class="num2" id="statPeople">0</div><div class="txt2">👨‍🔧 本日報告者数</div></div>
+        <div class="stat2"><div class="num2" id="statTodayRate">0%</div><div class="txt2">📈 本日達成率</div></div>
+      </div>
+      <div style="padding:0 4px 4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <span style="font-size:12px;font-weight:700;color:var(--muted);">本日進捗</span>
+          <span id="adminTodaySignal"></span>
+        </div>
+        <div class="prog-wrap"><div id="adminTodayBar" class="prog-bar gray" style="width:0%"></div></div>
+      </div>
+      <div class="row2" style="margin-top:12px;margin-bottom:8px;">
+        <button class="btn ghost med" style="min-height:52px;" id="csvBtn">📥 CSV出力</button>
+        <button class="btn ghost med" style="min-height:52px;" id="refreshBtn">🔄 更新</button>
+      </div>
+      <button class="btn danger med" style="min-height:52px;" id="resetAllBtn">🗑️ 全データ削除</button>
+    </div>
+
+    <!-- タブ -->
+    <div class="card" style="padding-bottom:8px;">
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tabArea" onclick="switchTab('area')">🗺️ エリア別</button>
+        <button class="tab-btn" id="tabPerson" onclick="switchTab('person')">👤 個人別</button>
+        <button class="tab-btn" id="tabList" onclick="switchTab('list')">📋 本日一覧</button>
+      </div>
+      <div id="paneArea"><div id="areaProgContent"></div></div>
+      <div id="panePersonAdmin" style="display:none;"><div id="adminSummaryContent" class="summary-grid"></div></div>
+      <div id="paneList" style="display:none;"><div id="adminListContent" class="list"></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// =============================================
+//  キャパデータ
+// =============================================
+var CAP_DATES = (function(){
+  var dates=[], d=new Date("2026-06-15"), end=new Date("2026-09-11");
+  while(d<=end){
+    var y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+    dates.push(y+"-"+m+"-"+dd);
+    d.setDate(d.getDate()+1);
+  }
+  return dates;
+})();
+
+var CAP_DATA = (function(){
+  var raw=[
+    {site:"北海道",area:"札幌",cap:[2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0,0,4,2,2,2,2,0,0,0,0,0,0,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2],persons:{"松島 篤":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0],"塩﨑 篤史":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0],"石川 誠":[0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"佐藤 海":[0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"東北",area:"青森",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"鴨 伸也":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"山口 知麻":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"東北",area:"八戸",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"熊野 英明":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"東北",area:"秋田",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"桂 幸広":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"北村 信彦":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"東北",area:"盛岡",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"小島 博人":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"菊池 政洋":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"東北",area:"仙台",cap:[2,1,2,1,2,0,0,2,1,2,1,2,0,0,2,1,2,1,2,0,0,0,2,1,2,1,0,0,2,1,2,1,2,0,0,0,2,1,2,1,0,0,2,1,2,1,2,0,0,2,1,2,1,2,0,0,0,0,0,0,0,0,0,2,1,2,1,2,0,0,2,1,2,1,2,0,0,1,2,2,2,2,0,0,1,1,1,1,1],persons:{"金 佳彦":[1,0,1,0,1,0,0,1,0,0,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1],"杉 凌太":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,0,1,0,0,0,1,1,1,0,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,1,1,0,0,0,1,0,0,1,0],"赤坂 大輔":[1,0,0,0,1,0,0,1,0,1,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,1,0,1,0,0,1,0,1,0,0]}},
+    {site:"東北",area:"山形",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"鹿野 大輔":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"東北",area:"郡山",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"芳賀 竜":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"佐藤 宏樹":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"東北",area:"いわき",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"藤沢 孝益":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"信越",area:"新潟",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"清水 悟":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"信越",area:"長岡",cap:[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0],persons:{"南雲 和彦":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0]}},
+    {site:"信越",area:"長野",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"中村 敏幸":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"信越",area:"松本",cap:[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0],persons:{"伊藤 貴博":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0]}},
+    {site:"北関東",area:"さいたま",cap:[2,1,2,1,2,0,0,1,2,1,2,1,0,0,2,1,2,1,2,0,0,0,1,2,1,2,0,0,1,2,1,2,1,0,0,0,2,1,2,1,0,0,2,1,2,1,2,0,0,1,2,1,2,1,0,0,0,0,0,0,2,0,0,1,2,1,2,1,0,0,2,1,2,1,2,0,0,1,2,1,2,1,0,0,2,1,3,1,2],persons:{"三角 英之":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"岩崎 貴氏":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0],"金子 豊":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"北関東",area:"越谷",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"武内 昌士":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"池田 尚史":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"北関東",area:"熊谷",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"齊藤 修":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"北関東",area:"前橋",cap:[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0],persons:{"髙木 聡":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0]}},
+    {site:"北関東",area:"宇都宮",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"磯野 大":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"向山 貴晴":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0],"澤村 知明":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"東京",area:"東京",cap:[3,3,3,3,3,0,0,3,3,3,3,3,0,0,3,3,3,3,3,0,0,0,3,2,3,2,0,0,3,3,3,3,3,0,0,0,2,3,2,3,0,0,3,3,3,3,3,0,0,3,3,3,3,3,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2],persons:{"藤村 裕二":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1],"中島 泰弘":[1,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0],"溝 基純":[1,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0],"八尾 健介":[0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,0,1,0,0,0,1,0,1,0,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],"安田 輝":[0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,1,0,1,0,0,0,0,0,1,1,1,0,0,0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1]}},
+    {site:"東京",area:"多摩",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"髙木 達也":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"東京",area:"練馬",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"山崎 正人":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"南関東",area:"横浜",cap:[2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0,0,4,2,2,2,2,0,0,0,0,0,0,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2],persons:{"小野 修治":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0],"鎌塚 裕一":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0],"安齋 大祐":[0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"南関東",area:"厚木",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"藤原 将史":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"中島 健二":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"東関東",area:"千葉",cap:[2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0,0,0,2,2,2,2,0,0,2,2,2,2,2,0,0,4,2,2,2,2,0,0,0,0,0,0,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2],persons:{"佐藤 淳之":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0],"川口 亮":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0],"根本 義浩":[0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"越川 英紀":[0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"東関東",area:"松戸",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"形山 文雄":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"柴田 寿平":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"東関東",area:"土浦",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"吉田 好一":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"東関東",area:"水戸",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"柴田 祐一":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"杉山 直昭":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"静岡",area:"静岡",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"渡辺 高央":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"長野 浩隆":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"静岡",area:"沼津",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"水口 光宣":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"静岡",area:"浜松",cap:[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0],persons:{"高橋 純之":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0]}},
+    {site:"静岡",area:"山梨",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"川口 夏輝":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"佐野 良介":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"北陸",area:"金沢",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"安藤 民彦":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"永田 智暉":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"北陸",area:"富山",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"髙澤 啓明":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"浜屋 了勉":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"北陸",area:"福井",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"木部 博行":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"武安 善弘":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"東海",area:"名古屋",cap:[4,4,4,4,4,0,0,4,4,4,4,4,0,0,4,5,4,4,4,0,0,0,6,4,6,4,0,0,4,4,4,5,4,0,0,0,6,4,4,6,0,0,4,4,5,5,5,0,0,5,5,5,5,5,0,0,0,0,0,0,3,0,0,4,5,5,5,5,0,0,5,5,5,5,5,0,0,5,6,5,6,4,0,0,4,4,5,4,5],persons:{"土屋 正宏":[1,0,0,0,1,0,0,1,1,0,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,1,0,0,1,0,0,0,1,0,0,1,1,0,1,1,0,0,1,0,1,0,1],"籠橋 孝光":[0,1,0,1,1,0,0,0,0,0,1,1,0,0,0,1,0,1,1,0,0,0,1,0,1,0,0,0,0,0,1,1,1,0,0,0,1,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,1,1],"本間 勉":[0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,1,1,0,1,0,0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],"水野 智":[0,1,1,0,1,0,0,0,1,0,0,1,0,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0,0,1,1,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0,0,1,1,0,1,0,0,0,1,0,0,1,0,0,0,1,1,0,1,0,0,0,1,0,0,1],"太田 雅之":[1,0,0,0,1,0,0,1,0,1,0,1,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0,0,1,0,0,0,1,0,0,0,0,1,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,0,0,1,1,0,0,1,0,0,0,1],"前田 貴志":[1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,0,0,1,0,1,0,0,1,0,1,0,0,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,1,0,0,1,1,1,0,0,0,0,1,1,1,0,0],"齋藤 公二":[1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,0,1,1,1,0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,1,0,0,0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,1,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0],"白木 一郎":[0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,1,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0]}},
+    {site:"東海",area:"三重",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"前田 研吾":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"酒井 丈夫":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"東海",area:"岐阜",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"領木 清":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"大阪",area:"大阪",cap:[4,3,4,3,4,0,0,4,3,4,3,4,0,0,4,3,4,3,4,0,0,0,3,3,3,3,0,0,4,3,4,3,4,0,0,0,4,3,3,4,0,0,3,4,4,3,4,0,0,4,4,4,4,4,0,0,0,0,0,0,2,0,0,4,4,4,4,4,0,0,4,4,4,4,4,0,0,3,3,3,3,3,0,0,4,3,4,3,3],persons:{"浅井 啓充":[0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,1,1,0,1,0,0,0,1,0,1,0,0,0,0,1,1,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,0,1],"笹原 隆太":[0,1,0,1,0,0,0,0,0,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,0,1,0,0,0,1,1,1,0,0,0,0,0,1,0,1,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,1,0,1,0,0,0,0,1,1,1,0],"伊藤 康博":[1,0,1,1,0,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0,0,1,0,1,1,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,1,0,0,1,0,0,0,0,0,1,1,0,0,0,1,0,1,1],"龍田 成仁":[1,0,0,1,0,0,0,1,1,0,0,0,0,0,1,1,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,1,1,0,0,0,1,0,0,1,0,0,1,1,0,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0],"松尾 浩三":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,0,0,0]}},
+    {site:"大阪",area:"奈良",cap:[1,1,1,1,1,0,0,1,1,1,1,1
+,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"中村 誠":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"石田 典明":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"大阪",area:"和歌山",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"清水 護":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"髙橋 良輔":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"京滋",area:"京都",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"佐々木 優":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"和田 敏昭":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"京滋",area:"滋賀",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"畑宮 輝久":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"佐々木 晃":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"兵庫",area:"神戸",cap:[2,3,4,3,2,0,0,1,4,3,4,1,0,0,2,3,4,3,2,0,0,0,1,4,3,4,0,0,1,4,3,4,1,0,0,0,2,3,4,3,0,0,2,3,4,1,2,0,0,1,4,3,2,1,0,0,0,0,0,0,2,0,0,1,4,3,2,1,0,0,2,3,4,1,2,0,0,1,4,3,2,1,0,0,2,3,5,1,2],persons:{"松浦 利之":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"宮下 和宜":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0],"高橋 重光":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"兵庫",area:"姫路",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"中川 幸司":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"中国",area:"広島",cap:[2,1,2,1,2,0,0,1,2,1,2,1,0,0,2,1,2,1,2,0,0,0,1,2,1,2,0,0,1,2,1,2,1,0,0,0,2,1,2,1,0,0,2,1,2,1,2,0,0,1,2,1,2,1,0,0,0,0,0,0,2,0,0,1,2,1,2,1,0,0,2,1,2,1,2,0,0,1,2,1,2,1,0,0,2,1,3,1,2],persons:{"山本 政行":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"佐々木 賢也":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0],"則永 正弘":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"中国",area:"岡山",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"島村 浩一":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"有吉 宣明":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"中国",area:"福山",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"原田 尚也":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"中国",area:"山陰",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"片寄 健二":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"権代 一":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"中国",area:"山口",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"上田 卓実":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"金子 征司":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"四国",area:"高松",cap:[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0],persons:{"西脇 太郎":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"四国",area:"松山",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"梅木 和彦":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"出来 克久":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"四国",area:"徳島",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"角矢 雅昭":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"四国",area:"高知",cap:[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0],persons:{"中澤 俊二":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,0,0,0,0,0]}},
+    {site:"九州",area:"北九州",cap:[2,1,2,1,2,0,0,1,2,1,2,1,0,0,2,1,2,1,2,0,0,0,1,2,1,2,0,0,1,2,1,2,1,0,0,0,2,1,2,1,0,0,2,1,2,1,2,0,0,1,2,1,2,1,0,0,0,0,0,0,2,0,0,1,2,1,2,1,0,0,2,1,2,1,2,0,0,1,2,1,2,1,0,0,2,1,3,1,2],persons:{"毛利 健二":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"西 雄三":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0],"内田 尚汰":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1]}},
+    {site:"九州",area:"福岡",cap:[3,3,3,3,3,0,0,3,3,3,3,3,0,0,3,3,3,3,3,0,0,0,3,2,3,2,0,0,3,3,3,3,3,0,0,0,2,3,2,3,0,0,3,3,3,3,3,0,0,3,3,3,3,3,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2,0,0,2,2,2,2,2],persons:{"水野 伸彦":[1,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1],"坂口 浩一":[1,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0],"行徳 健二":[1,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,1,0,1,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0],"山岡 敬幸":[0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,1,1,0,1,0,0,0,1,0,1,0,0,0,0,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],"永峰 一騎":[0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,1,0,1,0,0,0,0,0,1,1,1,0,0,0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,1,0,1]}},
+    {site:"九州",area:"佐賀",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"野田 伸也":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"九州",area:"大分",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"宮本 秀一郎":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"荒金 孝輔":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"九州",area:"熊本",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"上野 好文":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"川原 淳":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"九州",area:"長崎",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"志水 亮太":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"宮﨑 大和":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"九州",area:"宮崎",cap:[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0],persons:{"小薗 弘和":[0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0]}},
+    {site:"九州",area:"鹿児島",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"米澤 一寿":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"黒木 邦圭":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}},
+    {site:"九州",area:"沖縄",cap:[1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,2,1,1],persons:{"花谷 和樹":[1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1],"德永 真行":[0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,1,1,0]}}
+  ];
+  var result={};
+  for(var i=0;i<raw.length;i++) result[raw[i].area]={site:raw[i].site,cap:raw[i].cap,persons:raw[i].persons};
+  return result;
+})();
+
+// =============================================
+//  ユーティリティ
+// =============================================
+var STORAGE_KEY="ac_repair_reports_green_v5";
+var memoryStorage="[]";
+var $=function(id){return document.getElementById(id);};
+var pad=function(n){return String(n).length<2?"0"+n:String(n);};
+var nowStr=function(){var d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds());};
+var todayStr=function(){var d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());};
+var unique=function(arr){var r=[];for(var i=0;i<arr.length;i++)if(r.indexOf(arr[i])===-1)r.push(arr[i]);return r;};
+var escHtml=function(s){if(s===null||s===undefined)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
+var escCsv=function(v){if(v===null||v===undefined)return'""';return'"'+String(v).replace(/"/g,'""')+'"';};
+
+function dateToIdx(dateStr){
+  var d1=new Date("2026-06-15"),d2=new Date(dateStr);
+  var diff=Math.round((d2-d1)/86400000);
+  if(diff<0||diff>=89)return -1;
+  return diff;
+}
+function getAreaCap(area,dateStr){var idx=dateToIdx(dateStr);if(idx<0)return 0;var d=CAP_DATA[area];if(!d)return 0;return d.cap[idx]||0;}
+function getPersonCap(area,name,dateStr){var idx=dateToIdx(dateStr);if(idx<0)return 0;var d=CAP_DATA[area];if(!d||!d.persons[name])return 0;return d.persons[name][idx]||0;}
+
+function signalClass(done,cap){if(cap===0)return"gray";var r=done/cap;if(r>=1)return"green";if(r>=0.5)return"yellow";return"red";}
+function signalLabel(done,cap){if(cap===0)return"休業日";var r=done/cap,p=Math.round(r*100);if(r>=1)return"✅ 達成 ("+p+"%)";if(r>=0.5)return"⚠️ 進行中 ("+p+"%)";return"🔴 未達 ("+p+"%)";}
+function renderSignal(done,cap){var cls=signalClass(done,cap),lbl=signalLabel(done,cap);return'<span class="signal '+cls+'"><span class="signal-dot"></span>'+escHtml(lbl)+'</span>';}
+function renderProgBar(done,cap){var cls=cap===0?"gray":signalClass(done,cap),pct=cap===0?0:Math.min(100,Math.round(done/cap*100));return'<div class="prog-wrap"><div class="prog-bar '+cls+'" style="width:'+pct+'%"></div></div>';}
+
+function loadReports(){try{var d=window.localStorage.getItem(STORAGE_KEY);if(d)return JSON.parse(d);return JSON.parse(memoryStorage);}catch(e){return JSON.parse(memoryStorage);}}
+function saveReports(r){var d=JSON.stringify(r);memoryStorage=d;try{window.localStorage.setItem(STORAGE_KEY,d);}catch(e){}}
+
+var masterData=[
+  {site:"北海道",area:"札幌",name:"岩渕 琢久",employeeNo:"004712"},{site:"北海道",area:"札幌",name:"坂井 孝弘",employeeNo:"005715"},{site:"北海道",area:"札幌",name:"松島 篤",employeeNo:"012225"},{site:"北海道",area:"札幌",name:"塩﨑 篤史",employeeNo:"013766"},{site:"北海道",area:"札幌",name:"石川 誠",employeeNo:"016005"},{site:"北海道",area:"札幌",name:"佐藤 海",employeeNo:"016097"},
+  {site:"東北",area:"青森",name:"鴨 伸也",employeeNo:"013645"},{site:"東北",area:"青森",name:"山口 知麻",employeeNo:"015944"},{site:"東北",area:"八戸",name:"熊野 英明",employeeNo:"009043"},{site:"東北",area:"秋田",name:"桂 幸広",employeeNo:"007586"},{site:"東北",area:"秋田",name:"北村 信彦",employeeNo:"015630"},{site:"東北",area:"盛岡",name:"小島 博人",employeeNo:"011545"},{site:"東北",area:"盛岡",name:"菊池 政洋",employeeNo:"013406"},{site:"東北",area:"山形",name:"鹿野 大輔",employeeNo:"008620"},{site:"東北",area:"仙台",name:"金 佳彦",employeeNo:"014181"},{site:"東北",area:"仙台",name:"赤坂 大輔",employeeNo:"015384"},{site:"東北",area:"仙台",name:"杉 凌太",employeeNo:"015385"},{site:"東北",area:"郡山",name:"芳賀 竜",employeeNo:"011118"},{site:"東北",area:"郡山",name:"佐藤 宏樹",employeeNo:"013741"},{site:"東北",area:"いわき",name:"藤沢 孝益",employeeNo:"013177"},
+  {site:"信越",area:"松本",name:"伊藤 貴博",employeeNo:"016034"},{site:"信越",area:"新潟",name:"清水 悟",employeeNo:"011158"},{site:"信越",area:"長岡",name:"南雲 和彦",employeeNo:"011562"},{site:"信越",area:"長野",name:"中村 敏幸",employeeNo:"005736"},
+  {site:"北関東",area:"さいたま",name:"三角 英之",employeeNo:"008238"},{site:"北関東",area:"さいたま",name:"岩崎 貴氏",employeeNo:"011142"},{site:"北関東",area:"さいたま",name:"金子 豊",employeeNo:"006727"},{site:"北関東",area:"越谷",name:"池田 尚史",employeeNo:"009035"},{site:"北関東",area:"越谷",name:"武内 昌士",employeeNo:"009949"},{site:"北関東",area:"熊谷",name:"齊藤 修",employeeNo:"012018"},{site:"北関東",area:"前橋",name:"髙木 聡",employeeNo:"011933"},{site:"北関東",area:"宇都宮",name:"磯野 大",employeeNo:"005723"},{site:"北関東",area:"宇都宮",name:"向山 貴晴",employeeNo:"013944"},{site:"北関東",area:"宇都宮",name:"澤村 知明",employeeNo:"016043"},
+  {site:"東京",area:"東京",name:"安田 輝",employeeNo:"007684"},{site:"東京",area:"東京",name:"溝 基純",employeeNo:"008580"},{site:"東京",area:"東京",name:"藤村 裕二",employeeNo:"010172"},{site:"東京",area:"東京",name:"中島 泰弘",employeeNo:"011267"},{site:"東京",area:"東京",name:"八尾 健介",employeeNo:"013816"},{site:"東京",area:"練馬",name:"山崎 正人",employeeNo:"008243"},{site:"東京",area:"多摩",name:"髙木 達也",employeeNo:"012664"},
+  {site:"南関東",area:"横浜",name:"小野 修治",employeeNo:"008577"},{site:"南関東",area:"横浜",name:"鎌塚 裕一",employeeNo:"012228"},{site:"南関東",area:"横浜",name:"安齋 大祐",employeeNo:"016111"},{site:"南関東",area:"厚木",name:"中島 健二",employeeNo:"008265"},{site:"南関東",area:"厚木",name:"藤原 将史",employeeNo:"012017"},
+  {site:"東関東",area:"千葉",name:"佐藤 淳之",employeeNo:"008266"},{site:"東関東",area:"千葉",name:"川口 亮",employeeNo:"010736"},{site:"東関東",area:"千葉",name:"根本 義浩",employeeNo:"012208"},{site:"東関東",area:"千葉",name:"越川 英紀",employeeNo:"013559"},{site:"東関東",area:"松戸",name:"形山 文雄",employeeNo:"008673"},{site:"東関東",area:"松戸",name:"柴田 寿平",employeeNo:"010562"},{site:"東関東",area:"土浦",name:"吉田 好一",employeeNo:"008735"},{site:"東関東",area:"水戸",name:"柴田 祐一",employeeNo:"006351"},{site:"東関東",area:"水戸",name:"杉山 直昭",employeeNo:"010631"},
+  {site:"静岡",area:"山梨",name:"川口 夏輝",employeeNo:"015954"},{site:"静岡",area:"山梨",name:"佐野 良介",employeeNo:"016024"},{site:"静岡",area:"沼津",name:"水口 光宣",employeeNo:"014267"},{site:"静岡",area:"静岡",name:"渡辺 高央",employeeNo:"007776"},{site:"静岡",area:"静岡",name:"長野 浩隆",employeeNo:"010635"},{site:"静岡",area:"浜松",name:"高橋 純之",employeeNo:"005127"},
+  {site:"北陸",area:"金沢",name:"安藤 民彦",employeeNo:"007839"},{site:"北陸",area:"金沢",name:"永田 智暉",employeeNo:"014799"},{site:"北陸",area:"富山",name:"髙澤 啓明",employeeNo:"009260"},{site:"北陸",area:"富山",name:"浜屋 了勉",employeeNo:"013414"},{site:"北陸",area:"福井",name:"武安 善弘",employeeNo:"008180"},{site:"北陸",area:"福井",name:"木部 博行",employeeNo:"013658"},
+  {site:"東海",area:"名古屋",name:"水野 智",employeeNo:"006779"},{site:"東海",area:"名古屋",name:"本間 勉",employeeNo:"007886"},{site:"東海",area:"名古屋",name:"白木 一郎",employeeNo:"007916"},{site:"東海",area:"名古屋",name:"籠橋 孝光",employeeNo:"008391"},{site:"東海",area:"名古屋",name:"土屋 正宏",employeeNo:"008396"},{site:"東海",area:"名古屋",name:"前田 貴志",employeeNo:"008849"},{site:"東海",area:"名古屋",name:"齋藤 公二",employeeNo:"010741"},{site:"東海",area:"名古屋",name:"太田 雅之",employeeNo:"011590"},{site:"東海",area:"岐阜",name:"領木 清",employeeNo:"009176"},{site:"東海",area:"三重",name:"前田 研吾",employeeNo:"012019"},{site:"東海",area:"三重",name:"酒井 丈夫",employeeNo:"012157"},
+  {site:"大阪",area:"大阪",name:"浅井 啓充",employeeNo:"010168"},{site:"大阪",area:"大阪",name:"笹原 隆太",employeeNo:"010545"},{site:"大阪",area:"大阪",name:"伊藤 康博",employeeNo:"011191"},{site:"大阪",area:"大阪",name:"龍田 成仁",employeeNo:"013956"},{site:"大阪",area:"大阪",name:"松尾 浩三",employeeNo:"009943"},{site:"大阪",area:"奈良",name:"中村 誠",employeeNo:"011095"},{site:"大阪",area:"奈良",name:"石田 典明",employeeNo:"013389"},{site:"大阪",area:"和歌山",name:"清水 護",employeeNo:"011740"},{site:"大阪",area:"和歌山",name:"髙橋 良輔",employeeNo:"013119"},
+  {site:"京滋",area:"京都",name:"佐々木 優",employeeNo:"009133"},{site:"京滋",area:"京都",name:"和田 敏昭",employeeNo:"010170"},{site:"京滋",area:"滋賀",name:"畑宮 輝久",employeeNo:"010580"},{site:"京滋",area:"滋賀",name:"佐々木 晃",employeeNo:"012644"},
+  {site:"兵庫",area:"神戸",name:"松浦 利之",employeeNo:"010345"},{site:"兵庫",area:"神戸",name:"宮下 和宜",employeeNo:"013529"},{site:"兵庫",area:"神戸",name:"高橋 重光",employeeNo:"010427"},{site:"兵庫",area:"姫路",name:"中川 幸司",employeeNo:"011015"},
+  {site:"中国",area:"広島",name:"則永 正弘",employeeNo:"011076"},{site:"中国",area:"広島",name:"山本 政行",employeeNo:"011543"},{site:"中国",area:"広島",name:"佐々木 賢也",employeeNo:"011809"},{site:"中国",area:"岡山",name:"島村 浩一",employeeNo:"007781"},{site:"中国",area:"岡山",name:"有吉 宣明",employeeNo:"008247"},{site:"中国",area:"福山",name:"原田 尚也",employeeNo:"011525"},{site:"中国",area:"山陰",name:"片寄 健二",employeeNo:"007416"},{site:"中国",area:"山陰",name:"権代 一",employeeNo:"010535"},{site:"中国",area:"山口",name:"上田 卓実",employeeNo:"011254"},{site:"中国",area:"山口",name:"金子 征司",employeeNo:"013186"},
+  {site:"四国",area:"高松",name:"西脇 太郎",employeeNo:"013730"},{site:"四国",area:"高知",name:"中澤 俊二",employeeNo:"010262"},{site:"四国",area:"松山",name:"梅木 和彦",employeeNo:"007783"},{site:"四国",area:"松山",name:"出来 克久",employeeNo:"009637"},{site:"四国",area:"徳島",name:"角矢 雅昭",employeeNo:"008254"},
+  {site:"九州",area:"北九州",name:"毛利 健二",employeeNo:"008953"},{site:"九州",area:"北九州",name:"西 雄三",employeeNo:"014375"},{site:"九州",area:"北九州",name:"内田 尚汰",employeeNo:"015035"},{site:"九州",area:"福岡",name:"水野 伸彦",employeeNo:"005482"},{site:"九州",area:"福岡",name:"坂口 浩一",employeeNo:"010779"},{site:"九州",area:"福岡",name:"行徳 健二",employeeNo:"013172"},{site:"九州",area:"福岡",name:"山岡 敬幸",employeeNo:"013178"},{site:"九州",area:"福岡",name:"永峰 一騎",employeeNo:"015327"},{site:"九州",area:"佐賀",name:"野田 伸也",employeeNo:"010344"},{site:"九州",area:"大分",name:"宮本 秀一郎",employeeNo:"009041"},{site:"九州",area:"大分",name:"荒金 孝輔",employeeNo:"016117"},{site:"九州",area:"熊本",name:"上野 好文",employeeNo:"008912"},{site:"九州",area:"熊本",name:"川原 淳",employeeNo:"015946"},{site:"九州",area:"長崎",name:"志水 亮太",employeeNo:"012819"},{site:"九州",area:"長崎",name:"宮﨑 大和",employeeNo:"014184"},{site:"九州",area:"宮崎",name:"小薗 弘和",employeeNo:"015488"},{site:"九州",area:"鹿児島",name:"米澤 一寿",employeeNo:"009072"},{site:"九州",area:"鹿児島",name:"黒木 邦圭",employeeNo:"014040"},{site:"九州",area:"沖縄",name:"花谷 和樹",employeeNo:"014944"},{site:"九州",area:"沖縄",name:"德永 真行",employeeNo:"016052"}
+];
+
+function showToast(h){var t=$("toast");t.innerHTML=h;t.className="toast show";setTimeout(function(){t.className="toast";},2500);}
+
+// =============================================
+//  作業者画面
+// =============================================
+function initSite(){
+  var sites=unique(masterData.map(function(m){return m.site;})).sort(function(a,b){return a.localeCompare(b,"ja");});
+  var h='<option value="">-- 拠点を選ぶ --</option>';
+  sites.forEach(function(s){h+='<option value="'+escHtml(s)+'">'+escHtml(s)+'</option>';});
+  $("siteSelect").innerHTML=h;
+}
+function initArea(){
+  var site=$("siteSelect").value;
+  var areas=unique(masterData.filter(function(m){return!site||m.site===site;}).map(function(m){return m.area;})).sort(function(a,b){return a.localeCompare(b,"ja");});
+  var h='<option value="">-- エリアを選ぶ --</option>';
+  areas.forEach(function(a){h+='<option value="'+escHtml(a)+'">'+escHtml(a)+'</option>';});
+  $("areaSelect").innerHTML=h;
+}
+function initPerson(){
+  var site=$("siteSelect").value,area=$("areaSelect").value;
+  var people=masterData.filter(function(m){return(!site||m.site===site)&&(!area||m.area===area);});
+  people.sort(function(a,b){return a.name.localeCompare(b.name,"ja");});
+  var h='<option value="">-- 氏名を選ぶ --</option>';
+  people.forEach(function(p){h+='<option value="'+escHtml(p.employeeNo)+'">'+escHtml(p.name)+'（'+escHtml(p.employeeNo)+'）</option>';});
+  $("personSelect").innerHTML=h;
+  updateGamification(false);
+  updateCapBanner();
+}
+
+function updateCapBanner(){
+  var empNo=$("personSelect").value,banner=$("capBanner");
+  if(!empNo){banner.style.display="none";return;}
+  var person=null;
+  for(var i=0;i<masterData.length;i++){if(masterData[i].employeeNo===empNo){person=masterData[i];break;}}
+  if(!person){banner.style.display="none";return;}
+  var today=todayStr(),cap=getPersonCap(person.area,person.name,today);
+  var reports=loadReports(),todayDone=0;
+  for(var j=0;j<reports.length;j++){if(reports[j].employeeNo===empNo&&String(reports[j].createdAt||"").slice(0,10)===today)todayDone++;}
+  banner.style.display="flex";
+  $("capLabel").textContent=today+" のキャパ";
+  if(cap===0){$("capVal").textContent="本日は休業日";$("capStatus").textContent="⚫ 対象外";$("capStatus").className="cap-status off";}
+  else{$("capVal").textContent=todayDone+" / "+cap+" 件";if(todayDone>=cap){$("capStatus").textContent="✅ 達成！";$("capStatus").className="cap-status done";}else{$("capStatus").textContent="あと "+(cap-todayDone)+" 件";$("capStatus").className="cap-status yet";}}
+}
+
+function updateGamification(isNew){
+  var empNo=$("personSelect").value,areaDiv=$("gamificationArea");
+  if(!empNo){areaDiv.style.display="none";return;}
+  var person=null;
+  for(var i=0;i<masterData.length;i++){if(masterData[i].employeeNo===empNo){person=masterData[i];break;}}
+  if(!person){areaDiv.style.display="none";return;}
+  var reports=loadReports(),myCount=reports.filter(function(r){return r.employeeNo===empNo;}).length;
+  var myTrophies=Math.floor(myCount/3),nextTarget=3-(myCount%3);
+  areaDiv.style.display="block";
+  $("gName").innerHTML="👤 "+escHtml(person.name)+" さんの実績";
+  if(myCount===0){$("gCountText").className="g-count zero";$("gCountText").innerHTML="まだ実績はありません";$("gMsg").innerHTML="まずは1件目を目指しましょう！";}
+  else{$("gCountText").className="g-count";$("gCountText").innerHTML="トータル <strong>"+myCount+"</strong> 件達成！";$("gMsg").innerHTML=nextTarget===3?"✨キリ番達成！次も頑張りましょう！✨":"あと "+nextTarget+" 件で次のトロフィー！";}
+  var tHtml="";
+  for(var k=0;k<myTrophies;k++){tHtml+='<span style="'+(isNew&&myCount%3===0&&k===myTrophies-1?'animation:bounce 0.6s 3;':'')+'">🏆</span>';}
+  if(myTrophies===0)tHtml="<span style='font-size:14px;color:#b45309;opacity:0.8;'>まだトロフィーはありません。最初の3件を目指そう！</span>";
+  $("gTrophies").innerHTML=tHtml;
+  if(isNew&&myCount>0&&myCount%3===0)setTimeout(function(){alert("🎉 おめでとうございます！\nトータル "+myCount+" 件達成で新しいトロフィーをゲットしました！🏆");},600);
+}
+
+// =============================================
+//  管理者画面
+// =============================================
+function calcTodayStats(){
+  var reports=loadReports(),today=todayStr();
+  var todayCap=0;
+  for(var area in CAP_DATA) todayCap+=getAreaCap(area,today);
+  var todayReports=reports.filter(function(r){return String(r.createdAt||"").slice(0,10)===today;});
+  var todayDone=todayReports.length;
+  var todayPeople=unique(todayReports.map(function(r){return r.employeeNo;})).length;
+
+  // 個人別の達成/未達成カウント（本日キャパ>0の人のみ）
+  var doneCount=0,undoneCount=0;
+  var donePeople=[],undonePeople=[];
+  masterData.forEach(function(m){
+    var cap=getPersonCap(m.area,m.name,today);
+    if(cap===0)return;
+    var done=todayReports.filter(function(r){return r.employeeNo===m.employeeNo;}).length;
+    if(done>=cap){doneCount++;donePeople.push({person:m,done:done,cap:cap});}
+    else{undoneCount++;undonePeople.push({person:m,done:done,cap:cap});}
+  });
+  return{todayCap:todayCap,todayDone:todayDone,todayPeople:todayPeople,doneCount:doneCount,undoneCount:undoneCount,donePeople:donePeople,undonePeople:undonePeople};
+}
+
+function renderAdmin(){
+  var s=calcTodayStats();
+  var today=todayStr();
+  $("abDoneNum").textContent=s.doneCount;
+  $("abUndoneNum").textContent=s.undoneCount;
+  $("statTodayCap").textContent=s.todayCap;
+  $("statTodayDone").textContent=s.todayDone;
+  $("statPeople").textContent=s.todayPeople;
+  var rate=s.todayCap>0?Math.round(s.todayDone/s.todayCap*100):0;
+  $("statTodayRate").textContent=rate+"%";
+  var cls=signalClass(s.todayDone,s.todayCap);
+  $("adminTodaySignal").innerHTML=renderSignal(s.todayDone,s.todayCap);
+  var bar=$("adminTodayBar");
+  bar.className="prog-bar "+cls;
+  bar.style.width=(s.todayCap>0?Math.min(100,Math.round(s.todayDone/s.todayCap*100)):0)+"%";
+  renderAreaProg();
+  renderAdminSummary();
+  renderAdminList();
+}
+
+// モーダル
+function openModal(type){
+  var s=calcTodayStats();
+  var today=todayStr();
+  var title,people,rowClass,rightText;
+  if(type==="done"){
+    title="✅ キャパ達成 "+s.doneCount+"名";
+    people=s.donePeople;rowClass="done-row";
+    rightText=function(p){return"✅ "+p.done+"/"+p.cap+"件";};
+  }else{
+    title="🔴 キャパ未達成 "+s.undoneCount+"名";
+    people=s.undonePeople;rowClass="undone-row";
+    rightText=function(p){return"🔴 "+p.done+"/"+p.cap+"件";};
+  }
+  $("modalTitle").textContent=title;
+  var html="";
+  if(people.length===0){html='<div class="comment-empty">該当者はいません</div>';}
+  else{
+    people.sort(function(a,b){return a.person.site.localeCompare(b.person.site,"ja");});
+    people.forEach(function(p){
+      var m=p.person;
+      html+='<div class="person-row '+rowClass+'">';
+      html+='<div class="avatar">'+escHtml(m.name.slice(0,1))+'</div>';
+      html+='<div style="flex:1;"><div class="pr-name">'+escHtml(m.name)+'</div>';
+      html+='<div class="pr-sub">'+escHtml(m.site)+" / "+escHtml(m.area)+'</div></div>';
+      html+='<div class="pr-right">'+rightText(p)+'</div></div>';
     });
-    $("adminPwModal").addEventListener("click", function(e){
-      if (e.target === $("adminPwModal")) closeAdminLogin();
+  }
+  $("modalBody").innerHTML=html;
+  $("modalOverlay").style.display="flex";
+}
+function closeModalOutside(e){if(e.target===$("modalOverlay"))$("modalOverlay").style.display="none";}
+
+function renderAreaProg(){
+  var reports=loadReports(),today=todayStr(),donByArea={};
+  reports.forEach(function(r){if(String(r.createdAt||"").slice(0,10)===today)donByArea[r.area]=(donByArea[r.area]||0)+1;});
+  var siteAreas={};
+  for(var area in CAP_DATA){var s=CAP_DATA[area].site;if(!siteAreas[s])siteAreas[s]=[];siteAreas[s].push(area);}
+  var sites=Object.keys(siteAreas).sort(function(a,b){return a.localeCompare(b,"ja");});
+  var html="";
+  sites.forEach(function(site){
+    var areas=siteAreas[site].sort(function(a,b){return a.localeCompare(b,"ja");});
+    html+='<div style="margin-bottom:16px;"><div style="font-size:13px;font-weight:900;color:var(--primary2);margin-bottom:6px;padding:4px 8px;background:rgba(209,250,229,0.4);border-radius:10px;">🏢 '+escHtml(site)+'</div>';
+    areas.forEach(function(area){
+      var cap=getAreaCap(area,today),done=donByArea[area]||0;
+      html+='<div class="area-prog-card"><div class="area-prog-head"><span class="area-prog-name">'+escHtml(area)+'</span>'+renderSignal(done,cap)+'</div>';
+      html+='<div class="area-prog-nums">報告済 '+done+' 件 ／ 本日キャパ '+cap+' 件</div>'+renderProgBar(done,cap)+'</div>';
     });
+    html+='</div>';
+  });
+  $("areaProgContent").innerHTML=html;
+}
 
-    $("siteSelect").addEventListener("change", function() {
-      initArea();
-      initPerson();
-    });
+function renderAdminSummary(){
+  var reports=loadReports(),today=todayStr(),currentMonth=today.slice(0,7),byEmp={};
+  reports.forEach(function(r){
+    if(!r.employeeNo)return;
+    if(!byEmp[r.employeeNo])byEmp[r.employeeNo]={employeeNo:r.employeeNo,personName:r.personName||"",site:r.site||"",area:r.area||"",totalCount:0,latestAt:"",monthCount:0,todayDone:0,todayCap:0};
+    byEmp[r.employeeNo].totalCount++;
+    if(!byEmp[r.employeeNo].latestAt||byEmp[r.employeeNo].latestAt<r.createdAt)byEmp[r.employeeNo].latestAt=r.createdAt||"";
+    if(String(r.createdAt||"").slice(0,7)===currentMonth)byEmp[r.employeeNo].monthCount++;
+    if(String(r.createdAt||"").slice(0,10)===today)byEmp[r.employeeNo].todayDone++;
+  });
+  for(var key in byEmp){var item=byEmp[key];item.todayCap=getPersonCap(item.area,item.personName,today);}
+  var list=Object.keys(byEmp).map(function(k){return byEmp[k];});
+  list.sort(function(a,b){if(b.monthCount!==a.monthCount)return b.monthCount-a.monthCount;return b.totalCount-a.totalCount;});
+  if(list.length===0){$("adminSummaryContent").innerHTML='<div class="comment-empty">まだデータはありません。</div>';return;}
+  var html="";
+  list.forEach(function(item){
+    html+='<div class="summary-card"><div class="summary-name"><span>'+escHtml(item.personName)+' <span style="font-size:11px;color:var(--muted);">('+escHtml(item.employeeNo)+')</span></span>'+renderSignal(item.todayDone,item.todayCap)+'</div>';
+    html+='<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">'+escHtml(item.site)+' / '+escHtml(item.area)+'</div>';
+    html+=renderProgBar(item.todayDone,item.todayCap);
+    html+='<div style="font-size:11px;color:var(--muted);text-align:right;margin-bottom:8px;">本日 '+item.todayDone+'/'+item.todayCap+'件</div>';
+    html+='<div class="summary-meta"><div class="item">累計件数<span class="value">'+item.totalCount+'</span></div><div class="item">今月<span class="value">'+item.monthCount+'</span></div><div class="item">最終報告<span class="value" style="font-size:11px;">'+escHtml((item.latestAt||"-").slice(0,16))+'</span></div></div></div>';
+  });
+  $("adminSummaryContent").innerHTML=html;
+}
 
-    $("areaSelect").addEventListener("change", function() {
-      initPerson();
-    });
+function renderAdminList(){
+  var reports=loadReports().sort(function(a,b){return a.createdAt<b.createdAt?1:-1;}),today=todayStr();
+  var todayReports=reports.filter(function(r){return String(r.createdAt||"").slice(0,10)===today;});
+  if(todayReports.length===0){$("adminListContent").innerHTML='<div class="comment-empty">本日の報告はまだありません。</div>';return;}
+  var html="";
+  todayReports.forEach(function(r){
+    html+='<div class="comment-box"><div class="comment-head"><div class="avatar">'+escHtml(String(r.personName||"").slice(0,1)||"？")+'</div><div style="flex:1;"><div class="comment-name">'+escHtml(r.personName)+'</div><div class="comment-place">'+escHtml(r.site)+' / '+escHtml(r.area)+'</div></div>';
+    html+='<div style="text-align:right;font-size:12px;color:var(--primary2);font-weight:900;">'+escHtml(r.reportType)+'<div style="color:var(--muted);font-weight:normal;margin-top:2px;font-size:11px;">'+escHtml(String(r.createdAt||"").slice(11,16))+'</div></div></div>';
+    if(r.comment)html+='<div class="comment-body">'+escHtml(r.comment)+'</div>';
+    html+='</div>';
+  });
+  $("adminListContent").innerHTML=html;
+}
 
-    $("personSelect").addEventListener("change", function() {
-      updateGamification(false);
-    });
+var currentTab="area";
+function switchTab(tab){
+  currentTab=tab;
+  $("tabArea").className="tab-btn"+(tab==="area"?" active":"");
+  $("tabPerson").className="tab-btn"+(tab==="person"?" active":"");
+  $("tabList").className="tab-btn"+(tab==="list"?" active":"");
+  $("paneArea").style.display=tab==="area"?"block":"none";
+  $("panePersonAdmin").style.display=tab==="person"?"block":"none";
+  $("paneList").style.display=tab==="list"?"block":"none";
+}
 
-    $("submitBtn").addEventListener("click", function() {
-      if (!$("siteSelect").value) { alert("拠点を選択してください。"); return; }
-      if (!$("areaSelect").value) { alert("エリアを選択してください。"); return; }
-      if (!$("personSelect").value) { alert("氏名を選択してください。"); return; }
+function downloadCsv(){
+  var reports=loadReports();
+  if(reports.length===0){alert("出力するデータがありません。");return;}
+  var csv=["拠点","エリア","氏名","社員番号","区分","作業の種類","メモ","登録日時"].map(escCsv).join(",")+"\n";
+  reports.forEach(function(r){csv+=[r.site,r.area,r.personName,r.employeeNo,r.category,r.reportType,r.comment,r.createdAt].map(escCsv).join(",")+"\n";});
+  var blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  var url=window.URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="実績報告_"+todayStr()+".csv";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);window.URL.revokeObjectURL(url);
+}
 
-      var empNo = $("personSelect").value;
-      var m = masters();
-      var person = null;
+function showView(viewId){
+  $("modeSelect").style.display="none";
+  $("workerView").style.display="none";
+  $("adminView").style.display="none";
+  if(viewId==="worker"){$("workerView").style.display="block";initSite();initArea();initPerson();}
+  else if(viewId==="admin"){$("adminView").style.display="block";renderAdmin();switchTab("area");}
+  else $("modeSelect").style.display="block";
+  window.scrollTo(0,0);
+}
 
-      for(var i=0; i<m.length; i++) {
-        if(m[i].employeeNo === empNo) { person = m[i]; break; }
-      }
+$("siteSelect").addEventListener("change",function(){initArea();initPerson();});
+$("areaSelect").addEventListener("change",function(){initPerson();});
+$("personSelect").addEventListener("change",function(){updateGamification(false);updateCapBanner();});
 
-      if (!person) { alert("選択された従業員データが見つかりません。"); return; }
+$("submitBtn").addEventListener("click",function(){
+  if(!$("siteSelect").value){alert("拠点を選択してください。");return;}
+  if(!$("areaSelect").value){alert("エリアを選択してください。");return;}
+  if(!$("personSelect").value){alert("氏名を選択してください。");return;}
+  var empNo=$("personSelect").value,person=null;
+  for(var i=0;i<masterData.length;i++){if(masterData[i].employeeNo===empNo){person=masterData[i];break;}}
+  if(!person){alert("従業員データが見つかりません。");return;}
+  var reports=loadReports();
+  reports.unshift({site:person.site,area:person.area,personName:person.name,employeeNo:person.employeeNo,category:"PCC",reportType:"修理完了",comment:$("comment").value.replace(/^\s+|\s+$/g,""),createdAt:nowStr()});
+  saveReports(reports);
+  showToast("✅ 報告が完了しました！<br><span style='font-size:14px;font-weight:normal;display:block;margin-top:6px;'>お疲れ様でした🍵</span>");
+  updateGamification(true);updateCapBanner();$("comment").value="";
+});
 
-      var reports = loadReports();
-      reports.unshift({
-        site: person.site,
-        area: person.area,
-        personName: person.name,
-        employeeNo: person.employeeNo,
-        category: person.category,
-        reportType: "修理完了",
-        comment: $("comment").value.replace(/^\s+|\s+$/g, ''),
-        createdAt: nowStr()
-      });
+$("clearBtn").addEventListener("click",function(){$("siteSelect").value="";initArea();initPerson();$("comment").value="";});
+$("csvBtn").addEventListener("click",downloadCsv);
+$("refreshBtn").addEventListener("click",function(){renderAdmin();showToast("🔄 最新状態に更新しました");});
+$("resetAllBtn").addEventListener("click",function(){
+  if(!confirm("本当に全ての蓄積データを削除しますか？\n（この操作は取り消せません）"))return;
+  try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
+  memoryStorage="[]";renderAdmin();alert("全データを削除しました。");
+});
 
-      saveReports(reports);
-      showToast("✅ 報告が完了しました！<br><span style='font-size:14px; font-weight:normal; display:block; margin-top:6px;'>お疲れ様でした🍵</span>");
-      updateGamification(true);
-      $("comment").value = "";
-    });
-
-    $("clearBtn").addEventListener("click", function() {
-      $("siteSelect").value = "";
-      initArea();
-      initPerson();
-      $("comment").value = "";
-    });
-
-    $("csvBtn").addEventListener("click", downloadCsv);
-
-    $("refreshBtn").addEventListener("click", function() {
-      renderAdmin();
-      showToast("🔄 最新状態に更新しました");
-    });
-
-    $("summaryRefreshBtn").addEventListener("click", function() {
-      renderAdminSummary();
-      showToast("🔎 条件で集計しました");
-    });
-
-    $("summaryClearBtn").addEventListener("click", function() {
-      $("summarySiteSelect").value = "";
-      $("summaryAreaSelect").value = "";
-      $("summaryPersonSelect").value = "";
-      renderAdminSummary();
-    });
-
-    $("summarySiteSelect").addEventListener("change", function() {
-      $("summaryAreaSelect").value = "";
-      $("summaryPersonSelect").value = "";
-      rebuildSummaryDependentOptions();
-      renderAdminSummary();
-    });
-
-    $("summaryAreaSelect").addEventListener("change", function() {
-      $("summaryPersonSelect").value = "";
-      rebuildSummaryDependentOptions();
-      renderAdminSummary();
-    });
-
-    $("summaryPersonSelect").addEventListener("change", function() {
-      renderAdminSummary();
-    });
-
-    $("resetAllBtn").addEventListener("click", function() {
-      if (!confirm("本当に全ての蓄積データを削除しますか？\n（この操作は取り消せません）")) return;
-      try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
-      memoryStorage = "[]";
-      renderAdmin();
-      alert("全データを削除しました。");
-    });
-
-    showView("menu");
-  </script>
+showView("menu");
+</script>
 </body>
 </html>
