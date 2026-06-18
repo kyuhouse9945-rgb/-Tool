@@ -27,16 +27,27 @@
       -webkit-tap-highlight-color:transparent;
       padding-bottom:32px;
     }
-    .app{max-width:760px;margin:0 auto;padding:16px 12px;}
+    .app{max-width:760px;margin:0 auto;padding:16px 12px; position:relative;}
     
-    .header-bar{text-align:center;margin-bottom:12px;padding-bottom:16px;border-bottom:2px solid var(--line);}
+    .header-bar{text-align:center;margin-bottom:12px;padding-bottom:16px;border-bottom:2px solid var(--line); padding-top:8px;}
     .header-bar h1{margin:0 0 6px;font-size:20px;color:var(--primary2);line-height:1.2;}
     .header-bar p{margin:0 0 12px;font-size:12px;color:var(--muted);font-weight:700;}
 
-    /* トップのバックアップボタン用 */
-    .top-action-row { display:flex; justify-content:center; gap:8px; }
-    .btn-top-action { padding:8px 16px; font-size:12px; font-weight:900; color:var(--primary2); background:#fff; border:2px solid var(--primary); border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(16,185,129,0.1); transition:all 0.2s;}
-    .btn-top-action:active { transform:scale(0.95); }
+    /* トップのクラウド同期ボタン用 */
+    .top-action-row { display:flex; justify-content:center; gap:8px; margin-bottom:8px; }
+    .btn-top-action { flex:1; max-width:180px; padding:10px 8px; font-size:13px; font-weight:900; color:var(--primary2); background:#fff; border:2px solid var(--primary); border-radius:12px; cursor:pointer; box-shadow:0 4px 10px rgba(16,185,129,0.1); transition:all 0.2s;}
+    .btn-top-action:active { transform:scale(0.95); background:var(--bg1); }
+
+    /* クラウド共有パネル (一番上) */
+    .cloud-panel { background:rgba(209,250,229,0.5); border:2px solid var(--primary); border-radius:16px; padding:16px; margin-bottom:16px; text-align:center; }
+    .cloud-title { font-size:14px; font-weight:900; color:var(--primary2); margin-bottom:12px; }
+    .cloud-id-box { font-size:18px; font-weight:900; color:var(--text); background:#fff; padding:8px; border-radius:8px; border:1px dashed var(--primary); display:inline-block; margin-bottom:12px; word-break:break-all; }
+    
+    .btn-action-row { display:flex; gap:8px; margin-bottom:8px; }
+    .btn-action { flex:1; padding:12px; font-size:13px; font-weight:900; border-radius:12px; cursor:pointer; border:none; transition:all 0.2s; box-shadow:0 4px 10px rgba(0,0,0,0.05); }
+    .btn-action:active { transform:scale(0.96); }
+    .btn-action.green { background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98)); color:#fff; }
+    .btn-action.white { background:#fff; color:var(--primary2); border:2px solid var(--primary); }
 
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px;}
     
@@ -47,6 +58,9 @@
     .btn.danger{background:rgba(254,226,226,.9);color:#dc2626;}
     .btn.ghost{background:rgba(255,255,255,.9);color:var(--primary2);border:2px solid var(--primary2);width:100%;}
     
+    .btn-cum{padding:6px 12px;font-size:11px;font-weight:900;color:var(--primary2);background:rgba(209,250,229,0.4);border:1px solid var(--primary);border-radius:8px;cursor:pointer;white-space:nowrap;}
+    .btn-cum:active{transform:scale(0.95);}
+
     .tab-bar{display:flex;gap:4px;margin-bottom:16px;}
     .tab-btn{flex:1;min-height:48px;font-size:13px;font-weight:900;border:2px solid var(--line);border-radius:14px;background:rgba(255,255,255,0.9);color:var(--muted);cursor:pointer;padding:0;}
     .tab-btn.active{background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98));color:#fff;border-color:transparent;}
@@ -65,15 +79,10 @@
 
     /* 全体サマリーパネル */
     .summary-box{text-align:center;padding:20px 12px;background:rgba(209,250,229,0.3);border-radius:16px;border:1px solid var(--line);margin-bottom:20px;}
-    .s-main { margin-bottom:12px; }
+    .s-main { margin-bottom:16px; }
     .s-main .lbl { font-size:13px; font-weight:900; color:var(--muted); }
     .s-main .rate { font-size:54px; font-weight:1000; color:var(--primary2); line-height:1; margin:4px 0; }
-    .s-main .nums { font-size:14px; font-weight:900; margin-top:8px; color:var(--text); }
     
-    .s-sub { background:#fff; border-radius:12px; padding:12px; border:1px solid var(--line); text-align:center; margin-top:16px; }
-    .s-sub .lbl { font-size:12px; font-weight:900; color:var(--muted); }
-    .s-sub .val { font-size:22px; font-weight:900; color:var(--primary2); margin-top:4px; }
-
     /* バッジ用ボタン */
     .star-btn-group { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
     .star-btn { min-height:56px; background:#fff; border:2px solid #fde68a; border-radius:12px; font-weight:900; font-size:13px; color:#b45309; display:flex; justify-content:space-between; align-items:center; padding:0 12px; cursor:pointer; box-shadow:0 2px 8px rgba(217,119,6,0.05); transition:all 0.2s; }
@@ -138,6 +147,10 @@
     .toast{position:fixed;top:40px;left:50%;transform:translate(-50%,-20px);background:rgba(4,120,87,0.95);color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:900;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:1000;opacity:0;pointer-events:none;transition:all 0.3s;}
     .toast.show{opacity:1;transform:translate(-50%,0);}
     .empty-msg{text-align:center;padding:32px 16px;color:var(--muted);font-size:14px;font-weight:700;}
+    
+    /* 設定用入力 */
+    .form-input{padding:12px;border:2px solid var(--line);border-radius:10px;font-size:16px;width:100%;text-align:center;font-weight:900;color:var(--primary2);}
+    .form-input:focus{outline:none;border-color:var(--primary);}
   </style>
 </head>
 <body>
@@ -160,16 +173,16 @@
 <!-- 累計表示モーダル -->
 <div id="cumModalOverlay" class="modal-overlay" style="display:none; align-items:center;" onclick="closeModal(event, 'cumModalOverlay')">
   <div class="cum-modal-box" onclick="event.stopPropagation()">
-    <div style="font-size:18px; font-weight:900; color:var(--primary2); margin-bottom:8px;">🎯 全体の実績累計</div>
-    <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:20px; border-bottom:1px dashed var(--line); padding-bottom:12px;">【本日】までの全メンバー合算</div>
+    <div id="cumName" style="font-size:18px; font-weight:900; color:var(--primary2); margin-bottom:8px;"></div>
+    <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:20px; border-bottom:1px dashed var(--line); padding-bottom:12px;">【本日】までの累計実績</div>
     
     <div style="display:flex; justify-content:space-around; margin-bottom:24px;">
       <div style="flex:1; border-right:1px dashed var(--line);">
-        <div style="font-size:11px; font-weight:900; color:var(--muted);">総受付件数</div>
+        <div style="font-size:11px; font-weight:900; color:var(--muted);">受付件数</div>
         <div id="cumAs" style="font-size:32px; font-weight:1000; color:var(--text); margin-top:4px;"></div>
       </div>
       <div style="flex:1;">
-        <div style="font-size:11px; font-weight:900; color:var(--muted);">総完了件数</div>
+        <div style="font-size:11px; font-weight:900; color:var(--muted);">完了件数</div>
         <div id="cumCo" style="font-size:32px; font-weight:1000; color:var(--primary2); margin-top:4px;"></div>
       </div>
     </div>
@@ -178,15 +191,14 @@
 </div>
 
 <div class="app">
+  
+  <!-- ★ トップのクラウド共有パネル -->
+  <div class="cloud-panel" id="cloudPanel">
+    <!-- JSで状態に応じて中身を描画 -->
+  </div>
+
   <div class="header-bar">
     <h1>📊 エアコン修理 7・8月集計ツール</h1>
-    <p>日別の受付・完了件数を入力して集計します</p>
-    
-    <!-- ★トップのバックアップエリア -->
-    <div class="top-action-row">
-      <button class="btn-top-action" onclick="exportData()">📥 バックアップ</button>
-      <button class="btn-top-action" onclick="document.getElementById('importFile').click()">📤 データ復元</button>
-    </div>
   </div>
 
   <div class="card" style="padding-bottom: 8px;">
@@ -335,35 +347,6 @@ function dateToIndex(dStr) {
   return Math.round((t - base) / 86400000);
 }
 
-function getOriginalCap(empName, site, area, fromStr, toStr) {
-  var idxFrom = dateToIndex(fromStr);
-  var idxTo = dateToIndex(toStr);
-  var aData = CAP_DATA_RAW.find(function(c) { return c.site === site && c.area === area; });
-  if(!aData || !aData.persons || !aData.persons[empName]) return 0;
-  var arr = aData.persons[empName];
-  var total = 0;
-  for(var i = idxFrom; i <= idxTo; i++) {
-    if(i >= 0 && i < arr.length) total += arr[i];
-  }
-  return total;
-}
-
-function getCalculatedCap(empNo, name, site, area, fromStr, toStr) {
-  var total = 0;
-  var d = new Date(fromStr + "T00:00:00+09:00");
-  var end = new Date(toStr + "T00:00:00+09:00");
-  while(d <= end) {
-    var ds = getTodayStrFromDate(d);
-    if(db.customCaps && db.customCaps[ds] && db.customCaps[ds][empNo] !== undefined) {
-      total += db.customCaps[ds][empNo];
-    } else {
-      total += getOriginalCap(name, site, area, ds, ds);
-    }
-    d.setDate(d.getDate() + 1);
-  }
-  return total;
-}
-
 // ==========================================
 // 日付関数
 // ==========================================
@@ -376,14 +359,14 @@ function getTodayStrFromDate(d) {
 // ==========================================
 // 初期化
 // ==========================================
-var STORAGE_KEY = "ac_daily_aggregator_v14"; 
-var db = { master: [], records: {}, customCaps: {} };
+var STORAGE_KEY = "ac_daily_aggregator_v25"; 
+var db = { master: [], records: {}, cloudId: "" };
 
 function loadDb() {
   try { var data = localStorage.getItem(STORAGE_KEY); if(data) db = JSON.parse(data); } catch(e) {}
   if(!db.master || db.master.length === 0) db.master = initializeMasterData();
   if(!db.records) db.records = {};
-  if(!db.customCaps) db.customCaps = {}; 
+  if(!db.cloudId) db.cloudId = ""; 
 }
 function saveDb() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) {} }
 
@@ -395,41 +378,156 @@ function showToast(msg) {
 }
 
 // ==========================================
-// データのバックアップと復元
+// クラウド同期機能 (合言葉方式 - jsonblob.com)
 // ==========================================
-function exportData() {
-  var dataStr = JSON.stringify(db);
-  var blob = new Blob([dataStr], {type: "application/json"});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  a.href = url;
-  a.download = "ac_report_backup_" + getTodayStr() + ".json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+function renderCloudPanel() {
+  var panel = $("cloudPanel");
+  if(db.cloudId) {
+    // 連携済み
+    var h = '<div class="cloud-title">☁️ チームと共有中です</div>';
+    h += '<div class="cloud-id-box">合言葉: <span style="color:var(--primary);">'+db.cloudId+'</span></div>';
+    h += '<p style="font-size:11px; color:var(--muted); margin-bottom:12px;">※入力が終わったら「保存」を押して共有してください</p>';
+    h += '<div class="btn-action-row">';
+    h += '  <button class="btn-action green" onclick="pushToCloud()">📤 保存 (上書き)</button>';
+    h += '  <button class="btn-action white" onclick="fetchFromCloud()">📥 取得 (最新化)</button>';
+    h += '</div>';
+    h += '<button class="btn-cum" style="margin-top:8px; border-color:var(--muted); color:var(--muted); background:#fff;" onclick="disconnectCloud()">共有を解除する</button>';
+    panel.innerHTML = h;
+  } else {
+    // 未連携
+    var h = '<div class="cloud-title">☁️ チームとデータを共有する</div>';
+    h += '<p style="font-size:11px; color:var(--muted); margin-bottom:12px;">※他の人とデータを同期したい場合のみ使用します</p>';
+    h += '<div class="btn-action-row" style="flex-direction:column;">';
+    h += '  <button class="btn-action green" onclick="createCloudBin()">✨ 新しく合言葉を発行して共有をはじめる</button>';
+    h += '  <div style="display:flex; gap:8px; margin-top:8px;">';
+    h += '    <input type="text" id="joinIdInput" placeholder="合言葉を入力" style="flex:1; border-radius:10px; border:1px solid var(--line); text-align:center; font-weight:900;">';
+    h += '    <button class="btn-action white" style="flex:1;" onclick="joinCloud()">🔑 参加する</button>';
+    h += '  </div>';
+    h += '</div>';
+    panel.innerHTML = h;
+  }
 }
 
-function importData(event) {
-  var file = event.target.files[0];
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      var importedDb = JSON.parse(e.target.result);
-      if(importedDb && importedDb.master) {
-        db = importedDb;
+// 新規作成
+async function createCloudBin() {
+  $("toast").textContent = "合言葉を発行中...";
+  $("toast").className = "toast show";
+  try {
+    const res = await fetch("https://jsonblob.com/api/jsonBlob", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(db)
+    });
+    if(res.ok) {
+      const location = res.headers.get('Location');
+      const id = location ? location.split('/').pop() : null;
+      if(id) {
+        db.cloudId = id;
         saveDb();
-        alert("データを復元しました！画面を更新します。");
+        showToast("発行完了！");
+        renderCloudPanel();
+      } else {
+        alert("IDの取得に失敗しました。");
+        $("toast").className = "toast";
+      }
+    } else {
+      alert("通信エラーが発生しました。");
+      $("toast").className = "toast";
+    }
+  } catch(e) {
+    alert("発行に失敗しました。通信環境を確認してください。");
+    $("toast").className = "toast";
+  }
+}
+
+// 参加（初回取得）
+async function joinCloud() {
+  var id = $("joinIdInput").value.trim();
+  if(!id) { alert("合言葉を入力してください"); return; }
+  
+  if(!confirm("合言葉「"+id+"」のデータを取得し、画面を上書きしますか？")) return;
+  
+  $("toast").textContent = "取得中...";
+  $("toast").className = "toast show";
+  try {
+    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${id}`);
+    if(res.ok) {
+      const json = await res.json();
+      if(json.master) {
+        db = json;
+        db.cloudId = id; 
+        saveDb();
+        alert("共有データに接続しました！");
         location.reload();
       } else {
-        alert("無効なファイル形式です。");
+        throw new Error();
       }
-    } catch(err) {
-      alert("ファイルの読み込みに失敗しました。");
+    } else {
+      alert("データが見つかりません。合言葉が間違っていませんか？");
+      $("toast").className = "toast";
     }
-  };
-  reader.readAsText(file);
+  } catch(e) {
+    alert("通信に失敗しました。");
+    $("toast").className = "toast";
+  }
+}
+
+// アップロード（保存）
+async function pushToCloud() {
+  if(!db.cloudId) return;
+  $("toast").textContent = "保存中...";
+  $("toast").className = "toast show";
+  try {
+    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${db.cloudId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(db)
+    });
+    if(res.ok) {
+      showToast("クラウドに保存しました！");
+    } else {
+      throw new Error();
+    }
+  } catch(e) {
+    alert("保存に失敗しました。");
+    $("toast").className = "toast";
+  }
+}
+
+// ダウンロード（取得）
+async function fetchFromCloud() {
+  if(!db.cloudId) return;
+  if(!confirm("最新の共有データを取得して画面を上書きしますか？\n(自分が保存していないデータは消えます)")) return;
+  
+  $("toast").textContent = "取得中...";
+  $("toast").className = "toast show";
+  try {
+    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${db.cloudId}`);
+    if(res.ok) {
+      const json = await res.json();
+      if(json.master) {
+        db = json;
+        saveDb();
+        alert("最新のデータに更新しました！");
+        location.reload();
+      } else {
+        throw new Error();
+      }
+    } else {
+      throw new Error();
+    }
+  } catch(e) {
+    alert("取得に失敗しました。");
+    $("toast").className = "toast";
+  }
+}
+
+function disconnectCloud() {
+  if(confirm("共有を解除しますか？\n(データはスマホ内に残りますが、他の人とは同期されなくなります)")) {
+    db.cloudId = "";
+    saveDb();
+    renderCloudPanel();
+  }
 }
 
 // ==========================================
@@ -575,6 +673,8 @@ function closeModal(e, id) {
 
 // --- 📋 メイン画面 ---
 function renderMainTab() {
+  renderCloudPanel(); // トップの共有パネルを更新
+  
   var dFrom = $("dateFrom").value;
   var dTo = $("dateTo").value;
   
@@ -595,13 +695,11 @@ function renderMainTab() {
   
   var data = getFilteredData();
   var agg = {};
-  var allTarget = 0, allAssigned = 0, allCompleted = 0;
+  var allAssigned = 0, allCompleted = 0;
   var countG1 = 0, countG2 = 0, countG3 = 0, countG4 = 0;
   
   data.forEach(function(m){
     var empNo = m.employeeNo;
-    var target = getCalculatedCap(empNo, m.name, m.site, m.area, dFrom, dTo);
-    
     var as = 0, co = 0;
     var d = new Date(dFrom + "T00:00:00+09:00");
     var end = new Date(dTo + "T00:00:00+09:00");
@@ -614,8 +712,7 @@ function renderMainTab() {
       d.setDate(d.getDate() + 1);
     }
     
-    agg[empNo] = { target: target, assigned: as, completed: co };
-    allTarget += target;
+    agg[empNo] = { assigned: as, completed: co };
     allAssigned += as;
     allCompleted += co;
     
@@ -671,7 +768,6 @@ function renderMainTab() {
       listHtml += '  <div class="pc-info-text no-border">'+escHtml(m.site)+' <span class="sep">/</span> '+escHtml(m.area)+' <span class="sep">/</span> <span style="color:var(--primary2);">'+escHtml(m.name)+'</span></div>';
     }
 
-    // バッジ
     var bigCount = Math.floor(rec.completed / 5);
     var smallCount = rec.completed % 5;
     var badges = "";
@@ -693,7 +789,7 @@ function renderMainTab() {
   htmlSum += '  <div class="title">🎯 選択期間の全体サマリー</div>';
   
   htmlSum += '  <div class="s-main">';
-  htmlSum += '    <div class="lbl">受付数に対する完了率 (完了 ÷ 受付)</div>';
+  htmlSum += '    <div class="lbl">受付消化率 (完了 ÷ 受付)</div>';
   htmlSum += '    <div class="rate">';
   htmlSum += '      '+(allAssigned>0 ? allDigestion+'<span style="font-size:24px;">%</span>' : '--');
   htmlSum += '    </div>';
@@ -701,12 +797,8 @@ function renderMainTab() {
   htmlSum += '    <div class="nums">総受付: '+allAssigned+'件 ／ 総完了: '+allCompleted+'件</div>';
   htmlSum += '  </div>';
   
-  // 参考値の総キャパ
-  htmlSum += '  <div style="font-size:11px; font-weight:700; color:var(--muted); margin-top:16px; border-top:1px dashed var(--line); padding-top:12px;">';
-  htmlSum += '    総目標(総キャパ): '+allTarget+'件';
-  htmlSum += '  </div>';
-  
-  htmlSum += '  <div style="margin-top:16px;">';
+  // ★全体用の累計ボタン
+  htmlSum += '  <div style="margin-top:24px;">';
   htmlSum += '    <button class="btn ghost" onclick="showGlobalCumulative()">📅 【本日】までの全メンバー累計を確認</button>';
   htmlSum += '  </div>';
 
@@ -749,6 +841,7 @@ function setCounter(empNo, dStr, field, val) {
 
 // --- ⚙️ 名簿管理タブ ---
 function renderStaffTab() {
+  renderCloudPanel(); // 共有パネル
   var data = db.master; 
   var pane = $("paneStaff");
   var defSite = $("fltSite").value || "";
@@ -777,6 +870,16 @@ function renderStaffTab() {
       html += '</div>';
     });
   }
+  
+  // バックアップ機能も下部に残す
+  html += '<div style="margin-top:32px; padding-top:16px; border-top:2px dashed var(--line); text-align:center;">';
+  html += '  <div style="font-size:14px;font-weight:900;margin-bottom:12px;color:var(--primary2);">💾 ファイルバックアップ</div>';
+  html += '  <div style="display:flex; gap:8px;">';
+  html += '    <button class="btn primary" style="flex:1; background:#0f766e;" onclick="exportData()">📥 保存</button>';
+  html += '    <button class="btn ghost" style="flex:1;" onclick="document.getElementById(\'importFile\').click()">📤 読込</button>';
+  html += '  </div>';
+  html += '</div>';
+  
   pane.innerHTML = html;
 }
 
