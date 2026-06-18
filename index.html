@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <title>エアコン修理 実績集計ツール</title>
+  <title>エアコン修理 7・8月 集計ツール</title>
   <style>
     :root{
       --bg1: rgba(236,253,245,0.98);
@@ -40,7 +40,8 @@
     .btn:active{transform:scale(0.96);}
     .btn.primary{background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98));color:#fff;box-shadow:0 8px 16px rgba(16,185,129,0.2);}
     .btn.danger{background:rgba(254,226,226,.9);color:#dc2626;}
-
+    .btn.ghost{background:rgba(255,255,255,.9);color:var(--primary2);border:2px solid var(--primary2);width:100%;}
+    
     .tab-bar{display:flex;gap:4px;margin-bottom:16px;}
     .tab-btn{flex:1;min-height:48px;font-size:13px;font-weight:900;border:2px solid var(--line);border-radius:14px;background:rgba(255,255,255,0.9);color:var(--muted);cursor:pointer;padding:0;}
     .tab-btn.active{background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98));color:#fff;border-color:transparent;}
@@ -59,21 +60,16 @@
 
     /* 全体サマリーパネル */
     .summary-box{text-align:center;padding:20px 12px;background:rgba(209,250,229,0.3);border-radius:16px;border:1px solid var(--line);margin-bottom:20px;}
-    .s-main { margin-bottom:16px; }
+    .s-main { margin-bottom:0; }
     .s-main .lbl { font-size:13px; font-weight:900; color:var(--muted); }
     .s-main .rate { font-size:54px; font-weight:1000; color:var(--primary2); line-height:1; margin:4px 0; }
+    .s-main .nums { font-size:14px; font-weight:900; margin-top:8px; color:var(--text); }
     
-    .s-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .s-box { background:#fff; border-radius:12px; padding:12px; border:1px solid var(--line); text-align:center;}
-    .s-box .lbl { font-size:11px; font-weight:900; color:var(--muted); line-height:1.2; height:26px;}
-    .s-box .val { font-size:20px; font-weight:900; color:var(--primary2); margin:4px 0; }
-
-    /* プログレスバー */
-    .prog-wrap{background:rgba(0,0,0,0.06);border-radius:99px;height:12px;overflow:hidden;margin:8px 0;}
-    .prog-bar{height:100%;border-radius:99px;transition:width 0.4s ease;}
-    .prog-bar.red{background:linear-gradient(90deg,#f87171,#ef4444);}
-    .prog-bar.yellow{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
-    .prog-bar.green{background:linear-gradient(90deg,#34d399,#10b981);}
+    /* バッジ用ボタン */
+    .star-btn-group { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
+    .star-btn { min-height:56px; background:#fff; border:2px solid #fde68a; border-radius:12px; font-weight:900; font-size:13px; color:#b45309; display:flex; justify-content:space-between; align-items:center; padding:0 12px; cursor:pointer; box-shadow:0 2px 8px rgba(217,119,6,0.05); transition:all 0.2s; }
+    .star-btn:active { transform:scale(0.97); }
+    .star-btn .count { font-size:18px; font-weight:1000; color:#d97706; }
 
     /* リストアイテム */
     .person-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;}
@@ -84,7 +80,7 @@
     .pc-info-text .sep { color: var(--muted); font-weight: normal; margin: 0 4px; }
     
     /* 単日用：入力カウンターUI */
-    .counter-group { display:flex; gap:8px; align-items:flex-end; margin-bottom:16px;}
+    .counter-group { display:flex; gap:8px; align-items:flex-end; margin-bottom:12px;}
     .counter-box { flex:1; background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:10px 4px; text-align:center; }
     .counter-label { font-size:11px; font-weight:900; color:var(--muted); margin-bottom:6px; line-height:1.2; }
     .counter-controls { display:flex; align-items:center; justify-content:center; gap:4px; }
@@ -95,10 +91,11 @@
     .counter-input { width:40px; height:32px; border:1px solid var(--line); border-radius:8px; text-align:center; font-size:14px; font-weight:900; color:var(--primary2); }
     .counter-input:focus { outline:2px solid rgba(16,185,129,0.3); border-color:var(--primary); }
 
-    /* 星とトロフィー */
-    .award-row { display:flex; justify-content:space-between; align-items:center; padding:4px 8px; background:rgba(254,243,199,0.3); border-radius:10px; border:1px solid rgba(253,230,138,0.5); min-height:48px;}
-    .stars { font-size:18px; letter-spacing:2px; line-height:1.2;}
-    .trophy { font-size:28px; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1)); animation: pop 0.5s ease-out; }
+    /* バッジの行 */
+    .award-row { display:flex; justify-content:flex-start; align-items:center; padding:8px; background:rgba(254,243,199,0.2); border-radius:10px; border:1px solid rgba(253,230,138,0.4); min-height:50px;}
+    .badges-container { display:flex; flex-wrap:wrap; align-items:center; gap:2px; flex:1; }
+    .badge-small { font-size:18px; }
+    .badge-big { font-size:26px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1)); animation: pop 0.4s ease-out; }
     
     @keyframes pop {
       0% { transform: scale(0.5); opacity: 0; }
@@ -106,6 +103,29 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
+    /* モーダル群 */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+    .modal-sheet{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:760px;max-height:85vh;overflow-y:auto;padding:20px 16px 32px;box-shadow:0 -10px 40px rgba(0,0,0,0.2);}
+    .modal-handle{width:40px;height:6px;background:#cbd5e1;border-radius:99px;margin:0 auto 16px;}
+    .modal-title{font-size:16px;font-weight:900;color:var(--primary2);margin-bottom:16px;text-align:center;}
+    .modal-list-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed #e2e8f0;}
+    .modal-list-item:last-child{border-bottom:none;}
+    .ml-name{font-size:15px;font-weight:900;color:var(--text);}
+    .ml-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+    .ml-right{text-align:right; flex-shrink:0;}
+    .ml-count{font-size:16px;font-weight:900;color:var(--primary2);}
+    .ml-badges{font-size:14px;margin-top:4px;display:flex;align-items:center;justify-content:flex-end;}
+
+    /* 累計用モーダル */
+    .cum-modal-box { background:#fff; margin:auto; width:85%; max-width:320px; border-radius:20px; padding:24px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+    
+    /* プログレスバー */
+    .prog-wrap{background:rgba(0,0,0,0.06);border-radius:99px;height:10px;overflow:hidden;margin:8px 0;}
+    .prog-bar{height:100%;border-radius:99px;transition:width 0.4s ease;}
+    .prog-bar.red{background:linear-gradient(90deg,#f87171,#ef4444);}
+    .prog-bar.yellow{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
+    .prog-bar.green{background:linear-gradient(90deg,#34d399,#10b981);}
+    
     .toast{position:fixed;top:40px;left:50%;transform:translate(-50%,-20px);background:rgba(4,120,87,0.95);color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:900;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:1000;opacity:0;pointer-events:none;transition:all 0.3s;}
     .toast.show{opacity:1;transform:translate(-50%,0);}
     .empty-msg{text-align:center;padding:32px 16px;color:var(--muted);font-size:14px;font-weight:700;}
@@ -115,9 +135,39 @@
 
 <div id="toast" class="toast">保存しました</div>
 
+<!-- バッジ件数一覧モーダル -->
+<div id="badgeModalOverlay" class="modal-overlay" style="display:none;" onclick="closeModal(event, 'badgeModalOverlay')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="badgeModalTitle"></div>
+    <div id="badgeModalBody"></div>
+    <button class="btn ghost" style="margin-top:24px; min-height:48px;" onclick="document.getElementById('badgeModalOverlay').style.display='none'">閉じる</button>
+  </div>
+</div>
+
+<!-- 累計表示モーダル -->
+<div id="cumModalOverlay" class="modal-overlay" style="display:none; align-items:center;" onclick="closeModal(event, 'cumModalOverlay')">
+  <div class="cum-modal-box" onclick="event.stopPropagation()">
+    <div style="font-size:18px; font-weight:900; color:var(--primary2); margin-bottom:8px;">🎯 全体の実績累計</div>
+    <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:20px; border-bottom:1px dashed var(--line); padding-bottom:12px;">【本日】までの全メンバー合算</div>
+    
+    <div style="display:flex; justify-content:space-around; margin-bottom:24px;">
+      <div style="flex:1; border-right:1px dashed var(--line);">
+        <div style="font-size:11px; font-weight:900; color:var(--muted);">総受付件数</div>
+        <div id="cumAs" style="font-size:32px; font-weight:1000; color:var(--text); margin-top:4px;"></div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px; font-weight:900; color:var(--muted);">総完了件数</div>
+        <div id="cumCo" style="font-size:32px; font-weight:1000; color:var(--primary2); margin-top:4px;"></div>
+      </div>
+    </div>
+    <button class="btn ghost" onclick="document.getElementById('cumModalOverlay').style.display='none'">閉じる</button>
+  </div>
+</div>
+
 <div class="app">
   <div class="header-bar">
-    <h1>📊 エアコン修理 実績集計ツール</h1>
+    <h1>📊 エアコン修理 7・8月集計ツール</h1>
     <p>日別の受付・完了件数を入力して集計します</p>
   </div>
 
@@ -151,6 +201,9 @@
       </div>
       
       <div id="modeIndicator" style="text-align:center;"></div>
+      
+      <!-- バッジ件数ごとの対象者表示ボタン -->
+      <div id="badgeButtonsContainer"></div>
 
       <!-- リスト -->
       <div id="listContainer"></div>
@@ -262,24 +315,19 @@ function initializeMasterData() {
 function dateToIndex(dStr) {
   var base = new Date("2026-06-15T00:00:00+09:00");
   var t = new Date(dStr + "T00:00:00+09:00");
-  var diff = Math.round((t - base) / 86400000);
-  return diff;
+  return Math.round((t - base) / 86400000);
 }
 
-// 特定期間のオリジナルキャパを計算
+// オリジナルキャパを計算
 function getOriginalCap(empName, site, area, fromStr, toStr) {
   var idxFrom = dateToIndex(fromStr);
   var idxTo = dateToIndex(toStr);
-  
   var aData = CAP_DATA_RAW.find(function(c) { return c.site === site && c.area === area; });
   if(!aData || !aData.persons || !aData.persons[empName]) return 0;
-  
   var arr = aData.persons[empName];
   var total = 0;
   for(var i = idxFrom; i <= idxTo; i++) {
-    if(i >= 0 && i < arr.length) {
-      total += arr[i];
-    }
+    if(i >= 0 && i < arr.length) total += arr[i];
   }
   return total;
 }
@@ -289,7 +337,6 @@ function getCalculatedCap(empNo, name, site, area, fromStr, toStr) {
   var total = 0;
   var d = new Date(fromStr + "T00:00:00+09:00");
   var end = new Date(toStr + "T00:00:00+09:00");
-  
   while(d <= end) {
     var ds = getTodayStrFromDate(d);
     if(db.customCaps && db.customCaps[ds] && db.customCaps[ds][empNo] !== undefined) {
@@ -305,45 +352,29 @@ function getCalculatedCap(empNo, name, site, area, fromStr, toStr) {
 // ==========================================
 // 日付関数
 // ==========================================
-function getTodayStr() {
-  var d = new Date();
-  return getTodayStrFromDate(d);
-}
+function getTodayStr() { return getTodayStrFromDate(new Date()); }
 function getTodayStrFromDate(d) {
-  var y = d.getFullYear();
-  var m = String(d.getMonth()+1).padStart(2, '0');
-  var dd = String(d.getDate()).padStart(2, '0');
+  var y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2, '0'), dd = String(d.getDate()).padStart(2, '0');
   return y + "-" + m + "-" + dd;
 }
 
 // ==========================================
 // 初期化
 // ==========================================
-var STORAGE_KEY = "ac_daily_aggregator_v7"; 
+var STORAGE_KEY = "ac_daily_aggregator_v12"; 
 var db = { master: [], records: {}, customCaps: {} };
 
 function loadDb() {
-  try {
-    var data = localStorage.getItem(STORAGE_KEY);
-    if(data) db = JSON.parse(data);
-  } catch(e) {}
-  
-  if(!db.master || db.master.length === 0) {
-    db.master = initializeMasterData();
-  }
+  try { var data = localStorage.getItem(STORAGE_KEY); if(data) db = JSON.parse(data); } catch(e) {}
+  if(!db.master || db.master.length === 0) db.master = initializeMasterData();
   if(!db.records) db.records = {};
   if(!db.customCaps) db.customCaps = {}; 
 }
-
-function saveDb() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) {}
-}
+function saveDb() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) {} }
 
 var toastTimer = null;
 function showToast(msg) {
-  var t = $("toast");
-  t.textContent = msg;
-  t.className = "toast show";
+  var t = $("toast"); t.textContent = msg; t.className = "toast show";
   if(toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(function(){ t.className = "toast"; }, 2000);
 }
@@ -379,21 +410,14 @@ function onSiteFilterChange() {
 function getFilteredData() {
   var site = $("fltSite").value;
   var area = $("fltArea").value;
-  return db.master.filter(function(m){
-    return (!site || m.site === site) && (!area || m.area === area);
-  });
+  return db.master.filter(function(m){ return (!site || m.site === site) && (!area || m.area === area); });
 }
-
-function pct(a, b) {
-  if(b <= 0) return 0;
-  return Math.floor((a / b) * 100);
-}
+function pct(a, b) { return b <= 0 ? 0 : Math.floor((a / b) * 100); }
 
 // ==========================================
 // タブ切り替え
 // ==========================================
 var currentTab = "main";
-
 function switchTab(tab) {
   currentTab = tab;
   $("btnTabMain").className = "tab-btn" + (tab === "main" ? " active" : "");
@@ -407,39 +431,121 @@ function switchTab(tab) {
 }
 
 function onDateChange() {
-  var f = $("dateFrom").value;
-  var t = $("dateTo").value;
-  if(f && t && f > t) {
-    $("dateTo").value = f;
-  }
+  var f = $("dateFrom").value; var t = $("dateTo").value;
+  if(f && t && f > t) $("dateTo").value = f;
   renderMainTab();
 }
 
-// --- 📋 メイン画面 (入力と集計を1画面で) ---
+// ==========================================
+// モーダル処理
+// ==========================================
+function openBadgeModal(minCount, maxCount, label) {
+  var dFrom = $("dateFrom").value;
+  var dTo = $("dateTo").value;
+  if(!dFrom || !dTo) return;
+  
+  var data = getFilteredData();
+  var list = [];
+  
+  data.forEach(function(m){
+    var empNo = m.employeeNo;
+    var target = getCalculatedCap(empNo, m.name, m.site, m.area, dFrom, dTo);
+    
+    var co = 0;
+    var d = new Date(dFrom + "T00:00:00+09:00");
+    var end = new Date(dTo + "T00:00:00+09:00");
+    while(d <= end) {
+      var ds = getTodayStrFromDate(d);
+      if(db.records[ds] && db.records[ds][empNo]) co += (db.records[ds][empNo].completed || 0);
+      d.setDate(d.getDate() + 1);
+    }
+    
+    if(co >= minCount && co <= maxCount) {
+      list.push({ name: m.name, site: m.site, area: m.area, completed: co, target: target });
+    }
+  });
+  
+  list.sort(function(a, b){ return b.completed - a.completed; });
+  
+  $("badgeModalTitle").textContent = label + " の対象者 (" + list.length + "名)";
+  
+  var html = "";
+  if(list.length === 0) {
+    html = '<div class="empty-msg">該当する従業員はいません。</div>';
+  } else {
+    list.forEach(function(item){
+      var bigCount = Math.floor(item.completed / 5);
+      var smallCount = item.completed % 5;
+      var badges = "";
+      for(var i=0; i<bigCount; i++) badges += '<span class="badge-big">🏵️</span>';
+      for(var i=0; i<smallCount; i++) badges += '<span class="badge-small">🎖️</span>';
+      if(item.completed === 0) badges = '<span style="color:#cbd5e1;">(バッジなし)</span>';
+      
+      html += '<div class="modal-list-item">';
+      html += '  <div>';
+      html += '    <div class="ml-name">'+escHtml(item.name)+'</div>';
+      html += '    <div class="ml-sub">'+escHtml(item.site)+' / '+escHtml(item.area)+'</div>';
+      html += '  </div>';
+      html += '  <div class="ml-right">';
+      html += '    <div class="ml-count">'+item.completed+' <span style="font-size:10px; font-weight:normal; color:var(--muted);">件完了</span></div>';
+      html += '    <div class="ml-badges">'+badges+'</div>';
+      html += '  </div>';
+      html += '</div>';
+    });
+  }
+  
+  $("badgeModalBody").innerHTML = html;
+  $("badgeModalOverlay").style.display = "flex";
+}
+
+function showGlobalCumulative() {
+  var today = getTodayStr();
+  var totalAs = 0;
+  var totalCo = 0;
+  
+  for(var d in db.records) {
+    if(d <= today) {
+      var daily = db.records[d];
+      for(var empNo in daily) {
+        totalAs += (daily[empNo].assigned || 0);
+        totalCo += (daily[empNo].completed || 0);
+      }
+    }
+  }
+  
+  $("cumAs").textContent = totalAs;
+  $("cumCo").textContent = totalCo;
+  $("cumModalOverlay").style.display = "flex";
+}
+
+function closeModal(e, id) {
+  if(e.target.id === id) $(id).style.display = "none";
+}
+
+// --- 📋 メイン画面 ---
 function renderMainTab() {
   var dFrom = $("dateFrom").value;
   var dTo = $("dateTo").value;
   
   if(!dFrom || !dTo) {
     var t = getTodayStr();
-    $("dateFrom").value = t;
-    $("dateTo").value = t;
+    $("dateFrom").value = t; $("dateTo").value = t;
     dFrom = t; dTo = t;
   }
   
   var isSingleDay = (dFrom === dTo);
-  
   var modeHtml = "";
   if(isSingleDay) {
     modeHtml = '<div class="mode-badge">単日モード (当日の実績入力)</div>';
   } else {
-    modeHtml = '<div class="mode-badge" style="background:#0f766e;">期間モード (星・トロフィー集計)</div>';
+    modeHtml = '<div class="mode-badge" style="background:#0f766e;">期間モード (進捗確認)</div>';
   }
   $("modeIndicator").innerHTML = modeHtml;
   
   var data = getFilteredData();
   var agg = {};
   var allTarget = 0, allAssigned = 0, allCompleted = 0;
+  var countG1 = 0, countG2 = 0, countG3 = 0, countG4 = 0;
   
   data.forEach(function(m){
     var empNo = m.employeeNo;
@@ -458,21 +564,34 @@ function renderMainTab() {
     }
     
     agg[empNo] = { target: target, assigned: as, completed: co };
-    
     allTarget += target;
     allAssigned += as;
     allCompleted += co;
+    
+    if(co >= 1 && co <= 5) countG1++;
+    else if(co >= 6 && co <= 10) countG2++;
+    else if(co >= 11 && co <= 15) countG3++;
+    else if(co >= 16) countG4++;
   });
+
+  // バッジボタン群の生成
+  var btnHtml = '<div style="font-size:13px;font-weight:900;color:var(--primary2);margin-bottom:8px;">🎖️ 完了件数で一覧を見る</div>';
+  btnHtml += '<div class="star-btn-group">';
+  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(1, 5, \'🎖️ 1〜5件完了\')">1〜5件 <span class="count">'+countG1+'名</span></button>';
+  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(6, 10, \'🎖️ 6〜10件完了\')">6〜10件 <span class="count">'+countG2+'名</span></button>';
+  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(11, 15, \'🎖️ 11〜15件完了\')">11〜15件 <span class="count">'+countG3+'名</span></button>';
+  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(16, 9999, \'🎖️ 16件以上完了\')">16件〜 <span class="count">'+countG4+'名</span></button>';
+  btnHtml += '</div>';
+  $("badgeButtonsContainer").innerHTML = btnHtml;
 
   // 人別リスト描画
   var listHtml = "";
   data.forEach(function(m){
     var empNo = m.employeeNo;
-    var rec = agg[empNo]; // 期間(単日の場合はその日)の累計データ
+    var rec = agg[empNo]; 
     
     listHtml += '<div class="person-card">';
     
-    // 単日モードの時だけ、入力UIを表示
     if(isSingleDay) {
       var cDaily = db.records[dFrom] && db.records[dFrom][empNo] ? db.records[dFrom][empNo] : { assigned: 0, completed: 0 };
       
@@ -498,27 +617,18 @@ function renderMainTab() {
       listHtml += '  </div>';
       
     } else {
-      // 期間モードの時は名前の線を消して詰める
       listHtml += '  <div class="pc-info-text no-border">'+escHtml(m.site)+' <span class="sep">/</span> '+escHtml(m.area)+' <span class="sep">/</span> <span style="color:var(--primary2);">'+escHtml(m.name)+'</span></div>';
     }
 
-    // 星とトロフィーは常に表示 (数字は出さない)
-    // 期間内の「完了数」÷ 5 個の星
-    var starCount = Math.floor(rec.completed / 5);
-    var stars = "";
-    for(var i=0; i<starCount; i++) stars += "⭐";
-    if(starCount === 0) stars = '<span style="color:#cbd5e1; font-size:12px; font-weight:700;">(まだ星はありません)</span>';
-    
-    // 目標が設定されていて、完了数が目標以上ならトロフィー
-    var showTrophy = (rec.target > 0 && rec.completed >= rec.target);
+    var bigCount = Math.floor(rec.completed / 5);
+    var smallCount = rec.completed % 5;
+    var badges = "";
+    for(var i=0; i<bigCount; i++) badges += '<span class="badge-big">🏵️</span>';
+    for(var i=0; i<smallCount; i++) badges += '<span class="badge-small">🎖️</span>';
+    if(rec.completed === 0) badges = '<span style="color:#cbd5e1; font-size:12px; font-weight:700;">(まだバッジはありません)</span>';
     
     listHtml += '  <div class="award-row">';
-    listHtml += '    <div class="stars">'+stars+'</div>';
-    if(showTrophy) {
-      listHtml += '    <div class="trophy">🏆</div>';
-    } else {
-      listHtml += '    <div></div>';
-    }
+    listHtml += '    <div class="badges-container">'+badges+'</div>';
     listHtml += '  </div>';
     
     listHtml += '</div>';
@@ -526,34 +636,23 @@ function renderMainTab() {
 
   // 全体サマリー描画
   var allDigestion = pct(allCompleted, allAssigned);
-  var allPace = pct(allAssigned, allTarget);
-  var allTotal = pct(allCompleted, allTarget);
   
   var htmlSum = '<div class="summary-box">';
   htmlSum += '  <div class="title">🎯 選択期間の全体サマリー</div>';
   
   htmlSum += '  <div class="s-main">';
-  htmlSum += '    <div class="lbl">受付消化率 (完了 ÷ 受付)</div>';
+  htmlSum += '    <div class="lbl">受付数に対する完了率</div>';
   htmlSum += '    <div class="rate">';
   htmlSum += '      '+(allAssigned>0 ? allDigestion+'<span style="font-size:24px;">%</span>' : '--');
   htmlSum += '    </div>';
   htmlSum += '    <div class="prog-wrap" style="height:12px;"><div class="prog-bar '+(allDigestion>=100?"green":(allDigestion>=50?"yellow":"red"))+'" style="width:'+Math.min(100, allDigestion)+'%"></div></div>';
   htmlSum += '    <div class="nums">総受付: '+allAssigned+'件 ／ 総完了: '+allCompleted+'件</div>';
   htmlSum += '  </div>';
-
-  htmlSum += '  <div style="background:rgba(255,255,255,0.8); border-radius:12px; padding:12px; margin-top:16px;">';
-  htmlSum += '    <div style="font-size:13px; font-weight:900; color:var(--text); margin-bottom:8px;">🎯 総目標(総キャパ): <span style="font-size:22px; color:var(--primary2);">'+allTarget+'</span> 件</div>';
-  htmlSum += '    <div class="s-grid">';
-  htmlSum += '      <div class="s-box">';
-  htmlSum += '        <div class="lbl">目標に対する受付</div>';
-  htmlSum += '        <div class="val">'+(allTarget>0 ? allPace+"%" : "--")+'</div>';
-  htmlSum += '      </div>';
-  htmlSum += '      <div class="s-box">';
-  htmlSum += '        <div class="lbl">目標に対する完了<br><span style="font-weight:normal">(参考)</span></div>';
-  htmlSum += '        <div class="val">'+(allTarget>0 ? allTotal+"%" : "--")+'</div>';
-  htmlSum += '      </div>';
-  htmlSum += '    </div>';
+  
+  htmlSum += '  <div style="margin-top:16px;">';
+  htmlSum += '    <button class="btn ghost" onclick="showGlobalCumulative()">📅 【本日】までの全メンバー累計を確認</button>';
   htmlSum += '  </div>';
+
   htmlSum += '</div>';
 
   $("summaryContainer").innerHTML = htmlSum;
