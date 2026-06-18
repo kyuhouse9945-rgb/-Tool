@@ -29,9 +29,14 @@
     }
     .app{max-width:760px;margin:0 auto;padding:16px 12px;}
     
-    .header-bar{text-align:center;margin-bottom:16px;padding-bottom:16px;border-bottom:2px solid var(--line);}
-    .header-bar h1{margin:0 0 4px;font-size:20px;color:var(--primary2);line-height:1.2;}
-    .header-bar p{margin:0;font-size:12px;color:var(--muted);font-weight:700;}
+    .header-bar{text-align:center;margin-bottom:12px;padding-bottom:16px;border-bottom:2px solid var(--line);}
+    .header-bar h1{margin:0 0 6px;font-size:20px;color:var(--primary2);line-height:1.2;}
+    .header-bar p{margin:0 0 12px;font-size:12px;color:var(--muted);font-weight:700;}
+
+    /* トップのバックアップボタン用 */
+    .top-action-row { display:flex; justify-content:center; gap:8px; }
+    .btn-top-action { padding:8px 16px; font-size:12px; font-weight:900; color:var(--primary2); background:#fff; border:2px solid var(--primary); border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(16,185,129,0.1); transition:all 0.2s;}
+    .btn-top-action:active { transform:scale(0.95); }
 
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px;}
     
@@ -60,11 +65,15 @@
 
     /* 全体サマリーパネル */
     .summary-box{text-align:center;padding:20px 12px;background:rgba(209,250,229,0.3);border-radius:16px;border:1px solid var(--line);margin-bottom:20px;}
-    .s-main { margin-bottom:0; }
+    .s-main { margin-bottom:12px; }
     .s-main .lbl { font-size:13px; font-weight:900; color:var(--muted); }
     .s-main .rate { font-size:54px; font-weight:1000; color:var(--primary2); line-height:1; margin:4px 0; }
     .s-main .nums { font-size:14px; font-weight:900; margin-top:8px; color:var(--text); }
     
+    .s-sub { background:#fff; border-radius:12px; padding:12px; border:1px solid var(--line); text-align:center; margin-top:16px; }
+    .s-sub .lbl { font-size:12px; font-weight:900; color:var(--muted); }
+    .s-sub .val { font-size:22px; font-weight:900; color:var(--primary2); margin-top:4px; }
+
     /* バッジ用ボタン */
     .star-btn-group { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
     .star-btn { min-height:56px; background:#fff; border:2px solid #fde68a; border-radius:12px; font-weight:900; font-size:13px; color:#b45309; display:flex; justify-content:space-between; align-items:center; padding:0 12px; cursor:pointer; box-shadow:0 2px 8px rgba(217,119,6,0.05); transition:all 0.2s; }
@@ -133,6 +142,9 @@
 </head>
 <body>
 
+<!-- 非表示のファイル入力（インポート用） -->
+<input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+
 <div id="toast" class="toast">保存しました</div>
 
 <!-- バッジ件数一覧モーダル -->
@@ -169,6 +181,12 @@
   <div class="header-bar">
     <h1>📊 エアコン修理 7・8月集計ツール</h1>
     <p>日別の受付・完了件数を入力して集計します</p>
+    
+    <!-- ★トップのバックアップエリア -->
+    <div class="top-action-row">
+      <button class="btn-top-action" onclick="exportData()">📥 バックアップ</button>
+      <button class="btn-top-action" onclick="document.getElementById('importFile').click()">📤 データ復元</button>
+    </div>
   </div>
 
   <div class="card" style="padding-bottom: 8px;">
@@ -311,14 +329,12 @@ function initializeMasterData() {
   return out;
 }
 
-// 日付からインデックスを計算 (0 = 2026-06-15)
 function dateToIndex(dStr) {
   var base = new Date("2026-06-15T00:00:00+09:00");
   var t = new Date(dStr + "T00:00:00+09:00");
   return Math.round((t - base) / 86400000);
 }
 
-// オリジナルキャパを計算
 function getOriginalCap(empName, site, area, fromStr, toStr) {
   var idxFrom = dateToIndex(fromStr);
   var idxTo = dateToIndex(toStr);
@@ -332,7 +348,6 @@ function getOriginalCap(empName, site, area, fromStr, toStr) {
   return total;
 }
 
-// カスタム設定も含めた最終的なキャパを計算
 function getCalculatedCap(empNo, name, site, area, fromStr, toStr) {
   var total = 0;
   var d = new Date(fromStr + "T00:00:00+09:00");
@@ -361,7 +376,7 @@ function getTodayStrFromDate(d) {
 // ==========================================
 // 初期化
 // ==========================================
-var STORAGE_KEY = "ac_daily_aggregator_v12"; 
+var STORAGE_KEY = "ac_daily_aggregator_v14"; 
 var db = { master: [], records: {}, customCaps: {} };
 
 function loadDb() {
@@ -377,6 +392,44 @@ function showToast(msg) {
   var t = $("toast"); t.textContent = msg; t.className = "toast show";
   if(toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(function(){ t.className = "toast"; }, 2000);
+}
+
+// ==========================================
+// データのバックアップと復元
+// ==========================================
+function exportData() {
+  var dataStr = JSON.stringify(db);
+  var blob = new Blob([dataStr], {type: "application/json"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "ac_report_backup_" + getTodayStr() + ".json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  var file = event.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var importedDb = JSON.parse(e.target.result);
+      if(importedDb && importedDb.master) {
+        db = importedDb;
+        saveDb();
+        alert("データを復元しました！画面を更新します。");
+        location.reload();
+      } else {
+        alert("無効なファイル形式です。");
+      }
+    } catch(err) {
+      alert("ファイルの読み込みに失敗しました。");
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ==========================================
@@ -449,8 +502,6 @@ function openBadgeModal(minCount, maxCount, label) {
   
   data.forEach(function(m){
     var empNo = m.employeeNo;
-    var target = getCalculatedCap(empNo, m.name, m.site, m.area, dFrom, dTo);
-    
     var co = 0;
     var d = new Date(dFrom + "T00:00:00+09:00");
     var end = new Date(dTo + "T00:00:00+09:00");
@@ -461,7 +512,7 @@ function openBadgeModal(minCount, maxCount, label) {
     }
     
     if(co >= minCount && co <= maxCount) {
-      list.push({ name: m.name, site: m.site, area: m.area, completed: co, target: target });
+      list.push({ name: m.name, site: m.site, area: m.area, completed: co });
     }
   });
   
@@ -620,6 +671,7 @@ function renderMainTab() {
       listHtml += '  <div class="pc-info-text no-border">'+escHtml(m.site)+' <span class="sep">/</span> '+escHtml(m.area)+' <span class="sep">/</span> <span style="color:var(--primary2);">'+escHtml(m.name)+'</span></div>';
     }
 
+    // バッジ
     var bigCount = Math.floor(rec.completed / 5);
     var smallCount = rec.completed % 5;
     var badges = "";
@@ -641,12 +693,17 @@ function renderMainTab() {
   htmlSum += '  <div class="title">🎯 選択期間の全体サマリー</div>';
   
   htmlSum += '  <div class="s-main">';
-  htmlSum += '    <div class="lbl">受付数に対する完了率</div>';
+  htmlSum += '    <div class="lbl">受付数に対する完了率 (完了 ÷ 受付)</div>';
   htmlSum += '    <div class="rate">';
   htmlSum += '      '+(allAssigned>0 ? allDigestion+'<span style="font-size:24px;">%</span>' : '--');
   htmlSum += '    </div>';
   htmlSum += '    <div class="prog-wrap" style="height:12px;"><div class="prog-bar '+(allDigestion>=100?"green":(allDigestion>=50?"yellow":"red"))+'" style="width:'+Math.min(100, allDigestion)+'%"></div></div>';
   htmlSum += '    <div class="nums">総受付: '+allAssigned+'件 ／ 総完了: '+allCompleted+'件</div>';
+  htmlSum += '  </div>';
+  
+  // 参考値の総キャパ
+  htmlSum += '  <div style="font-size:11px; font-weight:700; color:var(--muted); margin-top:16px; border-top:1px dashed var(--line); padding-top:12px;">';
+  htmlSum += '    総目標(総キャパ): '+allTarget+'件';
   htmlSum += '  </div>';
   
   htmlSum += '  <div style="margin-top:16px;">';
