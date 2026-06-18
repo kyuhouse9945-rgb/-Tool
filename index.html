@@ -46,59 +46,56 @@
     .tab-btn{flex:1;min-height:48px;font-size:13px;font-weight:900;border:2px solid var(--line);border-radius:14px;background:rgba(255,255,255,0.9);color:var(--muted);cursor:pointer;padding:0;}
     .tab-btn.active{background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98));color:#fff;border-color:transparent;}
 
-    /* フィルタ */
+    /* フィルタ＆日付 */
+    .date-input-wrap {text-align:center; margin-bottom:16px;}
+    .date-input-wrap input[type="date"] {
+      width: 100%; max-width: 240px; text-align:center; font-size:18px; font-weight:900; color:var(--primary2); border:2px solid var(--primary); border-radius:12px; padding:10px; background:#fff; cursor:pointer;
+    }
+    
     .filter-row{display:flex;gap:8px;margin-bottom:16px;}
     .filter-row select{-webkit-appearance:none;appearance:none;flex:1;min-height:44px;border-radius:12px;border:1px solid var(--line);font-size:13px;font-weight:700;background:rgba(255,255,255,0.9) url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23047857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat right 10px center/14px;padding:0 30px 0 12px;color:var(--text);}
 
-    /* リストアイテム */
-    .person-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;}
-    .pc-head {
-      display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed #e2e8f0; padding-bottom:8px; margin-bottom:12px; gap:8px;
-    }
-    .pc-info-text {
-      font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.4; word-break: break-word; flex:1;
-    }
-    .pc-info-text .sep { color: var(--muted); font-weight: normal; margin: 0 2px; }
+    /* 全体サマリーパネル */
+    .summary-box{text-align:center;padding:20px 16px;background:rgba(209,250,229,0.3);border-radius:16px;border:1px solid var(--line);margin-bottom:20px;}
+    .summary-box .title{font-size:14px;font-weight:900;color:var(--primary2);margin-bottom:16px;}
     
-    /* 人別のカレンダー */
-    .person-date {
-      width: 140px; height: 38px; border-radius: 8px; border: 2px solid var(--line); text-align: center; font-size: 14px; font-weight: 900; color: var(--primary2); background: #f8fafc; cursor: pointer; flex-shrink: 0;
-    }
-    .person-date:focus { outline: none; border-color: var(--primary); background: #fff; }
+    .s-main { margin-bottom:0; }
+    .s-main .lbl { font-size:12px; font-weight:900; color:var(--muted); }
+    .s-main .rate { font-size:54px; font-weight:1000; color:var(--primary2); line-height:1; margin:4px 0; }
+    .s-main .nums { font-size:14px; font-weight:900; margin-top:8px; color:var(--text); }
+    
+    .s-sub-grid { display:flex; gap:8px; }
+    .s-sub-box { flex:1; background:#fff; border-radius:12px; padding:12px; border:1px solid var(--line); }
+    .s-sub-box .lbl { font-size:11px; font-weight:900; color:var(--muted); line-height:1.2; height:26px;}
+    .s-sub-box .val { font-size:24px; font-weight:900; color:var(--primary2); margin:4px 0; }
 
+    /* リストアイテム */
+    .person-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;}
+    .pc-info-text {
+      font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.4; margin-bottom: 12px; word-break: break-word;
+    }
+    .pc-info-text .sep { color: var(--muted); font-weight: normal; margin: 0 4px; }
+    
     /* 入力カウンターUI */
-    .counter-group { display:flex; gap:12px; }
-    .counter-box { flex:1; background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:8px; text-align:center; }
-    .counter-label { font-size:11px; font-weight:900; color:var(--muted); margin-bottom:6px; }
+    .counter-group { display:flex; gap:12px; border-bottom:1px dashed #e2e8f0; padding-bottom:16px; margin-bottom:12px; }
+    .counter-box { flex:1; background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:10px 8px; text-align:center; }
+    .counter-label { font-size:11px; font-weight:900; color:var(--muted); margin-bottom:8px; }
     .counter-controls { display:flex; align-items:center; justify-content:center; gap:4px; }
-    .btn-circle { width:38px; height:38px; border-radius:10px; border:none; font-size:18px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .btn-circle { width:40px; height:40px; border-radius:10px; border:none; font-size:18px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; }
     .btn-circle:active { transform:scale(0.9); }
     .btn-circle.minus { background:rgba(254,226,226,0.9); color:#dc2626; }
     .btn-circle.plus { background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98)); color:#fff; }
-    .counter-input { width:48px; height:38px; border:1px solid var(--line); border-radius:8px; text-align:center; font-size:16px; font-weight:900; color:var(--primary2); }
+    .counter-input { width:50px; height:40px; border:1px solid var(--line); border-radius:8px; text-align:center; font-size:18px; font-weight:900; color:var(--primary2); }
     .counter-input:focus { outline:2px solid rgba(16,185,129,0.3); border-color:var(--primary); }
 
     /* プログレスバー */
-    .prog-wrap{background:rgba(0,0,0,0.06);border-radius:99px;height:10px;overflow:hidden;margin:8px 0;}
+    .prog-wrap{background:rgba(0,0,0,0.06);border-radius:99px;height:12px;overflow:hidden;margin:8px 0;}
     .prog-bar{height:100%;border-radius:99px;transition:width 0.4s ease;}
     .prog-bar.red{background:linear-gradient(90deg,#f87171,#ef4444);}
     .prog-bar.yellow{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
     .prog-bar.green{background:linear-gradient(90deg,#34d399,#10b981);}
     .prog-bar.gray{background:#d1d5db;}
     
-    /* 集計表示用 */
-    .stats-row { display:flex; justify-content:space-between; align-items:flex-end; font-size:13px; font-weight:900; color:var(--text); }
-    .stats-row .rate { font-size:24px; color:var(--primary2); line-height:1; }
-
-    /* 全体サマリーパネル */
-    .summary-box{text-align:center;padding:20px 12px;background:rgba(209,250,229,0.3);border-radius:16px;border:1px solid var(--line);margin-bottom:20px;}
-    .summary-box .title{font-size:14px;font-weight:900;color:var(--primary2);margin-bottom:12px;}
-    .summary-box .rate{font-size:46px;font-weight:1000;color:var(--primary2);line-height:1;margin-bottom:8px;}
-    .summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
-    .s-item { background:#fff; border-radius:10px; padding:10px; border:1px solid var(--line); }
-    .s-item .lbl { font-size:11px; color:var(--muted); font-weight:900; }
-    .s-item .val { font-size:20px; color:var(--primary2); font-weight:900; margin-top:4px; }
-
     /* トースト */
     .toast{position:fixed;top:40px;left:50%;transform:translate(-50%,-20px);background:rgba(4,120,87,0.95);color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:900;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:1000;opacity:0;pointer-events:none;transition:all 0.3s;}
     .toast.show{opacity:1;transform:translate(-50%,0);}
@@ -119,24 +116,36 @@
   <div class="card" style="padding-bottom: 8px;">
     <!-- タブメニュー -->
     <div class="tab-bar">
-      <button id="btnTabInput" class="tab-btn active" onclick="switchTab('input')">📋 実績入力</button>
-      <button id="btnTabArea" class="tab-btn" onclick="switchTab('area')">📈 進捗集計</button>
-      <button id="btnTabStaff" class="tab-btn" onclick="switchTab('staff')">⚙️ 名簿・目標</button>
+      <button id="btnTabMain" class="tab-btn active" onclick="switchTab('main')">📋 入力・集計一覧</button>
+      <button id="btnTabStaff" class="tab-btn" onclick="switchTab('staff')">⚙️ 名簿・目標管理</button>
     </div>
     
-    <!-- 絞り込みフィルタ -->
-    <div id="filterContainer" class="filter-row">
-      <select id="fltSite" onchange="onSiteFilterChange()">
-        <option value="">すべての拠点</option>
-      </select>
-      <select id="fltArea" onchange="renderCurrentTab()">
-        <option value="">すべてのエリア</option>
-      </select>
+    <!-- メイン画面 (入力と集計をまとめた一覧) -->
+    <div id="paneMain">
+      <!-- 大枠の日付選択 -->
+      <div class="date-input-wrap">
+        <div style="font-size:12px; font-weight:900; color:var(--muted); margin-bottom:4px;">▼ 入力する日付を選択 ▼</div>
+        <input type="date" id="globalDate" onchange="renderMainTab()" />
+      </div>
+
+      <!-- 全体サマリー -->
+      <div id="summaryContainer"></div>
+
+      <!-- 絞り込みフィルタ -->
+      <div class="filter-row">
+        <select id="fltSite" onchange="onSiteFilterChange()">
+          <option value="">すべての拠点</option>
+        </select>
+        <select id="fltArea" onchange="renderMainTab()">
+          <option value="">すべてのエリア</option>
+        </select>
+      </div>
+
+      <!-- 人別リスト -->
+      <div id="listContainer"></div>
     </div>
 
-    <!-- コンテンツ領域 -->
-    <div id="paneInput"></div>
-    <div id="paneArea" style="display:none;"></div>
+    <!-- 名簿・目標画面 -->
     <div id="paneStaff" style="display:none;"></div>
   </div>
 </div>
@@ -268,10 +277,8 @@ function isTargetMonth(dateStr) {
 // ==========================================
 // 初期化
 // ==========================================
-// ★キーを更新してクリーンな状態で起動させる
-var STORAGE_KEY = "ac_daily_aggregator_v2"; 
+var STORAGE_KEY = "ac_daily_aggregator_v4"; 
 var db = { master: [], records: {} };
-var currentDates = {}; // { empNo: "YYYY-MM-DD" }
 
 function loadDb() {
   try {
@@ -323,7 +330,7 @@ function onSiteFilterChange() {
   areas.forEach(function(a){ areaHtml += '<option value="'+escHtml(a)+'">'+escHtml(a)+'</option>'; });
   $("fltArea").innerHTML = areaHtml;
   if(areas.indexOf(oldArea) !== -1) $("fltArea").value = oldArea;
-  renderCurrentTab();
+  renderMainTab();
 }
 
 function getFilteredData() {
@@ -334,130 +341,39 @@ function getFilteredData() {
   });
 }
 
+function pct(a, b) {
+  if(b <= 0) return 0;
+  return Math.floor((a / b) * 100);
+}
+
 // ==========================================
 // タブ切り替え
 // ==========================================
-var currentTab = "input";
+var currentTab = "main";
 
 function switchTab(tab) {
   currentTab = tab;
-  $("btnTabInput").className = "tab-btn" + (tab === "input" ? " active" : "");
-  $("btnTabArea").className = "tab-btn" + (tab === "area" ? " active" : "");
+  $("btnTabMain").className = "tab-btn" + (tab === "main" ? " active" : "");
   $("btnTabStaff").className = "tab-btn" + (tab === "staff" ? " active" : "");
   
-  $("paneInput").style.display = (tab === "input" ? "block" : "none");
-  $("paneArea").style.display = (tab === "area" ? "block" : "none");
+  $("paneMain").style.display = (tab === "main" ? "block" : "none");
   $("paneStaff").style.display = (tab === "staff" ? "block" : "none");
   
-  // フィルタは実績入力・進捗集計で表示
-  $("filterContainer").style.display = (tab === "input" || tab === "area" ? "flex" : "none");
+  if(tab === "main") renderMainTab();
+  if(tab === "staff") renderStaffTab();
+}
+
+// --- 📋 メイン画面 (入力と集計を1画面で) ---
+function renderMainTab() {
+  var targetDate = $("globalDate").value;
+  if(!targetDate) {
+    targetDate = getTodayStr();
+    $("globalDate").value = targetDate;
+  }
   
-  renderCurrentTab();
-}
-
-function renderCurrentTab() {
-  if(currentTab === "input") renderInputTab();
-  else if(currentTab === "area") renderAreaTab();
-  else if(currentTab === "staff") renderStaffTab();
-}
-
-// --- 📋 実績入力タブ ---
-function renderInputTab() {
   var data = getFilteredData();
-  var pane = $("paneInput");
   
-  if(data.length === 0) { pane.innerHTML = '<div class="empty-msg">該当する従業員がいません。</div>'; return; }
-  
-  var html = '<div style="font-size:12px;color:var(--muted);font-weight:700;margin-bottom:12px;text-align:center;">※人ごとに日付を選んで、<br>その日の「受付数」「完了数」を入力してください。</div>';
-  
-  var today = getTodayStr();
-  
-  data.forEach(function(m){
-    var empNo = m.employeeNo;
-    if(!currentDates[empNo]) currentDates[empNo] = today;
-    var dStr = currentDates[empNo];
-    
-    if(!db.records[dStr]) db.records[dStr] = {};
-    if(!db.records[dStr][empNo]) db.records[dStr][empNo] = { assigned: 0, completed: 0 };
-    var rec = db.records[dStr][empNo];
-    
-    html += '<div class="person-card">';
-    html += '  <div class="pc-head">';
-    html += '    <div class="pc-info-text" style="border:none; padding:0; margin:0;">'+escHtml(m.site)+' <span class="sep">/</span> '+escHtml(m.area)+' <span class="sep">/</span> <span style="color:var(--primary2);">'+escHtml(m.name)+'</span></div>';
-    html += '    <input type="date" class="person-date" value="'+dStr+'" onchange="changePersonDate(\''+empNo+'\', this.value)">';
-    html += '  </div>';
-    
-    html += '  <div class="counter-group">';
-    
-    // 受付件数
-    html += '    <div class="counter-box">';
-    html += '      <div class="counter-label">当日の受付数</div>';
-    html += '      <div class="counter-controls">';
-    html += '        <button class="btn-circle minus" onclick="updateCounter(\''+empNo+'\', \'assigned\', -1)">−</button>';
-    html += '        <input type="number" class="counter-input" min="0" value="'+rec.assigned+'" onchange="setCounter(\''+empNo+'\', \'assigned\', this.value)" onfocus="this.select()">';
-    html += '        <button class="btn-circle plus" onclick="updateCounter(\''+empNo+'\', \'assigned\', 1)">＋</button>';
-    html += '      </div>';
-    html += '    </div>';
-    
-    // 完了件数
-    html += '    <div class="counter-box">';
-    html += '      <div class="counter-label">当日の完了数</div>';
-    html += '      <div class="counter-controls">';
-    html += '        <button class="btn-circle minus" onclick="updateCounter(\''+empNo+'\', \'completed\', -1)">−</button>';
-    html += '        <input type="number" class="counter-input" min="0" value="'+rec.completed+'" onchange="setCounter(\''+empNo+'\', \'completed\', this.value)" onfocus="this.select()">';
-    html += '        <button class="btn-circle plus" onclick="updateCounter(\''+empNo+'\', \'completed\', 1)">＋</button>';
-    html += '      </div>';
-    html += '    </div>';
-    
-    html += '  </div>';
-    html += '</div>';
-  });
-  pane.innerHTML = html;
-}
-
-function changePersonDate(empNo, val) {
-  currentDates[empNo] = val;
-  renderInputTab();
-}
-
-function updateCounter(empNo, field, diff) {
-  var dStr = currentDates[empNo];
-  if(!dStr) dStr = getTodayStr();
-  
-  if(!db.records[dStr]) db.records[dStr] = {};
-  if(!db.records[dStr][empNo]) db.records[dStr][empNo] = { assigned: 0, completed: 0 };
-  
-  var rec = db.records[dStr][empNo];
-  var next = rec[field] + diff;
-  if(next < 0) next = 0;
-  rec[field] = next;
-  
-  saveDb();
-  renderInputTab(); // 再描画
-}
-
-function setCounter(empNo, field, val) {
-  var dStr = currentDates[empNo];
-  if(!dStr) dStr = getTodayStr();
-  
-  if(!db.records[dStr]) db.records[dStr] = {};
-  if(!db.records[dStr][empNo]) db.records[dStr][empNo] = { assigned: 0, completed: 0 };
-  
-  var num = parseInt(val, 10);
-  if(isNaN(num) || num < 0) num = 0;
-  db.records[dStr][empNo][field] = num;
-  
-  saveDb();
-  showToast("保存しました");
-  renderInputTab();
-}
-
-// --- 📈 進捗集計タブ ---
-function renderAreaTab() {
-  var data = getFilteredData();
-  var pane = $("paneArea");
-  
-  // 7,8月分のレコードを全て走査し、個人ごとの「累計」を算出
+  // 1. 全レコードを集計して「7・8月の累計」を算出
   var agg = {};
   for(var dateStr in db.records) {
     if(!isTargetMonth(dateStr)) continue;
@@ -474,62 +390,153 @@ function renderAreaTab() {
     }
   }
   
+  // 当日のデータ
+  var currentDaily = db.records[targetDate] || {};
+
   var allTarget = 0, allAssigned = 0, allCompleted = 0;
   var listHtml = "";
-  
+
   data.forEach(function(m){
     var target = m.target || 0;
-    var rec = agg[m.employeeNo] || { assigned: 0, completed: 0 };
+    var empNo = m.employeeNo;
     
+    // 個人累計
+    var rec = agg[empNo] || { assigned: 0, completed: 0 };
+    // 当日入力
+    var cDaily = currentDaily[empNo] || { assigned: 0, completed: 0 };
+
     allTarget += target;
     allAssigned += rec.assigned;
     allCompleted += rec.completed;
     
-    var rate = target > 0 ? Math.floor((rec.completed / target) * 100) : 0;
-    var barColor = target > 0 ? (rate >= 100 ? "green" : (rate >= 50 ? "yellow" : "red")) : "gray";
-    var rateW = Math.min(100, rate);
+    // 進捗計算
+    var rateDigestion = pct(rec.completed, rec.assigned); // 完了/受付
+    var ratePace = pct(rec.assigned, target);             // 受付/目標
+    var rateTotal = pct(rec.completed, target);           // 完了/目標(参考)
     
+    var barColor = rec.assigned > 0 ? (rateDigestion >= 100 ? "green" : (rateDigestion >= 50 ? "yellow" : "red")) : "gray";
+    var rateW = Math.min(100, rateDigestion);
+
     listHtml += '<div class="person-card">';
     listHtml += '  <div class="pc-info-text">'+escHtml(m.site)+' <span class="sep">/</span> '+escHtml(m.area)+' <span class="sep">/</span> <span style="color:var(--primary2);">'+escHtml(m.name)+'</span></div>';
     
-    listHtml += '  <div class="stats-row">';
-    listHtml += '    <div style="font-weight:700;">目標(7・8月): <span style="color:var(--primary2);">'+target+'</span> 件<br>受付累計: <span style="color:var(--primary2);">'+rec.assigned+'</span> 件<br>完了累計: <span style="color:var(--primary2);">'+rec.completed+'</span> 件</div>';
-    listHtml += '    <div class="rate">'+(target>0 ? rate+"%" : "--%")+'</div>';
+    // 入力ポチポチ
+    listHtml += '  <div class="counter-group">';
+    listHtml += '    <div class="counter-box">';
+    listHtml += '      <div class="counter-label">当日の受付数</div>';
+    listHtml += '      <div class="counter-controls">';
+    listHtml += '        <button class="btn-circle minus" onclick="updateCounter(\''+empNo+'\', \'assigned\', -1)">−</button>';
+    listHtml += '        <input type="number" class="counter-input" min="0" value="'+cDaily.assigned+'" onchange="setCounter(\''+empNo+'\', \'assigned\', this.value)" onfocus="this.select()">';
+    listHtml += '        <button class="btn-circle plus" onclick="updateCounter(\''+empNo+'\', \'assigned\', 1)">＋</button>';
+    listHtml += '      </div>';
+    listHtml += '    </div>';
+    listHtml += '    <div class="counter-box">';
+    listHtml += '      <div class="counter-label">当日の完了数</div>';
+    listHtml += '      <div class="counter-controls">';
+    listHtml += '        <button class="btn-circle minus" onclick="updateCounter(\''+empNo+'\', \'completed\', -1)">−</button>';
+    listHtml += '        <input type="number" class="counter-input" min="0" value="'+cDaily.completed+'" onchange="setCounter(\''+empNo+'\', \'completed\', this.value)" onfocus="this.select()">';
+    listHtml += '        <button class="btn-circle plus" onclick="updateCounter(\''+empNo+'\', \'completed\', 1)">＋</button>';
+    listHtml += '      </div>';
+    listHtml += '    </div>';
     listHtml += '  </div>';
-    listHtml += '  <div class="prog-wrap"><div class="prog-bar '+barColor+'" style="width:'+rateW+'%"></div></div>';
+    
+    // 累計表示
+    listHtml += '  <div style="display:flex; justify-content:space-between; align-items:flex-end;">';
+    listHtml += '    <div style="font-size:12px; font-weight:900; color:var(--muted); line-height:1.5;">';
+    listHtml += '      目標: <span style="color:var(--text)">'+target+'</span> 件<br>';
+    listHtml += '      受付累計: <span style="color:var(--text)">'+rec.assigned+'</span> 件 <span style="font-size:10px;">(目標比 '+ratePace+'%)</span><br>';
+    listHtml += '      完了累計: <span style="color:var(--text)">'+rec.completed+'</span> 件 <span style="font-size:10px;">(目標比 '+rateTotal+'%)</span>';
+    listHtml += '    </div>';
+    listHtml += '    <div style="text-align:right;">';
+    listHtml += '      <div style="font-size:10px; font-weight:900; color:var(--muted);">受付消化率</div>';
+    listHtml += '      <div style="font-size:28px; font-weight:1000; color:var(--primary2); line-height:1;">'+(rec.assigned > 0 ? rateDigestion + '<span style="font-size:14px;">%</span>' : '--')+'</div>';
+    listHtml += '    </div>';
+    listHtml += '  </div>';
+    listHtml += '  <div class="prog-wrap" style="height:6px; margin-top:8px;"><div class="prog-bar '+barColor+'" style="width:'+rateW+'%"></div></div>';
     listHtml += '</div>';
   });
+
+  // サマリー描画
+  var allDigestion = pct(allCompleted, allAssigned);
+  var allPace = pct(allAssigned, allTarget);
+  var allTotal = pct(allCompleted, allTarget);
   
-  var html = "";
-  var allRate = allTarget > 0 ? Math.floor((allCompleted / allTarget) * 100) : 0;
+  var htmlSum = '<div class="summary-box">';
+  htmlSum += '  <div class="title">🏆 全体進捗 (7・8月累計)</div>';
   
-  // 全体サマリー
-  html += '<div class="summary-box">';
-  html += '  <div class="title">🎯 表示中メンバーの全体進捗 (7・8月累計)</div>';
-  html += '  <div class="rate">'+(allTarget > 0 ? allRate + "%" : "--%")+'</div>';
-  html += '  <div class="prog-wrap" style="height:12px;"><div class="prog-bar '+(allRate>=100?"green":(allRate>=50?"yellow":"red"))+'" style="width:'+Math.min(100, allRate)+'%"></div></div>';
-  
-  html += '  <div class="summary-grid">';
-  html += '    <div class="s-item"><div class="lbl">総目標件数</div><div class="val">'+allTarget+'</div></div>';
-  html += '    <div class="s-item"><div class="lbl">受付数累計</div><div class="val">'+allAssigned+'</div></div>';
-  html += '    <div class="s-item" style="grid-column:1 / span 2;"><div class="lbl">完了数累計</div><div class="val" style="font-size:28px;">'+allCompleted+'</div></div>';
-  html += '  </div>';
-  html += '</div>';
+  htmlSum += '  <div class="s-main">';
+  htmlSum += '    <div class="lbl">受付消化率 (完了 ÷ 受付)</div>';
+  htmlSum += '    <div class="rate">';
+  htmlSum += '      '+(allAssigned>0 ? allDigestion+'<span style="font-size:24px;">%</span>' : '--');
+  htmlSum += '    </div>';
+  htmlSum += '    <div class="prog-wrap" style="height:12px;"><div class="prog-bar '+(allDigestion>=100?"green":(allDigestion>=50?"yellow":"red"))+'" style="width:'+Math.min(100, allDigestion)+'%"></div></div>';
+  htmlSum += '    <div class="nums">総受付: '+allAssigned+'件 ／ 総完了: '+allCompleted+'件</div>';
+  htmlSum += '  </div>';
+
+  // --- 目標に対する進捗 ---
+  htmlSum += '  <div style="background:rgba(255,255,255,0.8); border-radius:12px; padding:12px; margin-top:16px;">';
+  htmlSum += '    <div style="font-size:13px; font-weight:900; color:var(--text); margin-bottom:8px;">🎯 総目標(総キャパ): <span style="font-size:22px; color:var(--primary2);">'+allTarget+'</span> 件</div>';
+  htmlSum += '    <div class="s-sub-grid">';
+  htmlSum += '      <div class="s-sub-box">';
+  htmlSum += '        <div class="lbl">目標に対する受付</div>';
+  htmlSum += '        <div class="val">'+(allTarget>0 ? allPace+"%" : "--")+'</div>';
+  htmlSum += '      </div>';
+  htmlSum += '      <div class="s-sub-box">';
+  htmlSum += '        <div class="lbl">目標に対する完了<br><span style="font-weight:normal">(参考)</span></div>';
+  htmlSum += '        <div class="val">'+(allTarget>0 ? allTotal+"%" : "--")+'</div>';
+  htmlSum += '      </div>';
+  htmlSum += '    </div>';
+  htmlSum += '  </div>';
+
+  htmlSum += '</div>';
+
+  $("summaryContainer").innerHTML = htmlSum;
   
   if(data.length === 0) {
-    html += '<div class="empty-msg">該当する従業員がいません。</div>';
+    $("listContainer").innerHTML = '<div class="empty-msg">該当する従業員がいません。</div>';
   } else {
-    html += listHtml;
+    $("listContainer").innerHTML = listHtml;
   }
+}
+
+// データの更新 (プラスマイナス)
+function updateCounter(empNo, field, diff) {
+  var dStr = $("globalDate").value;
+  if(!dStr) dStr = getTodayStr();
   
-  pane.innerHTML = html;
+  if(!db.records[dStr]) db.records[dStr] = {};
+  if(!db.records[dStr][empNo]) db.records[dStr][empNo] = { assigned: 0, completed: 0 };
+  
+  var rec = db.records[dStr][empNo];
+  var next = rec[field] + diff;
+  if(next < 0) next = 0;
+  rec[field] = next;
+  
+  saveDb();
+  renderMainTab();
+}
+
+// データの更新 (直接入力)
+function setCounter(empNo, field, val) {
+  var dStr = $("globalDate").value;
+  if(!dStr) dStr = getTodayStr();
+  
+  if(!db.records[dStr]) db.records[dStr] = {};
+  if(!db.records[dStr][empNo]) db.records[dStr][empNo] = { assigned: 0, completed: 0 };
+  
+  var num = parseInt(val, 10);
+  if(isNaN(num) || num < 0) num = 0;
+  db.records[dStr][empNo][field] = num;
+  
+  saveDb();
+  showToast("保存しました");
+  renderMainTab();
 }
 
 // --- ⚙️ 名簿・目標タブ ---
 function renderStaffTab() {
-  var data = db.master; // フィルタ対象外
+  var data = db.master; 
   var pane = $("paneStaff");
-  
   var defSite = $("fltSite").value || "";
   var defArea = $("fltArea").value || "";
   
@@ -605,7 +612,7 @@ function addStaff() {
   $("fltArea").value = area;
   
   showToast("👤 名簿に追加しました");
-  renderCurrentTab();
+  renderStaffTab(); // 表示更新
 }
 
 function deleteStaff(empNo, name) {
@@ -614,15 +621,16 @@ function deleteStaff(empNo, name) {
   saveDb();
   initFilters();
   showToast("🗑️ 削除しました");
-  renderCurrentTab();
+  renderStaffTab();
 }
 
 // ==========================================
-// 初期化実行
+// 起動処理
 // ==========================================
+$("globalDate").value = getTodayStr(); // 起動時に今日の日付をセット
 loadDb();
 initFilters();
-switchTab('input');
+switchTab('main');
 </script>
 </body>
 </html>
