@@ -41,7 +41,7 @@
     /* クラウド共有パネル (一番上) */
     .cloud-panel { background:rgba(209,250,229,0.5); border:2px solid var(--primary); border-radius:16px; padding:16px; margin-bottom:16px; text-align:center; }
     .cloud-title { font-size:14px; font-weight:900; color:var(--primary2); margin-bottom:12px; }
-    .cloud-id-box { font-size:18px; font-weight:900; color:var(--text); background:#fff; padding:8px; border-radius:8px; border:1px dashed var(--primary); display:inline-block; margin-bottom:12px; word-break:break-all; }
+    .cloud-id-box { font-size:16px; font-weight:900; color:var(--text); background:#fff; padding:8px; border-radius:8px; border:1px dashed var(--primary); display:inline-block; margin-bottom:12px; word-break:break-all; }
     
     .btn-action-row { display:flex; gap:8px; margin-bottom:8px; }
     .btn-action { flex:1; padding:12px; font-size:13px; font-weight:900; border-radius:12px; cursor:pointer; border:none; transition:all 0.2s; box-shadow:0 4px 10px rgba(0,0,0,0.05); }
@@ -79,9 +79,10 @@
 
     /* 全体サマリーパネル */
     .summary-box{text-align:center;padding:20px 12px;background:rgba(209,250,229,0.3);border-radius:16px;border:1px solid var(--line);margin-bottom:20px;}
-    .s-main { margin-bottom:16px; }
+    .s-main { margin-bottom:0; }
     .s-main .lbl { font-size:13px; font-weight:900; color:var(--muted); }
     .s-main .rate { font-size:54px; font-weight:1000; color:var(--primary2); line-height:1; margin:4px 0; }
+    .s-main .nums { font-size:14px; font-weight:900; margin-top:8px; color:var(--text); }
     
     /* バッジ用ボタン */
     .star-btn-group { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
@@ -147,16 +148,9 @@
     .toast{position:fixed;top:40px;left:50%;transform:translate(-50%,-20px);background:rgba(4,120,87,0.95);color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:900;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:1000;opacity:0;pointer-events:none;transition:all 0.3s;}
     .toast.show{opacity:1;transform:translate(-50%,0);}
     .empty-msg{text-align:center;padding:32px 16px;color:var(--muted);font-size:14px;font-weight:700;}
-    
-    /* 設定用入力 */
-    .form-input{padding:12px;border:2px solid var(--line);border-radius:10px;font-size:16px;width:100%;text-align:center;font-weight:900;color:var(--primary2);}
-    .form-input:focus{outline:none;border-color:var(--primary);}
   </style>
 </head>
 <body>
-
-<!-- 非表示のファイル入力（インポート用） -->
-<input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
 
 <div id="toast" class="toast">保存しました</div>
 
@@ -173,16 +167,16 @@
 <!-- 累計表示モーダル -->
 <div id="cumModalOverlay" class="modal-overlay" style="display:none; align-items:center;" onclick="closeModal(event, 'cumModalOverlay')">
   <div class="cum-modal-box" onclick="event.stopPropagation()">
-    <div id="cumName" style="font-size:18px; font-weight:900; color:var(--primary2); margin-bottom:8px;"></div>
-    <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:20px; border-bottom:1px dashed var(--line); padding-bottom:12px;">【本日】までの累計実績</div>
+    <div style="font-size:18px; font-weight:900; color:var(--primary2); margin-bottom:8px;">🎯 全体の実績累計</div>
+    <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:20px; border-bottom:1px dashed var(--line); padding-bottom:12px;">【本日】までの全メンバー合算</div>
     
     <div style="display:flex; justify-content:space-around; margin-bottom:24px;">
       <div style="flex:1; border-right:1px dashed var(--line);">
-        <div style="font-size:11px; font-weight:900; color:var(--muted);">受付件数</div>
+        <div style="font-size:11px; font-weight:900; color:var(--muted);">総受付件数</div>
         <div id="cumAs" style="font-size:32px; font-weight:1000; color:var(--text); margin-top:4px;"></div>
       </div>
       <div style="flex:1;">
-        <div style="font-size:11px; font-weight:900; color:var(--muted);">完了件数</div>
+        <div style="font-size:11px; font-weight:900; color:var(--muted);">総完了件数</div>
         <div id="cumCo" style="font-size:32px; font-weight:1000; color:var(--primary2); margin-top:4px;"></div>
       </div>
     </div>
@@ -205,7 +199,7 @@
     <!-- タブメニュー -->
     <div class="tab-bar">
       <button id="btnTabMain" class="tab-btn active" onclick="switchTab('main')">📋 実績・集計</button>
-      <button id="btnTabStaff" class="tab-btn" onclick="switchTab('staff')">⚙️ 名簿管理</button>
+      <button id="btnTabStaff" class="tab-btn" onclick="switchTab('staff')">⚙️ 名簿・設定</button>
     </div>
     
     <!-- メイン画面 -->
@@ -239,14 +233,14 @@
       <div id="listContainer"></div>
     </div>
 
-    <!-- 名簿管理画面 -->
+    <!-- 名簿・設定画面 -->
     <div id="paneStaff" style="display:none;"></div>
   </div>
 </div>
 
 <script>
 // ==========================================
-// マスターデータとキャパ初期値 (6/15〜9/11)
+// マスターデータ (初期値用)
 // ==========================================
 var DEFAULT_MASTER_BASE = [
   {site:"北海道",area:"札幌",name:"岩渕 琢久",employeeNo:"004712"},{site:"北海道",area:"札幌",name:"坂井 孝弘",employeeNo:"005715"},{site:"北海道",area:"札幌",name:"松島 篤",employeeNo:"012225"},{site:"北海道",area:"札幌",name:"塩﨑 篤史",employeeNo:"013766"},{site:"北海道",area:"札幌",name:"石川 誠",employeeNo:"016005"},{site:"北海道",area:"札幌",name:"佐藤 海",employeeNo:"016097"},
@@ -347,6 +341,37 @@ function dateToIndex(dStr) {
   return Math.round((t - base) / 86400000);
 }
 
+// オリジナルキャパを計算
+function getOriginalCap(empName, site, area, fromStr, toStr) {
+  var idxFrom = dateToIndex(fromStr);
+  var idxTo = dateToIndex(toStr);
+  var aData = CAP_DATA_RAW.find(function(c) { return c.site === site && c.area === area; });
+  if(!aData || !aData.persons || !aData.persons[empName]) return 0;
+  var arr = aData.persons[empName];
+  var total = 0;
+  for(var i = idxFrom; i <= idxTo; i++) {
+    if(i >= 0 && i < arr.length) total += arr[i];
+  }
+  return total;
+}
+
+// カスタム設定も含めた最終的なキャパを計算
+function getCalculatedCap(empNo, name, site, area, fromStr, toStr) {
+  var total = 0;
+  var d = new Date(fromStr + "T00:00:00+09:00");
+  var end = new Date(toStr + "T00:00:00+09:00");
+  while(d <= end) {
+    var ds = getTodayStrFromDate(d);
+    if(db.customCaps && db.customCaps[ds] && db.customCaps[ds][empNo] !== undefined) {
+      total += db.customCaps[ds][empNo];
+    } else {
+      total += getOriginalCap(name, site, area, ds, ds);
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  return total;
+}
+
 // ==========================================
 // 日付関数
 // ==========================================
@@ -359,13 +384,14 @@ function getTodayStrFromDate(d) {
 // ==========================================
 // 初期化
 // ==========================================
-var STORAGE_KEY = "ac_daily_aggregator_v25"; 
-var db = { master: [], records: {}, cloudId: "" };
+var STORAGE_KEY = "ac_daily_aggregator_v26"; 
+var db = { master: [], records: {}, customCaps: {}, cloudId: "" };
 
 function loadDb() {
   try { var data = localStorage.getItem(STORAGE_KEY); if(data) db = JSON.parse(data); } catch(e) {}
   if(!db.master || db.master.length === 0) db.master = initializeMasterData();
   if(!db.records) db.records = {};
+  if(!db.customCaps) db.customCaps = {}; 
   if(!db.cloudId) db.cloudId = ""; 
 }
 function saveDb() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) {} }
@@ -386,10 +412,9 @@ function renderCloudPanel() {
     // 連携済み
     var h = '<div class="cloud-title">☁️ チームと共有中です</div>';
     h += '<div class="cloud-id-box">合言葉: <span style="color:var(--primary);">'+db.cloudId+'</span></div>';
-    h += '<p style="font-size:11px; color:var(--muted); margin-bottom:12px;">※入力が終わったら「保存」を押して共有してください</p>';
     h += '<div class="btn-action-row">';
-    h += '  <button class="btn-action green" onclick="pushToCloud()">📤 保存 (上書き)</button>';
-    h += '  <button class="btn-action white" onclick="fetchFromCloud()">📥 取得 (最新化)</button>';
+    h += '  <button class="btn-action green" onclick="pushToCloud()">📤 変更を共有する</button>';
+    h += '  <button class="btn-action white" onclick="fetchFromCloud()">📥 最新に更新</button>';
     h += '</div>';
     h += '<button class="btn-cum" style="margin-top:8px; border-color:var(--muted); color:var(--muted); background:#fff;" onclick="disconnectCloud()">共有を解除する</button>';
     panel.innerHTML = h;
@@ -673,7 +698,7 @@ function closeModal(e, id) {
 
 // --- 📋 メイン画面 ---
 function renderMainTab() {
-  renderCloudPanel(); // トップの共有パネルを更新
+  renderCloudPanel(); 
   
   var dFrom = $("dateFrom").value;
   var dTo = $("dateTo").value;
@@ -695,11 +720,13 @@ function renderMainTab() {
   
   var data = getFilteredData();
   var agg = {};
-  var allAssigned = 0, allCompleted = 0;
+  var allTarget = 0, allAssigned = 0, allCompleted = 0;
   var countG1 = 0, countG2 = 0, countG3 = 0, countG4 = 0;
   
   data.forEach(function(m){
     var empNo = m.employeeNo;
+    var target = getCalculatedCap(empNo, m.name, m.site, m.area, dFrom, dTo);
+    
     var as = 0, co = 0;
     var d = new Date(dFrom + "T00:00:00+09:00");
     var end = new Date(dTo + "T00:00:00+09:00");
@@ -712,7 +739,8 @@ function renderMainTab() {
       d.setDate(d.getDate() + 1);
     }
     
-    agg[empNo] = { assigned: as, completed: co };
+    agg[empNo] = { target: target, assigned: as, completed: co };
+    allTarget += target;
     allAssigned += as;
     allCompleted += co;
     
@@ -798,7 +826,7 @@ function renderMainTab() {
   htmlSum += '  </div>';
   
   // ★全体用の累計ボタン
-  htmlSum += '  <div style="margin-top:24px;">';
+  htmlSum += '  <div style="margin-top:16px;">';
   htmlSum += '    <button class="btn ghost" onclick="showGlobalCumulative()">📅 【本日】までの全メンバー累計を確認</button>';
   htmlSum += '  </div>';
 
@@ -839,20 +867,19 @@ function setCounter(empNo, dStr, field, val) {
   renderMainTab();
 }
 
-// --- ⚙️ 名簿管理タブ ---
+// --- ⚙️ 名簿・データ管理タブ ---
 function renderStaffTab() {
-  renderCloudPanel(); // 共有パネル
+  renderCloudPanel(); 
+  
   var data = db.master; 
   var pane = $("paneStaff");
-  var defSite = $("fltSite").value || "";
-  var defArea = $("fltArea").value || "";
   
   var html = '<div class="card" style="background:#f8fafc; border-color:#cbd5e1; margin-bottom:20px; box-shadow:none;">';
-  html += '<div style="font-size:14px;font-weight:900;margin-bottom:12px;color:var(--primary2);">➕ 新規追加</div>';
+  html += '<div style="font-size:14px;font-weight:900;margin-bottom:12px;color:var(--primary2);">➕ 名簿の追加・削除はここから行えます</div>';
   html += '<div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">';
-  html += '  <input type="text" id="addSite" placeholder="拠点 (例: 関東)" value="'+escHtml(defSite)+'" style="height:44px;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:0 12px;">';
-  html += '  <input type="text" id="addArea" placeholder="エリア (例: 東京)" value="'+escHtml(defArea)+'" style="height:44px;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:0 12px;">';
-  html += '  <input type="text" id="addName" placeholder="氏名 (例: 山田 太郎)" style="height:44px;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:0 12px;">';
+  html += '  <input type="text" id="addSite" placeholder="拠点 (例: 関東)" class="form-input">';
+  html += '  <input type="text" id="addArea" placeholder="エリア (例: 東京)" class="form-input">';
+  html += '  <input type="text" id="addName" placeholder="氏名 (例: 山田 太郎)" class="form-input">';
   html += '  <button class="btn primary" onclick="addStaff()">名簿に追加する</button>';
   html += '</div></div>';
   
