@@ -29,16 +29,15 @@
     }
     .app{max-width:760px;margin:0 auto;padding:16px 12px; position:relative;}
     
-    .header-bar{text-align:center;margin-bottom:12px;padding-bottom:16px;border-bottom:2px solid var(--line); padding-top:8px;}
-    .header-bar h1{margin:0 0 6px;font-size:20px;color:var(--primary2);line-height:1.2;}
-    .header-bar p{margin:0 0 12px;font-size:12px;color:var(--muted);font-weight:700;}
+    .header-bar{text-align:center;margin-bottom:12px;padding-bottom:12px;border-bottom:2px solid var(--line); padding-top:8px;}
+    .header-bar h1{margin:0 0 12px;font-size:20px;color:var(--primary2);line-height:1.2;}
 
-    /* トップのクラウド同期ボタン用 */
+    /* トップの保存・読込ボタン用 */
     .top-action-row { display:flex; justify-content:center; gap:8px; margin-bottom:8px; }
-    .btn-top-action { flex:1; max-width:180px; padding:10px 8px; font-size:13px; font-weight:900; color:var(--primary2); background:#fff; border:2px solid var(--primary); border-radius:12px; cursor:pointer; box-shadow:0 4px 10px rgba(16,185,129,0.1); transition:all 0.2s;}
+    .btn-top-action { flex:1; max-width:180px; padding:10px 8px; font-size:14px; font-weight:900; color:var(--primary2); background:#fff; border:2px solid var(--primary); border-radius:12px; cursor:pointer; box-shadow:0 4px 10px rgba(16,185,129,0.1); transition:all 0.2s;}
     .btn-top-action:active { transform:scale(0.95); background:var(--bg1); }
 
-    /* クラウド共有パネル (一番上) */
+    /* クラウド共有パネル */
     .cloud-panel { background:rgba(209,250,229,0.5); border:2px solid var(--primary); border-radius:16px; padding:16px; margin-bottom:16px; text-align:center; }
     .cloud-title { font-size:14px; font-weight:900; color:var(--primary2); margin-bottom:12px; }
     .cloud-id-box { font-size:16px; font-weight:900; color:var(--text); background:#fff; padding:8px; border-radius:8px; border:1px dashed var(--primary); display:inline-block; margin-bottom:12px; word-break:break-all; }
@@ -196,6 +195,11 @@
 
   <div class="header-bar">
     <h1>📊 エアコン修理 7・8月集計ツール</h1>
+    <!-- ★ データ保存・読込ボタンを最上部に移動 -->
+    <div class="top-action-row">
+      <button class="btn-top-action" onclick="exportData()">📥 データ保存（バックアップ）</button>
+      <button class="btn-top-action" onclick="document.getElementById('importFile').click()">📤 データ読込（引き継ぎ）</button>
+    </div>
   </div>
 
   <div class="card" style="padding-bottom: 8px;">
@@ -243,7 +247,7 @@
 
 <script>
 // ==========================================
-// マスターデータ (エクセルデータから完全復旧・浜松除外済み)
+// マスターデータ
 // ==========================================
 var DEFAULT_MASTER_BASE = [
   {site:"北海道",area:"札幌",name:"松島 篤",employeeNo:"000001"},
@@ -399,8 +403,7 @@ function getTodayStrFromDate(d) {
 // ==========================================
 // 初期化
 // ==========================================
-// ▼ バージョンを更新しました。これで全端末で強制的に新しいマスターデータが読み込まれます
-var STORAGE_KEY = "ac_daily_aggregator_v30"; 
+var STORAGE_KEY = "ac_daily_aggregator_v31"; 
 var db = { master: [], records: {}, cloudId: "" };
 
 function loadDb() {
@@ -419,15 +422,13 @@ function showToast(msg) {
 }
 
 // ==========================================
-// 🚀 クラウド同期機能 (JSONBin.io の X-MASTER-KEY ハードコード版)
+// 🚀 クラウド同期機能
 // ==========================================
-// 画像から取得した API Key を直接プログラムに埋め込んでいます
 var JSONBIN_KEY = "$2a$10$xjr0NDwQoPs1DCz4F3hvqeVTUMruBUrvyD9JmrLA3IZ96UwNArlBW";
 
 function renderCloudPanel() {
   var panel = $("cloudPanel");
   if(db.cloudId) {
-    // 連携済み
     var h = '<div class="cloud-title">☁️ チームと共有中です</div>';
     h += '<div class="cloud-id-box">合言葉: <span style="color:var(--primary);">'+db.cloudId+'</span></div>';
     h += '<p style="font-size:11px; color:var(--muted); margin-bottom:12px;">※入力が終わったら「保存」を押して共有してください</p>';
@@ -438,7 +439,6 @@ function renderCloudPanel() {
     h += '<button class="btn-cum" style="margin-top:8px; border-color:var(--muted); color:var(--muted); background:#fff;" onclick="disconnectCloud()">共有を解除する</button>';
     panel.innerHTML = h;
   } else {
-    // 未連携
     var h = '<div class="cloud-title">☁️ チームとデータを共有する</div>';
     h += '<p style="font-size:11px; color:var(--muted); margin-bottom:12px;">※他の人とデータを同期したい場合のみ使用します</p>';
     h += '<div class="btn-action-row" style="flex-direction:column;">';
@@ -452,7 +452,6 @@ function renderCloudPanel() {
   }
 }
 
-// 新規作成
 async function createCloudBin() {
   $("toast").textContent = "合言葉を発行中...";
   $("toast").className = "toast show";
@@ -481,28 +480,31 @@ async function createCloudBin() {
   }
 }
 
-// 参加（初回取得）
 async function joinCloud() {
   var id = $("joinIdInput").value.trim();
   if(!id) { alert("合言葉を入力してください"); return; }
-  
   if(!confirm("合言葉「"+id+"」のデータを取得し、画面を上書きしますか？")) return;
-  
   $("toast").textContent = "取得中...";
   $("toast").className = "toast show";
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
-      headers: {
-        'X-Master-Key': JSONBIN_KEY
-      }
+      headers: { 'X-Master-Key': JSONBIN_KEY }
     });
     if(res.ok) {
       const json = await res.json();
       if(json.record && json.record.master) {
-        db = json.record;
+        var importedDb = json.record;
+        if(importedDb.records) {
+          for(var d in importedDb.records) {
+            if(!db.records[d]) db.records[d] = {};
+            for(var emp in importedDb.records[d]) {
+              db.records[d][emp] = importedDb.records[d][emp];
+            }
+          }
+        }
         db.cloudId = id; 
         saveDb();
-        alert("共有データに接続しました！");
+        alert("共有データに接続し、実績を同期しました！");
         location.reload();
       } else {
         throw new Error();
@@ -517,7 +519,6 @@ async function joinCloud() {
   }
 }
 
-// アップロード（保存）
 async function pushToCloud() {
   if(!db.cloudId) return;
   $("toast").textContent = "保存中...";
@@ -542,23 +543,22 @@ async function pushToCloud() {
   }
 }
 
-// ダウンロード（取得）
 async function fetchFromCloud() {
   if(!db.cloudId) return;
   if(!confirm("最新の共有データを取得して画面を上書きしますか？\n(自分が保存していないデータは消えます)")) return;
-  
   $("toast").textContent = "取得中...";
   $("toast").className = "toast show";
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${db.cloudId}/latest`, {
-      headers: {
-        'X-Master-Key': JSONBIN_KEY
-      }
+      headers: { 'X-Master-Key': JSONBIN_KEY }
     });
     if(res.ok) {
       const json = await res.json();
       if(json.record && json.record.master) {
-        db = json.record;
+        var importedDb = json.record;
+        if(importedDb.records) {
+          db.records = importedDb.records; 
+        }
         saveDb();
         alert("最新のデータに更新しました！");
         location.reload();
@@ -583,7 +583,7 @@ function disconnectCloud() {
 }
 
 // ==========================================
-// データのバックアップと復元
+// データのバックアップと究極の安全復元（ID自動紐付け）
 // ==========================================
 function exportData() {
   var dataStr = JSON.stringify(db);
@@ -605,10 +605,38 @@ function importData(event) {
   reader.onload = function(e) {
     try {
       var importedDb = JSON.parse(e.target.result);
-      if(importedDb && importedDb.master) {
-        db = importedDb;
+      if(importedDb && importedDb.records) {
+        
+        // ★【安全装置】名前とエリアから、旧IDを新名簿に結び付け直す
+        if(importedDb.master) {
+          importedDb.master.forEach(function(oldM) {
+            var oldNameClean = String(oldM.name).replace(/\s+/g, '');
+            var newM = db.master.find(function(m) { 
+              return String(m.name).replace(/\s+/g, '') === oldNameClean && m.area === oldM.area; 
+            });
+            
+            if(newM) {
+              // 一致する人がいたら、過去のIDに書き換えて実績を紐づける
+              newM.employeeNo = oldM.employeeNo;
+            } else {
+              // 旧データにしかいない人（退職・異動など）は、過去の実績表示のために追加する
+              db.master.push(oldM);
+            }
+          });
+        }
+        
+        // ★ 実績データ(records)の引き継ぎ
+        for(var d in importedDb.records) {
+          if(!db.records[d]) db.records[d] = {};
+          for(var emp in importedDb.records[d]) {
+            db.records[d][emp] = importedDb.records[d][emp];
+          }
+        }
+        
+        if(importedDb.cloudId) db.cloudId = importedDb.cloudId;
+        
         saveDb();
-        alert("データを復元しました！画面を更新します。");
+        alert("過去の実績データを安全に引き継ぎました！\n（最新の名簿に過去の数字が完璧に紐付けられました）");
         location.reload();
       } else {
         alert("無効なファイル形式です。");
@@ -795,7 +823,8 @@ function renderMainTab() {
   var data = getFilteredData();
   var agg = {};
   var allAssigned = 0, allCompleted = 0;
-  var countG1 = 0, countG2 = 0, countG3 = 0, countG4 = 0;
+  
+  var countG0 = 0, countG1 = 0, countG2 = 0, countG3 = 0;
   
   data.forEach(function(m){
     var empNo = m.employeeNo;
@@ -816,19 +845,19 @@ function renderMainTab() {
     allAssigned += as;
     allCompleted += co;
     
-    if(co >= 1 && co <= 5) countG1++;
-    else if(co >= 6 && co <= 10) countG2++;
-    else if(co >= 11 && co <= 15) countG3++;
-    else if(co >= 16) countG4++;
+    if(co === 0) countG0++;
+    else if(co >= 1 && co <= 10) countG1++;
+    else if(co >= 11 && co <= 20) countG2++;
+    else if(co >= 21) countG3++;
   });
 
   // バッジボタン群の生成
   var btnHtml = '<div style="font-size:13px;font-weight:900;color:var(--primary2);margin-bottom:8px;">🎖️ 完了件数で一覧を見る</div>';
   btnHtml += '<div class="star-btn-group">';
-  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(1, 5, \'🎖️ 1〜5件完了\')">1〜5件 <span class="count">'+countG1+'名</span></button>';
-  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(6, 10, \'🎖️ 6〜10件完了\')">6〜10件 <span class="count">'+countG2+'名</span></button>';
-  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(11, 15, \'🎖️ 11〜15件完了\')">11〜15件 <span class="count">'+countG3+'名</span></button>';
-  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(16, 9999, \'🎖️ 16件以上完了\')">16件〜 <span class="count">'+countG4+'名</span></button>';
+  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(0, 0, \'🎖️ 0件\')">0件 <span class="count">'+countG0+'名</span></button>';
+  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(1, 10, \'🎖️ 1〜10件\')">1〜10件 <span class="count">'+countG1+'名</span></button>';
+  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(11, 20, \'🎖️ 11〜20件\')">11〜20件 <span class="count">'+countG2+'名</span></button>';
+  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(21, 9999, \'🎖️ 21件以上\')">21件〜 <span class="count">'+countG3+'名</span></button>';
   btnHtml += '</div>';
   $("badgeButtonsContainer").innerHTML = btnHtml;
 
@@ -897,7 +926,6 @@ function renderMainTab() {
   htmlSum += '    <div class="nums">総受付: '+allAssigned+'件 ／ 総完了: '+allCompleted+'件</div>';
   htmlSum += '  </div>';
   
-  // ★全体用の累計ボタン
   htmlSum += '  <div style="margin-top:16px;">';
   htmlSum += '    <button class="btn ghost" onclick="showGlobalCumulative()">📅 【本日】までの全メンバー累計を確認</button>';
   htmlSum += '  </div>';
@@ -971,15 +999,6 @@ function renderStaffTab() {
       html += '</div>';
     });
   }
-  
-  // バックアップ機能
-  html += '<div style="margin-top:32px; padding-top:16px; border-top:2px dashed var(--line); text-align:center;">';
-  html += '  <div style="font-size:14px;font-weight:900;margin-bottom:12px;color:var(--primary2);">💾 ファイルバックアップ</div>';
-  html += '  <div style="display:flex; gap:8px;">';
-  html += '    <button class="btn primary" style="flex:1; background:#0f766e;" onclick="exportData()">📥 保存</button>';
-  html += '    <button class="btn ghost" style="flex:1;" onclick="document.getElementById(\'importFile\').click()">📤 読込</button>';
-  html += '  </div>';
-  html += '</div>';
   
   pane.innerHTML = html;
 }
