@@ -1,1047 +1,324 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <title>エアコン修理 7・8月 集計ツール</title>
-  <style>
-    :root{
-      --bg1: rgba(236,253,245,0.98);
-      --bg2: rgba(209,250,229,0.70);
-      --card: rgba(255,255,255,0.95);
-      --line: rgba(167,243,208,0.95);
-      --text: #064e3b;
-      --muted: rgba(6,78,59,0.65);
-      --primary: rgba(16,185,129,0.96);
-      --primary2: rgba(4,120,87,0.98);
-      --shadow: 0 12px 26px rgba(4,120,87,0.08);
-      --radius: 20px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
-      color:var(--text);
-      background:radial-gradient(circle at top left,var(--bg2),transparent 36%),linear-gradient(180deg,var(--bg1),rgba(255,255,255,0.98));
-      -webkit-tap-highlight-color:transparent;
-      padding-bottom:32px;
-    }
-    .app{max-width:760px;margin:0 auto;padding:16px 12px; position:relative;}
-    
-    .header-bar{text-align:center;margin-bottom:12px;padding-bottom:12px;border-bottom:2px solid var(--line); padding-top:8px;}
-    .header-bar h1{margin:0 0 12px;font-size:20px;color:var(--primary2);line-height:1.2;}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>【サービスマン用】訪問予定入力</title>
+    <style>
+        :root {
+            --primary-color: #ba1a1a;
+            --bg-color: #f0f2f5;
+            --box-bg: #ffffff;
+            --text-main: #333333;
+            --text-sub: #666666;
+            --border-color: #cbd5e1;
+            --accent-blue: #2b6cb0;
+        }
 
-    /* トップの保存・読込ボタン用 */
-    .top-action-row { display:flex; justify-content:center; gap:8px; margin-bottom:8px; }
-    .btn-top-action { flex:1; max-width:180px; padding:10px 8px; font-size:14px; font-weight:900; color:var(--primary2); background:#fff; border:2px solid var(--primary); border-radius:12px; cursor:pointer; box-shadow:0 4px 10px rgba(16,185,129,0.1); transition:all 0.2s;}
-    .btn-top-action:active { transform:scale(0.95); background:var(--bg1); }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    /* クラウド共有パネル */
-    .cloud-panel { background:rgba(209,250,229,0.5); border:2px solid var(--primary); border-radius:16px; padding:16px; margin-bottom:16px; text-align:center; }
-    .cloud-title { font-size:14px; font-weight:900; color:var(--primary2); margin-bottom:12px; }
-    .cloud-id-box { font-size:16px; font-weight:900; color:var(--text); background:#fff; padding:8px; border-radius:8px; border:1px dashed var(--primary); display:inline-block; margin-bottom:12px; word-break:break-all; }
-    
-    .btn-action-row { display:flex; gap:8px; margin-bottom:8px; }
-    .btn-action { flex:1; padding:12px; font-size:13px; font-weight:900; border-radius:12px; cursor:pointer; border:none; transition:all 0.2s; box-shadow:0 4px 10px rgba(0,0,0,0.05); }
-    .btn-action:active { transform:scale(0.96); }
-    .btn-action.green { background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98)); color:#fff; }
-    .btn-action.white { background:#fff; color:var(--primary2); border:2px solid var(--primary); }
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px;}
-    
-    /* 共通ボタン */
-    .btn{min-height:44px;padding:8px 12px;border:0;font-weight:900;font-size:14px;cursor:pointer;border-radius:12px;transition:all 0.2s;}
-    .btn:active{transform:scale(0.96);}
-    .btn.primary{background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98));color:#fff;box-shadow:0 8px 16px rgba(16,185,129,0.2);}
-    .btn.danger{background:rgba(254,226,226,.9);color:#dc2626;}
-    .btn.ghost{background:rgba(255,255,255,.9);color:var(--primary2);border:2px solid var(--primary2);width:100%;}
-    
-    .btn-cum{padding:6px 12px;font-size:11px;font-weight:900;color:var(--primary2);background:rgba(209,250,229,0.4);border:1px solid var(--primary);border-radius:8px;cursor:pointer;white-space:nowrap;}
-    .btn-cum:active{transform:scale(0.95);}
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
-    .tab-bar{display:flex;gap:4px;margin-bottom:16px;}
-    .tab-btn{flex:1;min-height:48px;font-size:13px;font-weight:900;border:2px solid var(--line);border-radius:14px;background:rgba(255,255,255,0.9);color:var(--muted);cursor:pointer;padding:0;}
-    .tab-btn.active{background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98));color:#fff;border-color:transparent;}
+        .main-content {
+            padding: 16px;
+            flex: 1;
+        }
 
-    /* フィルタ＆日付 */
-    .filter-row{display:flex;gap:8px;margin-bottom:16px;}
-    .filter-row select{-webkit-appearance:none;appearance:none;flex:1;min-height:44px;border-radius:12px;border:1px solid var(--line);font-size:13px;font-weight:700;background:rgba(255,255,255,0.9) url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23047857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat right 10px center/14px;padding:0 30px 0 12px;color:var(--text);}
-    
-    .date-row { display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:16px; background:#e2e8f0; padding:8px; border-radius:16px; }
-    .date-row input[type="date"] {
-      flex:1; max-width: 140px; text-align:center; font-size:14px; font-weight:900; color:var(--primary2); border:2px solid transparent; border-radius:10px; padding:8px 4px; background:#fff; cursor:pointer;
-    }
-    .date-row input[type="date"]:focus { border-color:var(--primary); outline:none; }
-    .date-sep { font-weight:900; color:var(--muted); }
-    .mode-badge { font-size:11px; font-weight:900; background:var(--primary2); color:#fff; padding:4px 8px; border-radius:8px; display:inline-block; margin-bottom:12px;}
+        .card {
+            background-color: var(--box-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 16px;
+        }
 
-    /* 全体サマリーパネル */
-    .summary-box{text-align:center;padding:20px 12px;background:rgba(209,250,229,0.3);border-radius:16px;border:1px solid var(--line);margin-bottom:20px;}
-    .s-main { margin-bottom:0; }
-    .s-main .lbl { font-size:13px; font-weight:900; color:var(--muted); }
-    .s-main .rate { font-size:54px; font-weight:1000; color:var(--primary2); line-height:1; margin:4px 0; }
-    .s-main .nums { font-size:14px; font-weight:900; margin-top:8px; color:var(--text); }
-    
-    /* バッジ用ボタン */
-    .star-btn-group { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
-    .star-btn { min-height:56px; background:#fff; border:2px solid #fde68a; border-radius:12px; font-weight:900; font-size:13px; color:#b45309; display:flex; justify-content:space-between; align-items:center; padding:0 12px; cursor:pointer; box-shadow:0 2px 8px rgba(217,119,6,0.05); transition:all 0.2s; }
-    .star-btn:active { transform:scale(0.97); }
-    .star-btn .count { font-size:18px; font-weight:1000; color:#d97706; }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
 
-    /* リストアイテム */
-    .person-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;}
-    .pc-info-text {
-      font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.4; word-break: break-word; border-bottom:1px dashed #e2e8f0; padding-bottom:8px; margin-bottom:12px;
-    }
-    .pc-info-text.no-border { border-bottom:none; padding-bottom:0; margin-bottom:8px; }
-    .pc-info-text .sep { color: var(--muted); font-weight: normal; margin: 0 4px; }
-    
-    /* 単日用：入力カウンターUI */
-    .counter-group { display:flex; gap:8px; align-items:flex-end; margin-bottom:12px;}
-    .counter-box { flex:1; background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:10px 4px; text-align:center; }
-    .counter-label { font-size:11px; font-weight:900; color:var(--muted); margin-bottom:6px; line-height:1.2; }
-    .counter-controls { display:flex; align-items:center; justify-content:center; gap:4px; }
-    .btn-circle { width:32px; height:32px; border-radius:8px; border:none; font-size:16px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-    .btn-circle:active { transform:scale(0.9); }
-    .btn-circle.minus { background:rgba(254,226,226,0.9); color:#dc2626; }
-    .btn-circle.plus { background:linear-gradient(180deg,var(--primary),rgba(5,150,105,0.98)); color:#fff; }
-    .counter-input { width:40px; height:32px; border:1px solid var(--line); border-radius:8px; text-align:center; font-size:14px; font-weight:900; color:var(--primary2); }
-    .counter-input:focus { outline:2px solid rgba(16,185,129,0.3); border-color:var(--primary); }
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: var(--text-main);
+        }
+        .form-label span.badge-required {
+            background-color: #e53e3e;
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .form-label span.badge-optional {
+            background-color: #a0aec0;
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
 
-    /* バッジの行 */
-    .award-row { display:flex; justify-content:flex-start; align-items:center; padding:8px; background:rgba(254,243,199,0.2); border-radius:10px; border:1px solid rgba(253,230,138,0.4); min-height:50px;}
-    .badges-container { display:flex; flex-wrap:wrap; align-items:center; gap:2px; flex:1; }
-    .badge-small { font-size:18px; }
-    .badge-big { font-size:26px; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1)); animation: pop 0.4s ease-out; }
-    
-    @keyframes pop {
-      0% { transform: scale(0.5); opacity: 0; }
-      70% { transform: scale(1.2); }
-      100% { transform: scale(1); opacity: 1; }
-    }
+        /* プレフィックス付き入力欄のデザイン */
+        .input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #f8fafc;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .input-group:focus-within {
+            border-color: var(--accent-blue);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(43, 108, 176, 0.1);
+        }
+        .input-prefix {
+            background-color: #e2e8f0;
+            color: #4a5568;
+            padding: 14px 12px;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 16px;
+            border-right: 1px solid var(--border-color);
+            user-select: none;
+        }
+        .input-group input {
+            border: none;
+            border-radius: 0;
+            background: transparent;
+        }
+        .input-group input:focus {
+            box-shadow: none;
+        }
 
-    /* モーダル群 */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
-    .modal-sheet{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:760px;max-height:85vh;overflow-y:auto;padding:20px 16px 32px;box-shadow:0 -10px 40px rgba(0,0,0,0.2);}
-    .modal-handle{width:40px;height:6px;background:#cbd5e1;border-radius:99px;margin:0 auto 16px;}
-    .modal-title{font-size:16px;font-weight:900;color:var(--primary2);margin-bottom:16px;text-align:center;}
-    .modal-list-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed #e2e8f0;}
-    .modal-list-item:last-child{border-bottom:none;}
-    .ml-name{font-size:15px;font-weight:900;color:var(--text);}
-    .ml-sub{font-size:11px;color:var(--muted);margin-top:4px;}
-    .ml-right{text-align:right; flex-shrink:0;}
-    .ml-count{font-size:16px;font-weight:900;color:var(--primary2);}
-    .ml-badges{font-size:14px;margin-top:4px;display:flex;align-items:center;justify-content:flex-end;}
+        /* 共通入力スタイル */
+        input[type="number"],
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px; /* スマホでのズーム防止 */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            appearance: none;
+            font-family: inherit;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+        input:focus:not(.input-group input), 
+        textarea:focus, 
+        select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(43, 108, 176, 0.1);
+        }
 
-    /* 累計用モーダル */
-    .cum-modal-box { background:#fff; margin:auto; width:85%; max-width:320px; border-radius:20px; padding:24px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
-    
-    /* プログレスバー */
-    .prog-wrap{background:rgba(0,0,0,0.06);border-radius:99px;height:10px;overflow:hidden;margin:8px 0;}
-    .prog-bar{height:100%;border-radius:99px;transition:width 0.4s ease;}
-    .prog-bar.red{background:linear-gradient(90deg,#f87171,#ef4444);}
-    .prog-bar.yellow{background:linear-gradient(90deg,#fbbf24,#f59e0b);}
-    .prog-bar.green{background:linear-gradient(90deg,#34d399,#10b981);}
-    
-    .toast{position:fixed;top:40px;left:50%;transform:translate(-50%,-20px);background:rgba(4,120,87,0.95);color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:900;box-shadow:0 10px 25px rgba(0,0,0,0.2);z-index:1000;opacity:0;pointer-events:none;transition:all 0.3s;}
-    .toast.show{opacity:1;transform:translate(-50%,0);}
-    .empty-msg{text-align:center;padding:32px 16px;color:var(--muted);font-size:14px;font-weight:700;}
-  </style>
+        /* 時間帯選択ボタングループ */
+        .time-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .time-btn {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: var(--text-sub);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .time-radio { display: none; }
+        .time-radio:checked + .time-btn {
+            background-color: #ebf8ff;
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(186, 26, 26, 0.2);
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+        .submit-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(186, 26, 26, 0.2);
+        }
+
+        .hint-text {
+            font-size: 0.8em;
+            color: var(--text-sub);
+            margin-top: 6px;
+        }
+
+    </style>
 </head>
 <body>
 
-<!-- 非表示のファイル入力（インポート用） -->
-<input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
-
-<div id="toast" class="toast">保存しました</div>
-
-<!-- バッジ件数一覧モーダル -->
-<div id="badgeModalOverlay" class="modal-overlay" style="display:none;" onclick="closeModal(event, 'badgeModalOverlay')">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="badgeModalTitle"></div>
-    <div id="badgeModalBody"></div>
-    <button class="btn ghost" style="margin-top:24px; min-height:48px;" onclick="document.getElementById('badgeModalOverlay').style.display='none'">閉じる</button>
-  </div>
-</div>
-
-<!-- 累計表示モーダル -->
-<div id="cumModalOverlay" class="modal-overlay" style="display:none; align-items:center;" onclick="closeModal(event, 'cumModalOverlay')">
-  <div class="cum-modal-box" onclick="event.stopPropagation()">
-    <div style="font-size:18px; font-weight:900; color:var(--primary2); margin-bottom:8px;">🎯 全体の実績累計</div>
-    <div style="font-size:12px; font-weight:700; color:var(--muted); margin-bottom:20px; border-bottom:1px dashed var(--line); padding-bottom:12px;">【本日】までの全メンバー合算</div>
+<div class="app-container">
     
-    <div style="display:flex; justify-content:space-around; margin-bottom:24px;">
-      <div style="flex:1; border-right:1px dashed var(--line);">
-        <div style="font-size:11px; font-weight:900; color:var(--muted);">総受付件数</div>
-        <div id="cumAs" style="font-size:32px; font-weight:1000; color:var(--text); margin-top:4px;"></div>
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:11px; font-weight:900; color:var(--muted);">総完了件数</div>
-        <div id="cumCo" style="font-size:32px; font-weight:1000; color:var(--primary2); margin-top:4px;"></div>
-      </div>
-    </div>
-    <button class="btn ghost" onclick="document.getElementById('cumModalOverlay').style.display='none'">閉じる</button>
-  </div>
-</div>
-
-<div class="app">
-  
-  <!-- ★ トップのクラウド共有パネル -->
-  <div class="cloud-panel" id="cloudPanel">
-    <!-- JSで状態に応じて中身を描画 -->
-  </div>
-
-  <div class="header-bar">
-    <h1>📊 エアコン修理 7・8月集計ツール</h1>
-    <!-- ★ データ保存・読込ボタンを最上部に移動 -->
-    <div class="top-action-row">
-      <button class="btn-top-action" onclick="exportData()">📥 データ保存（バックアップ）</button>
-      <button class="btn-top-action" onclick="document.getElementById('importFile').click()">📤 データ読込（引き継ぎ）</button>
-    </div>
-  </div>
-
-  <div class="card" style="padding-bottom: 8px;">
-    <!-- タブメニュー -->
-    <div class="tab-bar">
-      <button id="btnTabMain" class="tab-btn active" onclick="switchTab('main')">📋 実績・集計</button>
-      <button id="btnTabStaff" class="tab-btn" onclick="switchTab('staff')">⚙️ 名簿・設定</button>
-    </div>
-    
-    <!-- メイン画面 -->
-    <div id="paneMain">
-      <!-- 期間選択カレンダー -->
-      <div class="date-row">
-        <input type="date" id="dateFrom" onchange="onDateChange()" />
-        <span class="date-sep">〜</span>
-        <input type="date" id="dateTo" onchange="onDateChange()" />
-      </div>
-
-      <!-- 全体サマリー -->
-      <div id="summaryContainer"></div>
-
-      <!-- 絞り込みフィルタ -->
-      <div class="filter-row">
-        <select id="fltSite" onchange="onSiteFilterChange()">
-          <option value="">すべての拠点</option>
-        </select>
-        <select id="fltArea" onchange="renderMainTab()">
-          <option value="">すべてのエリア</option>
-        </select>
-      </div>
-      
-      <div id="modeIndicator" style="text-align:center;"></div>
-      
-      <!-- バッジ件数ごとの対象者表示ボタン -->
-      <div id="badgeButtonsContainer"></div>
-
-      <!-- リスト -->
-      <div id="listContainer"></div>
+    <div class="header">
+        訪問予定 送信ツール
     </div>
 
-    <!-- 名簿・設定画面 -->
-    <div id="paneStaff" style="display:none;"></div>
-  </div>
+    <div class="main-content">
+        
+        <div class="card">
+            <!-- 受付番号 -->
+            <div class="form-group">
+                <label class="form-label">受付番号<span class="badge-required">必須</span></label>
+                <div class="input-group">
+                    <span class="input-prefix">Rep-</span>
+                    <input type="number" pattern="\d*" placeholder="8桁の数字" maxlength="8" id="orderId">
+                </div>
+                <div class="hint-text">※数字8桁のみ入力してください</div>
+            </div>
+
+            <!-- お客様名 -->
+            <div class="form-group">
+                <label class="form-label">お客様名（氏名のみ）<span class="badge-required">必須</span></label>
+                <input type="text" placeholder="例：山田 太郎" id="customerName">
+            </div>
+        </div>
+
+        <div class="card">
+            <!-- 訪問日 -->
+            <div class="form-group">
+                <label class="form-label">訪問予定日<span class="badge-required">必須</span></label>
+                <input type="date" id="visitDate">
+            </div>
+
+            <!-- 訪問時間帯 -->
+            <div class="form-group">
+                <label class="form-label">訪問時間帯（目安）<span class="badge-required">必須</span></label>
+                <div class="time-grid">
+                    <label>
+                        <input type="radio" name="timeSlot" class="time-radio" value="09:00-11:00">
+                        <div class="time-btn">09:00〜11:00</div>
+                    </label>
+                    <label>
+                        <input type="radio" name="timeSlot" class="time-radio" value="11:00-13:00">
+                        <div class="time-btn">11:00〜13:00</div>
+                    </label>
+                    <label>
+                        <input type="radio" name="timeSlot" class="time-radio" value="13:00-15:00">
+                        <div class="time-btn">13:00〜15:00</div>
+                    </label>
+                    <label>
+                        <input type="radio" name="timeSlot" class="time-radio" value="15:00-17:00">
+                        <div class="time-btn">15:00〜17:00</div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <!-- 担当サービスマン -->
+            <div class="form-group">
+                <label class="form-label">担当サービスマン<span class="badge-required">必須</span></label>
+                <select id="servicemanName">
+                    <option value="" selected disabled>名前を選択してください</option>
+                    <optgroup label="世田谷営業所">
+                        <option value="佐藤 健一">佐藤 健一</option>
+                        <option value="鈴木 一郎">鈴木 一郎</option>
+                    </optgroup>
+                    <optgroup label="横浜営業所">
+                        <option value="中村 翔太">中村 翔太</option>
+                        <option value="田中 誠">田中 誠</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <!-- コールセンターへの伝達事項（自由項目） -->
+            <div class="form-group">
+                <label class="form-label">CCへの伝達・確認依頼<span class="badge-optional">任意</span></label>
+                <textarea id="memo" placeholder="例：&#13;&#10;・事前に〇〇の写真を送ってもらうよう伝えて&#13;&#10;・前の現場が押しているので15時ギリギリになるかもと伝えておいてほしい"></textarea>
+                <div class="hint-text">※コールセンターからの事前電話（プレ電）の際、お客様へ伝えてほしいことや確認してほしいことがあれば入力してください。</div>
+            </div>
+        </div>
+
+        <button class="submit-btn" onclick="alert('コールセンターへ予定と連絡事項を送信しました！')">
+            送信する
+        </button>
+
+    </div>
 </div>
 
 <script>
-// ==========================================
-// マスターデータ
-// ==========================================
-var DEFAULT_MASTER_BASE = [
-  {site:"北海道",area:"札幌",name:"松島 篤",employeeNo:"000001"},
-  {site:"北海道",area:"札幌",name:"塩﨑 篤史",employeeNo:"000002"},
-  {site:"北海道",area:"札幌",name:"石川 誠",employeeNo:"000003"},
-  {site:"北海道",area:"札幌",name:"佐藤海",employeeNo:"000004"},
-  {site:"東北",area:"青森",name:"鴨 伸也",employeeNo:"000005"},
-  {site:"東北",area:"青森",name:"山口 知麻",employeeNo:"000006"},
-  {site:"東北",area:"八戸",name:"熊野 英明",employeeNo:"000007"},
-  {site:"東北",area:"秋田",name:"桂 幸広",employeeNo:"000008"},
-  {site:"東北",area:"秋田",name:"北村 信彦",employeeNo:"000009"},
-  {site:"東北",area:"盛岡",name:"小島 博人",employeeNo:"000010"},
-  {site:"東北",area:"盛岡",name:"菊池 政洋",employeeNo:"000011"},
-  {site:"東北",area:"仙台",name:"金 佳彦",employeeNo:"000012"},
-  {site:"東北",area:"仙台",name:"杉 凌太",employeeNo:"000013"},
-  {site:"東北",area:"仙台",name:"赤坂 大輔",employeeNo:"000014"},
-  {site:"東北",area:"山形",name:"鹿野 大輔",employeeNo:"000015"},
-  {site:"東北",area:"郡山",name:"芳賀 竜",employeeNo:"000016"},
-  {site:"東北",area:"郡山",name:"佐藤 宏樹",employeeNo:"000017"},
-  {site:"東北",area:"いわき",name:"藤沢 孝益",employeeNo:"000018"},
-  {site:"信越",area:"新潟",name:"清水 悟",employeeNo:"000019"},
-  {site:"信越",area:"長岡",name:"南雲 和彦",employeeNo:"000020"},
-  {site:"信越",area:"長野",name:"中村 敏幸",employeeNo:"000021"},
-  {site:"信越",area:"松本",name:"伊藤 貴博",employeeNo:"000022"},
-  {site:"北関東",area:"さいたま",name:"三角 英之",employeeNo:"000023"},
-  {site:"北関東",area:"さいたま",name:"岩崎 貴氏",employeeNo:"000024"},
-  {site:"北関東",area:"さいたま",name:"金子 豊",employeeNo:"000025"},
-  {site:"北関東",area:"越谷",name:"武内 昌士",employeeNo:"000026"},
-  {site:"北関東",area:"越谷",name:"池田 尚史",employeeNo:"000027"},
-  {site:"北関東",area:"宇都宮",name:"磯野 大",employeeNo:"000028"},
-  {site:"北関東",area:"宇都宮",name:"向山 貴晴",employeeNo:"000029"},
-  {site:"北関東",area:"宇都宮",name:"澤村 知明",employeeNo:"000030"},
-  {site:"北関東",area:"熊谷",name:"齊藤 修",employeeNo:"000031"},
-  {site:"北関東",area:"前橋",name:"髙木 聡",employeeNo:"000032"},
-  {site:"東京",area:"東京",name:"藤村 裕二",employeeNo:"000033"},
-  {site:"東京",area:"東京",name:"中島 泰弘",employeeNo:"000034"},
-  {site:"東京",area:"東京",name:"溝 基純",employeeNo:"000035"},
-  {site:"東京",area:"東京",name:"八尾 健介",employeeNo:"000036"},
-  {site:"東京",area:"東京",name:"安田 輝",employeeNo:"000037"},
-  {site:"西東京",area:"練馬",name:"横山達哉",employeeNo:"000038"},
-  {site:"西東京",area:"練馬",name:"山崎 正人",employeeNo:"000039"},
-  {site:"西東京",area:"多摩",name:"髙木 達也",employeeNo:"000040"},
-  {site:"南関東",area:"横浜",name:"小野 修治",employeeNo:"000041"},
-  {site:"南関東",area:"横浜",name:"鎌塚 裕一",employeeNo:"000042"},
-  {site:"南関東",area:"横浜",name:"安齋大祐",employeeNo:"000043"},
-  {site:"南関東",area:"横浜",name:"立花莉玖",employeeNo:"000044"},
-  {site:"南関東",area:"厚木",name:"藤原 将史",employeeNo:"000045"},
-  {site:"南関東",area:"厚木",name:"中島 健二",employeeNo:"000046"},
-  {site:"東関東",area:"千葉",name:"佐藤 淳之",employeeNo:"000047"},
-  {site:"東関東",area:"千葉",name:"川口 亮",employeeNo:"000048"},
-  {site:"東関東",area:"千葉",name:"根本 義浩",employeeNo:"000049"},
-  {site:"東関東",area:"千葉",name:"越川 英紀",employeeNo:"000050"},
-  {site:"東関東",area:"松戸",name:"形山 文雄",employeeNo:"000051"},
-  {site:"東関東",area:"松戸",name:"柴田 寿平",employeeNo:"000052"},
-  {site:"東関東",area:"土浦",name:"吉田 好一",employeeNo:"000053"},
-  {site:"東関東",area:"水戸",name:"柴田 祐一",employeeNo:"000054"},
-  {site:"東関東",area:"水戸",name:"杉山 直昭",employeeNo:"000055"},
-  {site:"静岡",area:"静岡",name:"渡辺 高央",employeeNo:"000056"},
-  {site:"静岡",area:"静岡",name:"長野 浩隆",employeeNo:"000057"},
-  {site:"静岡",area:"沼津",name:"水口 光宣",employeeNo:"000058"},
-  {site:"静岡",area:"山梨",name:"川口 夏輝",employeeNo:"000059"},
-  {site:"静岡",area:"山梨",name:"佐野 良介",employeeNo:"000060"},
-  {site:"北陸",area:"金沢",name:"安藤 民彦",employeeNo:"000061"},
-  {site:"北陸",area:"金沢",name:"永田 智暉",employeeNo:"000062"},
-  {site:"北陸",area:"富山",name:"高澤 啓明",employeeNo:"000063"},
-  {site:"北陸",area:"富山",name:"浜屋 了勉",employeeNo:"000064"},
-  {site:"北陸",area:"福井",name:"木部 博行",employeeNo:"000065"},
-  {site:"北陸",area:"福井",name:"武安 善弘",employeeNo:"000066"},
-  {site:"東海",area:"名古屋",name:"土屋 正宏",employeeNo:"000067"},
-  {site:"東海",area:"名古屋",name:"籠橋 孝光",employeeNo:"000068"},
-  {site:"東海",area:"名古屋",name:"本間 勉",employeeNo:"000069"},
-  {site:"東海",area:"名古屋",name:"水野 智",employeeNo:"000070"},
-  {site:"東海",area:"名古屋",name:"太田 雅之",employeeNo:"000071"},
-  {site:"東海",area:"名古屋",name:"前田 貴志",employeeNo:"000072"},
-  {site:"東海",area:"名古屋",name:"齋藤 公二",employeeNo:"000073"},
-  {site:"東海",area:"名古屋",name:"白木 一郎",employeeNo:"000074"},
-  {site:"東海",area:"名古屋",name:"愛甲拓也",employeeNo:"000075"},
-  {site:"東海",area:"三重",name:"前田 研吾",employeeNo:"000076"},
-  {site:"東海",area:"三重",name:"酒井丈夫",employeeNo:"000077"},
-  {site:"東海",area:"岐阜",name:"領木 清",employeeNo:"000078"},
-  {site:"大阪",area:"大阪",name:"浅井 啓充",employeeNo:"000079"},
-  {site:"大阪",area:"大阪",name:"笹原 隆太",employeeNo:"000080"},
-  {site:"大阪",area:"大阪",name:"伊藤 康博",employeeNo:"000081"},
-  {site:"大阪",area:"大阪",name:"龍田 成仁",employeeNo:"000082"},
-  {site:"大阪",area:"大阪",name:"岩下恵太郎",employeeNo:"000083"},
-  {site:"大阪",area:"大阪",name:"沢田尚志",employeeNo:"000084"},
-  {site:"大阪",area:"奈良",name:"中村 誠",employeeNo:"000085"},
-  {site:"大阪",area:"奈良",name:"石田 典明",employeeNo:"000086"},
-  {site:"大阪",area:"和歌山",name:"清水 護",employeeNo:"000087"},
-  {site:"大阪",area:"和歌山",name:"髙橋 良輔",employeeNo:"000088"},
-  {site:"京滋",area:"京都",name:"佐々木 優",employeeNo:"000089"},
-  {site:"京滋",area:"京都",name:"和田 敏昭",employeeNo:"000090"},
-  {site:"京滋",area:"滋賀",name:"畑宮 輝久",employeeNo:"000091"},
-  {site:"京滋",area:"滋賀",name:"佐々木 晃",employeeNo:"000092"},
-  {site:"兵庫",area:"神戸",name:"松浦 利之",employeeNo:"000093"},
-  {site:"兵庫",area:"神戸",name:"宮下 和宜",employeeNo:"000094"},
-  {site:"兵庫",area:"神戸",name:"高橋重光",employeeNo:"000095"},
-  {site:"兵庫",area:"姫路",name:"中川 幸司",employeeNo:"000096"},
-  {site:"中国",area:"広島",name:"山本 政行",employeeNo:"000097"},
-  {site:"中国",area:"広島",name:"佐々木 賢也",employeeNo:"000098"},
-  {site:"中国",area:"広島",name:"則永 正弘",employeeNo:"000099"},
-  {site:"中国",area:"岡山",name:"島村 浩一",employeeNo:"000100"},
-  {site:"中国",area:"岡山",name:"有吉 宣明",employeeNo:"000101"},
-  {site:"中国",area:"福山",name:"原田 尚也",employeeNo:"000102"},
-  {site:"中国",area:"山口",name:"上田 卓実",employeeNo:"000103"},
-  {site:"中国",area:"山口",name:"金子 征司",employeeNo:"000104"},
-  {site:"中国",area:"松江",name:"片寄 健二",employeeNo:"000105"},
-  {site:"中国",area:"松江",name:"権代 一",employeeNo:"000106"},
-  {site:"四国",area:"高松",name:"西脇 太郎",employeeNo:"000107"},
-  {site:"四国",area:"松山",name:"梅木 和彦",employeeNo:"000108"},
-  {site:"四国",area:"松山",name:"出来 克久",employeeNo:"000109"},
-  {site:"四国",area:"徳島",name:"角矢 雅昭",employeeNo:"000110"},
-  {site:"四国",area:"高知",name:"中澤 俊二",employeeNo:"000111"},
-  {site:"九州",area:"北九州",name:"毛利 健二",employeeNo:"000112"},
-  {site:"九州",area:"北九州",name:"西 雄三",employeeNo:"000113"},
-  {site:"九州",area:"北九州",name:"内田 尚汰",employeeNo:"000114"},
-  {site:"九州",area:"福岡",name:"水野 伸彦",employeeNo:"000115"},
-  {site:"九州",area:"福岡",name:"坂口 浩一",employeeNo:"000116"},
-  {site:"九州",area:"福岡",name:"行徳 健二",employeeNo:"000117"},
-  {site:"九州",area:"福岡",name:"山岡 敬幸",employeeNo:"000118"},
-  {site:"九州",area:"福岡",name:"永峰 一騎",employeeNo:"000119"},
-  {site:"九州",area:"長崎",name:"志水 亮太",employeeNo:"000120"},
-  {site:"九州",area:"長崎",name:"宮﨑 大和",employeeNo:"000121"},
-  {site:"九州",area:"佐賀",name:"野田 伸也",employeeNo:"000122"},
-  {site:"九州",area:"大分",name:"宮本 秀一郎",employeeNo:"000123"},
-  {site:"九州",area:"大分",name:"荒金孝輔",employeeNo:"000124"},
-  {site:"九州",area:"熊本",name:"上野 好文",employeeNo:"000125"},
-  {site:"九州",area:"熊本",name:"川原 淳",employeeNo:"000126"},
-  {site:"九州",area:"宮崎",name:"小薗 弘和",employeeNo:"000127"},
-  {site:"九州",area:"鹿児島",name:"米澤 一寿",employeeNo:"000128"},
-  {site:"九州",area:"鹿児島",name:"黒木 邦圭",employeeNo:"000129"},
-  {site:"九州",area:"沖縄",name:"花谷 和樹",employeeNo:"000130"},
-  {site:"九州",area:"沖縄",name:"德永 真行",employeeNo:"000131"}
-];
-
-function initializeMasterData() {
-  var out = [];
-  DEFAULT_MASTER_BASE.forEach(function(m) {
-    out.push({ site: m.site, area: m.area, name: m.name, employeeNo: m.employeeNo });
-  });
-  return out;
-}
-
-// ==========================================
-// 日付関数
-// ==========================================
-function getTodayStr() { return getTodayStrFromDate(new Date()); }
-function getTodayStrFromDate(d) {
-  var y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2, '0'), dd = String(d.getDate()).padStart(2, '0');
-  return y + "-" + m + "-" + dd;
-}
-
-// ==========================================
-// 初期化
-// ==========================================
-var STORAGE_KEY = "ac_daily_aggregator_v31"; 
-var db = { master: [], records: {}, cloudId: "" };
-
-function loadDb() {
-  try { var data = localStorage.getItem(STORAGE_KEY); if(data) db = JSON.parse(data); } catch(e) {}
-  if(!db.master || db.master.length === 0) db.master = initializeMasterData();
-  if(!db.records) db.records = {};
-  if(!db.cloudId) db.cloudId = ""; 
-}
-function saveDb() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); } catch(e) {} }
-
-var toastTimer = null;
-function showToast(msg) {
-  var t = $("toast"); t.textContent = msg; t.className = "toast show";
-  if(toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ t.className = "toast"; }, 2000);
-}
-
-// ==========================================
-// 🚀 クラウド同期機能
-// ==========================================
-var JSONBIN_KEY = "$2a$10$xjr0NDwQoPs1DCz4F3hvqeVTUMruBUrvyD9JmrLA3IZ96UwNArlBW";
-
-function renderCloudPanel() {
-  var panel = $("cloudPanel");
-  if(db.cloudId) {
-    var h = '<div class="cloud-title">☁️ チームと共有中です</div>';
-    h += '<div class="cloud-id-box">合言葉: <span style="color:var(--primary);">'+db.cloudId+'</span></div>';
-    h += '<p style="font-size:11px; color:var(--muted); margin-bottom:12px;">※入力が終わったら「保存」を押して共有してください</p>';
-    h += '<div class="btn-action-row">';
-    h += '  <button class="btn-action green" onclick="pushToCloud()">📤 保存 (上書き)</button>';
-    h += '  <button class="btn-action white" onclick="fetchFromCloud()">📥 取得 (最新化)</button>';
-    h += '</div>';
-    h += '<button class="btn-cum" style="margin-top:8px; border-color:var(--muted); color:var(--muted); background:#fff;" onclick="disconnectCloud()">共有を解除する</button>';
-    panel.innerHTML = h;
-  } else {
-    var h = '<div class="cloud-title">☁️ チームとデータを共有する</div>';
-    h += '<p style="font-size:11px; color:var(--muted); margin-bottom:12px;">※他の人とデータを同期したい場合のみ使用します</p>';
-    h += '<div class="btn-action-row" style="flex-direction:column;">';
-    h += '  <button class="btn-action green" onclick="createCloudBin()">✨ 新しく合言葉を発行して共有をはじめる</button>';
-    h += '  <div style="display:flex; gap:8px; margin-top:8px;">';
-    h += '    <input type="text" id="joinIdInput" placeholder="合言葉を入力" style="flex:1; border-radius:10px; border:1px solid var(--line); text-align:center; font-weight:900;">';
-    h += '    <button class="btn-action white" style="flex:1;" onclick="joinCloud()">🔑 参加する</button>';
-    h += '  </div>';
-    h += '</div>';
-    panel.innerHTML = h;
-  }
-}
-
-async function createCloudBin() {
-  $("toast").textContent = "合言葉を発行中...";
-  $("toast").className = "toast show";
-  try {
-    const res = await fetch("https://api.jsonbin.io/v3/b", {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-Master-Key': JSONBIN_KEY,
-        'X-Bin-Name': 'ac_tool_data'
-      },
-      body: JSON.stringify(db)
+    // 今日をデフォルトの日付としてセット
+    document.addEventListener("DOMContentLoaded", function() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('visitDate').value = `${yyyy}-${mm}-${dd}`;
     });
-    if(res.ok) {
-      const json = await res.json();
-      db.cloudId = json.metadata.id;
-      saveDb();
-      showToast("発行完了！");
-      renderCloudPanel();
-    } else {
-      throw new Error();
-    }
-  } catch(e) {
-    alert("発行に失敗しました。通信環境を確認してください。");
-    $("toast").className = "toast";
-  }
-}
 
-async function joinCloud() {
-  var id = $("joinIdInput").value.trim();
-  if(!id) { alert("合言葉を入力してください"); return; }
-  if(!confirm("合言葉「"+id+"」のデータを取得し、画面を上書きしますか？")) return;
-  $("toast").textContent = "取得中...";
-  $("toast").className = "toast show";
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
-      headers: { 'X-Master-Key': JSONBIN_KEY }
-    });
-    if(res.ok) {
-      const json = await res.json();
-      if(json.record && json.record.master) {
-        var importedDb = json.record;
-        if(importedDb.records) {
-          for(var d in importedDb.records) {
-            if(!db.records[d]) db.records[d] = {};
-            for(var emp in importedDb.records[d]) {
-              db.records[d][emp] = importedDb.records[d][emp];
-            }
-          }
+    // 受付番号の8桁制限
+    document.getElementById('orderId').addEventListener('input', function(e) {
+        if (this.value.length > 8) {
+            this.value = this.value.slice(0, 8);
         }
-        db.cloudId = id; 
-        saveDb();
-        alert("共有データに接続し、実績を同期しました！");
-        location.reload();
-      } else {
-        throw new Error();
-      }
-    } else {
-      alert("データが見つかりません。合言葉が間違っていませんか？");
-      $("toast").className = "toast";
-    }
-  } catch(e) {
-    alert("通信に失敗しました。");
-    $("toast").className = "toast";
-  }
-}
-
-async function pushToCloud() {
-  if(!db.cloudId) return;
-  $("toast").textContent = "保存中...";
-  $("toast").className = "toast show";
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${db.cloudId}`, {
-      method: 'PUT',
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-Master-Key': JSONBIN_KEY
-      },
-      body: JSON.stringify(db)
     });
-    if(res.ok) {
-      showToast("クラウドに保存しました！");
-    } else {
-      throw new Error();
-    }
-  } catch(e) {
-    alert("保存に失敗しました。");
-    $("toast").className = "toast";
-  }
-}
-
-async function fetchFromCloud() {
-  if(!db.cloudId) return;
-  if(!confirm("最新の共有データを取得して画面を上書きしますか？\n(自分が保存していないデータは消えます)")) return;
-  $("toast").textContent = "取得中...";
-  $("toast").className = "toast show";
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${db.cloudId}/latest`, {
-      headers: { 'X-Master-Key': JSONBIN_KEY }
-    });
-    if(res.ok) {
-      const json = await res.json();
-      if(json.record && json.record.master) {
-        var importedDb = json.record;
-        if(importedDb.records) {
-          db.records = importedDb.records; 
-        }
-        saveDb();
-        alert("最新のデータに更新しました！");
-        location.reload();
-      } else {
-        throw new Error();
-      }
-    } else {
-      throw new Error();
-    }
-  } catch(e) {
-    alert("取得に失敗しました。");
-    $("toast").className = "toast";
-  }
-}
-
-function disconnectCloud() {
-  if(confirm("共有を解除しますか？\n(データはスマホ内に残りますが、他の人とは同期されなくなります)")) {
-    db.cloudId = "";
-    saveDb();
-    renderCloudPanel();
-  }
-}
-
-// ==========================================
-// データのバックアップと究極の安全復元（ID自動紐付け）
-// ==========================================
-function exportData() {
-  var dataStr = JSON.stringify(db);
-  var blob = new Blob([dataStr], {type: "application/json"});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  a.href = url;
-  a.download = "ac_report_backup_" + getTodayStr() + ".json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function importData(event) {
-  var file = event.target.files[0];
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      var importedDb = JSON.parse(e.target.result);
-      if(importedDb && importedDb.records) {
-        
-        // ★【安全装置】名前とエリアから、旧IDを新名簿に結び付け直す
-        if(importedDb.master) {
-          importedDb.master.forEach(function(oldM) {
-            var oldNameClean = String(oldM.name).replace(/\s+/g, '');
-            var newM = db.master.find(function(m) { 
-              return String(m.name).replace(/\s+/g, '') === oldNameClean && m.area === oldM.area; 
-            });
-            
-            if(newM) {
-              // 一致する人がいたら、過去のIDに書き換えて実績を紐づける
-              newM.employeeNo = oldM.employeeNo;
-            } else {
-              // 旧データにしかいない人（退職・異動など）は、過去の実績表示のために追加する
-              db.master.push(oldM);
-            }
-          });
-        }
-        
-        // ★ 実績データ(records)の引き継ぎ
-        for(var d in importedDb.records) {
-          if(!db.records[d]) db.records[d] = {};
-          for(var emp in importedDb.records[d]) {
-            db.records[d][emp] = importedDb.records[d][emp];
-          }
-        }
-        
-        if(importedDb.cloudId) db.cloudId = importedDb.cloudId;
-        
-        saveDb();
-        alert("過去の実績データを安全に引き継ぎました！\n（最新の名簿に過去の数字が完璧に紐付けられました）");
-        location.reload();
-      } else {
-        alert("無効なファイル形式です。");
-      }
-    } catch(err) {
-      alert("ファイルの読み込みに失敗しました。");
-    }
-  };
-  reader.readAsText(file);
-}
-
-// ==========================================
-// フィルタ
-// ==========================================
-var $ = function(id){ return document.getElementById(id); };
-
-function escHtml(s) {
-  return String(s).replace(/[&<>"']/g, function(m) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
-  });
-}
-function unique(arr) {
-  return arr.filter(function(v, i, a) { return a.indexOf(v) === i; });
-}
-function pct(co, as) {
-  return as > 0 ? Math.round((co / as) * 100) : 0;
-}
-
-function initFilters() {
-  var oldSite = $("fltSite").value; 
-  var sites = unique(db.master.map(function(m){ return m.site; })).sort();
-  var siteHtml = '<option value="">すべての拠点</option>';
-  sites.forEach(function(s){ siteHtml += '<option value="'+escHtml(s)+'">'+escHtml(s)+'</option>'; });
-  $("fltSite").innerHTML = siteHtml;
-  if(sites.indexOf(oldSite) !== -1) $("fltSite").value = oldSite;
-  onSiteFilterChange();
-}
-
-function onSiteFilterChange() {
-  var oldArea = $("fltArea").value;
-  var site = $("fltSite").value;
-  var areas = unique(db.master.filter(function(m){ return !site || m.site === site; }).map(function(m){ return m.area; })).sort();
-  var areaHtml = '<option value="">すべてのエリア</option>';
-  areas.forEach(function(a){ areaHtml += '<option value="'+escHtml(a)+'">'+escHtml(a)+'</option>'; });
-  $("fltArea").innerHTML = areaHtml;
-  if(areas.indexOf(oldArea) !== -1) $("fltArea").value = oldArea;
-  renderMainTab();
-}
-
-function getFilteredData() {
-  var site = $("fltSite").value;
-  var area = $("fltArea").value;
-  return db.master.filter(function(m){ return (!site || m.site === site) && (!area || m.area === area); });
-}
-
-// ==========================================
-// タブ切り替え
-// ==========================================
-var currentTab = "main";
-function switchTab(tab) {
-  currentTab = tab;
-  $("btnTabMain").className = "tab-btn" + (tab === "main" ? " active" : "");
-  $("btnTabStaff").className = "tab-btn" + (tab === "staff" ? " active" : "");
-  
-  $("paneMain").style.display = (tab === "main" ? "block" : "none");
-  $("paneStaff").style.display = (tab === "staff" ? "block" : "none");
-  
-  if(tab === "main") renderMainTab();
-  if(tab === "staff") renderStaffTab();
-}
-
-function onDateChange() {
-  var f = $("dateFrom").value; var t = $("dateTo").value;
-  if(f && t && f > t) $("dateTo").value = f;
-  renderMainTab();
-}
-
-// ==========================================
-// モーダル処理
-// ==========================================
-function openBadgeModal(minCount, maxCount, label) {
-  var dFrom = $("dateFrom").value;
-  var dTo = $("dateTo").value;
-  if(!dFrom || !dTo) return;
-  
-  var data = getFilteredData();
-  var list = [];
-  
-  data.forEach(function(m){
-    var empNo = m.employeeNo;
-    var co = 0;
-    var d = new Date(dFrom + "T00:00:00+09:00");
-    var end = new Date(dTo + "T00:00:00+09:00");
-    while(d <= end) {
-      var ds = getTodayStrFromDate(d);
-      if(db.records[ds] && db.records[ds][empNo]) co += (db.records[ds][empNo].completed || 0);
-      d.setDate(d.getDate() + 1);
-    }
-    
-    if(co >= minCount && co <= maxCount) {
-      list.push({ name: m.name, site: m.site, area: m.area, completed: co });
-    }
-  });
-  
-  list.sort(function(a, b){ return b.completed - a.completed; });
-  
-  $("badgeModalTitle").textContent = label + " の対象者 (" + list.length + "名)";
-  
-  var html = "";
-  if(list.length === 0) {
-    html = '<div class="empty-msg">該当する従業員はいません。</div>';
-  } else {
-    list.forEach(function(item){
-      var bigCount = Math.floor(item.completed / 5);
-      var smallCount = item.completed % 5;
-      var badges = "";
-      for(var i=0; i<bigCount; i++) badges += '<span class="badge-big">🏵️</span>';
-      for(var i=0; i<smallCount; i++) badges += '<span class="badge-small">🎖️</span>';
-      if(item.completed === 0) badges = '<span style="color:#cbd5e1;">(バッジなし)</span>';
-      
-      html += '<div class="modal-list-item">';
-      html += '  <div>';
-      html += '    <div class="ml-name">'+escHtml(item.name)+'</div>';
-      html += '    <div class="ml-sub">'+escHtml(item.site)+' / '+escHtml(item.area)+'</div>';
-      html += '  </div>';
-      html += '  <div class="ml-right">';
-      html += '    <div class="ml-count">'+item.completed+' <span style="font-size:10px; font-weight:normal; color:var(--muted);">件完了</span></div>';
-      html += '    <div class="ml-badges">'+badges+'</div>';
-      html += '  </div>';
-      html += '</div>';
-    });
-  }
-  
-  $("badgeModalBody").innerHTML = html;
-  $("badgeModalOverlay").style.display = "flex";
-}
-
-function showGlobalCumulative() {
-  var today = getTodayStr();
-  var totalAs = 0;
-  var totalCo = 0;
-  
-  for(var d in db.records) {
-    if(d <= today) {
-      var daily = db.records[d];
-      for(var empNo in daily) {
-        totalAs += (daily[empNo].assigned || 0);
-        totalCo += (daily[empNo].completed || 0);
-      }
-    }
-  }
-  
-  $("cumAs").textContent = totalAs;
-  $("cumCo").textContent = totalCo;
-  $("cumModalOverlay").style.display = "flex";
-}
-
-function closeModal(e, id) {
-  if(e.target.id === id) $(id).style.display = "none";
-}
-
-// --- 📋 メイン画面 ---
-function renderMainTab() {
-  renderCloudPanel(); 
-  
-  var dFrom = $("dateFrom").value;
-  var dTo = $("dateTo").value;
-  
-  if(!dFrom || !dTo) {
-    var t = getTodayStr();
-    $("dateFrom").value = t; $("dateTo").value = t;
-    dFrom = t; dTo = t;
-  }
-  
-  var isSingleDay = (dFrom === dTo);
-  var modeHtml = "";
-  if(isSingleDay) {
-    modeHtml = '<div class="mode-badge">単日モード (当日の実績入力)</div>';
-  } else {
-    modeHtml = '<div class="mode-badge" style="background:#0f766e;">期間モード (進捗確認)</div>';
-  }
-  $("modeIndicator").innerHTML = modeHtml;
-  
-  var data = getFilteredData();
-  var agg = {};
-  var allAssigned = 0, allCompleted = 0;
-  
-  var countG0 = 0, countG1 = 0, countG2 = 0, countG3 = 0;
-  
-  data.forEach(function(m){
-    var empNo = m.employeeNo;
-    
-    var as = 0, co = 0;
-    var d = new Date(dFrom + "T00:00:00+09:00");
-    var end = new Date(dTo + "T00:00:00+09:00");
-    while(d <= end) {
-      var ds = getTodayStrFromDate(d);
-      if(db.records[ds] && db.records[ds][empNo]) {
-        as += (db.records[ds][empNo].assigned || 0);
-        co += (db.records[ds][empNo].completed || 0);
-      }
-      d.setDate(d.getDate() + 1);
-    }
-    
-    agg[empNo] = { assigned: as, completed: co };
-    allAssigned += as;
-    allCompleted += co;
-    
-    if(co === 0) countG0++;
-    else if(co >= 1 && co <= 10) countG1++;
-    else if(co >= 11 && co <= 20) countG2++;
-    else if(co >= 21) countG3++;
-  });
-
-  // バッジボタン群の生成
-  var btnHtml = '<div style="font-size:13px;font-weight:900;color:var(--primary2);margin-bottom:8px;">🎖️ 完了件数で一覧を見る</div>';
-  btnHtml += '<div class="star-btn-group">';
-  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(0, 0, \'🎖️ 0件\')">0件 <span class="count">'+countG0+'名</span></button>';
-  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(1, 10, \'🎖️ 1〜10件\')">1〜10件 <span class="count">'+countG1+'名</span></button>';
-  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(11, 20, \'🎖️ 11〜20件\')">11〜20件 <span class="count">'+countG2+'名</span></button>';
-  btnHtml += '  <button class="star-btn" onclick="openBadgeModal(21, 9999, \'🎖️ 21件以上\')">21件〜 <span class="count">'+countG3+'名</span></button>';
-  btnHtml += '</div>';
-  $("badgeButtonsContainer").innerHTML = btnHtml;
-
-  // 人別リスト描画
-  var listHtml = "";
-  data.forEach(function(m){
-    var empNo = m.employeeNo;
-    var rec = agg[empNo]; 
-    
-    listHtml += '<div class="person-card">';
-    
-    if(isSingleDay) {
-      var cDaily = db.records[dFrom] && db.records[dFrom][empNo] ? db.records[dFrom][empNo] : { assigned: 0, completed: 0 };
-      
-      listHtml += '  <div class="pc-info-text">'+escHtml(m.site)+' <span class="sep">/</span> '+escHtml(m.area)+' <span class="sep">/</span> <span style="color:var(--primary2);">'+escHtml(m.name)+'</span></div>';
-      
-      listHtml += '  <div class="counter-group">';
-      listHtml += '    <div class="counter-box">';
-      listHtml += '      <div class="counter-label">当日の受付数</div>';
-      listHtml += '      <div class="counter-controls">';
-      listHtml += '        <button class="btn-circle minus" onclick="updateCounter(\''+empNo+'\', \''+dFrom+'\', \'assigned\', -1)">−</button>';
-      listHtml += '        <input type="number" class="counter-input" min="0" value="'+cDaily.assigned+'" onchange="setCounter(\''+empNo+'\', \''+dFrom+'\', \'assigned\', this.value)" onfocus="this.select()">';
-      listHtml += '        <button class="btn-circle plus" onclick="updateCounter(\''+empNo+'\', \''+dFrom+'\', \'assigned\', 1)">＋</button>';
-      listHtml += '      </div>';
-      listHtml += '    </div>';
-      listHtml += '    <div class="counter-box">';
-      listHtml += '      <div class="counter-label">当日の完了数</div>';
-      listHtml += '      <div class="counter-controls">';
-      listHtml += '        <button class="btn-circle minus" onclick="updateCounter(\''+empNo+'\', \''+dFrom+'\', \'completed\', -1)">−</button>';
-      listHtml += '        <input type="number" class="counter-input" min="0" value="'+cDaily.completed+'" onchange="setCounter(\''+empNo+'\', \''+dFrom+'\', \'completed\', this.value)" onfocus="this.select()">';
-      listHtml += '        <button class="btn-circle plus" onclick="updateCounter(\''+empNo+'\', \''+dFrom+'\', \'completed\', 1)">＋</button>';
-      listHtml += '      </div>';
-      listHtml += '    </div>';
-      listHtml += '  </div>';
-      
-    } else {
-      listHtml += '  <div class="pc-info-text no-border">'+escHtml(m.site)+' <span class="sep">/</span> '+escHtml(m.area)+' <span class="sep">/</span> <span style="color:var(--primary2);">'+escHtml(m.name)+'</span></div>';
-    }
-
-    var bigCount = Math.floor(rec.completed / 5);
-    var smallCount = rec.completed % 5;
-    var badges = "";
-    for(var i=0; i<bigCount; i++) badges += '<span class="badge-big">🏵️</span>';
-    for(var i=0; i<smallCount; i++) badges += '<span class="badge-small">🎖️</span>';
-    if(rec.completed === 0) badges = '<span style="color:#cbd5e1; font-size:12px; font-weight:700;">(まだバッジはありません)</span>';
-    
-    listHtml += '  <div class="award-row">';
-    listHtml += '    <div class="badges-container">'+badges+'</div>';
-    listHtml += '  </div>';
-    
-    listHtml += '</div>';
-  });
-
-  // 全体サマリー描画
-  var allDigestion = pct(allCompleted, allAssigned);
-  
-  var htmlSum = '<div class="summary-box">';
-  htmlSum += '  <div class="title">🎯 選択期間の全体サマリー</div>';
-  
-  htmlSum += '  <div class="s-main">';
-  htmlSum += '    <div class="lbl">受付数に対する完了率 (完了 ÷ 受付)</div>';
-  htmlSum += '    <div class="rate">';
-  htmlSum += '      '+(allAssigned>0 ? allDigestion+'<span style="font-size:24px;">%</span>' : '--');
-  htmlSum += '    </div>';
-  htmlSum += '    <div class="prog-wrap" style="height:12px;"><div class="prog-bar '+(allDigestion>=100?"green":(allDigestion>=50?"yellow":"red"))+'" style="width:'+Math.min(100, allDigestion)+'%"></div></div>';
-  htmlSum += '    <div class="nums">総受付: '+allAssigned+'件 ／ 総完了: '+allCompleted+'件</div>';
-  htmlSum += '  </div>';
-  
-  htmlSum += '  <div style="margin-top:16px;">';
-  htmlSum += '    <button class="btn ghost" onclick="showGlobalCumulative()">📅 【本日】までの全メンバー累計を確認</button>';
-  htmlSum += '  </div>';
-
-  htmlSum += '</div>';
-
-  $("summaryContainer").innerHTML = htmlSum;
-  
-  if(data.length === 0) {
-    $("listContainer").innerHTML = '<div class="empty-msg">該当する従業員がいません。</div>';
-  } else {
-    $("listContainer").innerHTML = listHtml;
-  }
-}
-
-function updateCounter(empNo, dStr, field, diff) {
-  if(!db.records[dStr]) db.records[dStr] = {};
-  if(!db.records[dStr][empNo]) db.records[dStr][empNo] = { assigned: 0, completed: 0 };
-  
-  var rec = db.records[dStr][empNo];
-  var next = rec[field] + diff;
-  if(next < 0) next = 0;
-  rec[field] = next;
-  
-  saveDb();
-  renderMainTab();
-}
-
-function setCounter(empNo, dStr, field, val) {
-  if(!db.records[dStr]) db.records[dStr] = {};
-  if(!db.records[dStr][empNo]) db.records[dStr][empNo] = { assigned: 0, completed: 0 };
-  
-  var num = parseInt(val, 10);
-  if(isNaN(num) || num < 0) num = 0;
-  db.records[dStr][empNo][field] = num;
-  
-  saveDb();
-  showToast("保存しました");
-  renderMainTab();
-}
-
-// --- ⚙️ 名簿・設定タブ ---
-function renderStaffTab() {
-  renderCloudPanel(); 
-  
-  var data = db.master; 
-  var pane = $("paneStaff");
-  var defSite = $("fltSite").value || "";
-  var defArea = $("fltArea").value || "";
-  
-  var html = '<div class="card" style="background:#f8fafc; border-color:#cbd5e1; margin-bottom:20px; box-shadow:none;">';
-  html += '<div style="font-size:14px;font-weight:900;margin-bottom:12px;color:var(--primary2);">➕ 新規追加</div>';
-  html += '<div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">';
-  html += '  <input type="text" id="addSite" placeholder="拠点 (例: 関東)" value="'+escHtml(defSite)+'" style="height:44px;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:0 12px;">';
-  html += '  <input type="text" id="addArea" placeholder="エリア (例: 東京)" value="'+escHtml(defArea)+'" style="height:44px;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:0 12px;">';
-  html += '  <input type="text" id="addName" placeholder="氏名 (例: 山田 太郎)" style="height:44px;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:0 12px;">';
-  html += '  <button class="btn primary" onclick="addStaff()">名簿に追加する</button>';
-  html += '</div></div>';
-  
-  html += '<div style="font-size:14px;font-weight:900;margin-bottom:12px;color:var(--primary2);">📋 登録済み名簿 ('+data.length+'名)</div>';
-  
-  if(data.length === 0) {
-    html += '<div class="empty-msg">該当する従業員がいません。</div>';
-  } else {
-    data.forEach(function(m){
-      html += '<div class="person-card" style="display:flex; justify-content:space-between; align-items:center; padding:12px;">';
-      html += '  <div class="pc-info-text" style="margin-bottom:0; border:none; padding-bottom:0;">';
-      html += escHtml(m.site) + ' <span class="sep">/</span> ' + escHtml(m.area) + ' <span class="sep">/</span> <span style="color:var(--primary2);">' + escHtml(m.name) + '</span>';
-      html += '  </div>';
-      html += '  <button class="btn danger" style="min-height:36px; padding:0 12px; font-size:12px; border-radius:8px; flex-shrink:0;" onclick="deleteStaff(\''+m.employeeNo+'\', \''+escHtml(m.name)+'\')">削除</button>';
-      html += '</div>';
-    });
-  }
-  
-  pane.innerHTML = html;
-}
-
-function addStaff() {
-  var site = $("addSite").value.trim();
-  var area = $("addArea").value.trim();
-  var name = $("addName").value.trim();
-  
-  if(!site || !area || !name) { alert("「拠点」「エリア」「氏名」を入力してください。"); return; }
-  
-  var exists = db.master.some(function(m) { return m.site === site && m.area === area && m.name === name; });
-  if(exists) { alert("その従業員はすでに登録されています。"); return; }
-  
-  var newEmpNo = "U" + Date.now();
-  db.master.push({ site: site, area: area, name: name, employeeNo: newEmpNo });
-  saveDb();
-  
-  $("fltSite").value = site;
-  initFilters(); 
-  $("fltArea").value = area;
-  
-  showToast("👤 名簿に追加しました");
-  renderStaffTab(); 
-}
-
-function deleteStaff(empNo, name) {
-  if(!confirm("「" + name + "」さんを名簿から削除しますか？\n※これまでの報告データも集計から除外されます。")) return;
-  db.master = db.master.filter(function(m){ return m.employeeNo !== empNo; });
-  saveDb();
-  initFilters();
-  showToast("🗑️ 削除しました");
-  renderStaffTab();
-}
-
-// ==========================================
-// 起動処理
-// ==========================================
-$("dateFrom").value = getTodayStr(); 
-$("dateTo").value = getTodayStr();
-loadDb();
-initFilters();
-switchTab('main');
 </script>
+
 </body>
 </html>
